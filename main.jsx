@@ -381,7 +381,7 @@ function App() {
   async function signInGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider:'google',
-      options:{ redirectTo:'https://workmate-three.vercel.app' }
+      options:{ redirectTo: window.location.origin }
     })
     if (error) notify(error.message)
   }
