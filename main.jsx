@@ -461,7 +461,7 @@ function Login({ signInGoogle, setPage }) {
       <button className="primary" style={{ width:'100%', maxWidth:320, fontSize:18, padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'center', gap:12 }} onClick={signInGoogle}>
         <GoogleIcon /> {t.login_google}
       </button>
-      <button onClick={() => setPage('home')} style={{ background:'transparent', color:'#64748b' }}>{t.guest}</button>
+      <button onClick={() => setPage('home')} style={{ background:'transparent', border:'none', color:'var(--muted2)' }}>{t.guest}</button>
     </main>
   )
 }
@@ -571,7 +571,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
       <div className="tags">
         <span>{job.location || t.loc_tbd}</span>
         <span>{job.english_level || t.no_eng}</span>
-        {job.is_active === false && <span style={{ background:'#fee2e2', color:'#be123c' }}>{t.badge_closed}</span>}
+        {job.is_active === false && <span style={{ background:'rgba(239,68,68,0.15)', color:'#f87171', border:'1px solid rgba(239,68,68,0.2)', padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:700 }}>{t.badge_closed}</span>}
       </div>
       <div className="actions" onClick={e => e.stopPropagation()}>
         <button className="primary" onClick={() => openJob(job)}>{t.view_detail}</button>
@@ -608,9 +608,10 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
         <div className="photo big">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
           <h1 style={{ margin:0 }}>{job.company}</h1>
-          <span style={{ padding:'4px 12px', borderRadius:999, fontSize:13, fontWeight:800,
-            background: isClosed ? '#fee2e2' : '#dcfce7',
-            color:      isClosed ? '#be123c' : '#16a34a' }}>
+          <span style={{ padding:'5px 14px', borderRadius:999, fontSize:13, fontWeight:700,
+            background: isClosed ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.15)',
+            color:      isClosed ? '#f87171' : '#4ade80',
+            border:     isClosed ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(34,197,94,0.2)' }}>
             {isClosed ? t.badge_closed : t.badge_active}
           </span>
         </div>
@@ -669,7 +670,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
       <p className="muted" style={{ marginBottom:20 }}>{t.post_login_desc}</p>
       <button className="primary" onClick={signInGoogle}>{t.login_google}</button>
       <br />
-      <button style={{ marginTop:12, background:'transparent', color:'#64748b' }} onClick={() => setPage('jobs')}>← {t.nav_jobs}</button>
+      <button style={{ marginTop:12, background:'transparent', border:'none', color:'var(--muted2)' }} onClick={() => setPage('jobs')}>← {t.nav_jobs}</button>
     </main>
   )
 
@@ -1016,9 +1017,10 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   ]
 
   const statusStyle = st => ({
-    padding:'6px 12px', borderRadius:999, fontSize:13, fontWeight:800,
-    background: st==='accepted'?'#dcfce7':st==='rejected'?'#fee2e2':'#dbeafe',
-    color:      st==='accepted'?'#16a34a':st==='rejected'?'#dc2626':'#1d4ed8',
+    padding:'5px 12px', borderRadius:999, fontSize:12, fontWeight:700,
+    background: st==='accepted'?'rgba(34,197,94,0.15)':st==='rejected'?'rgba(239,68,68,0.15)':'rgba(59,130,246,0.15)',
+    color:      st==='accepted'?'#4ade80':st==='rejected'?'#f87171':'#93c5fd',
+    border:     st==='accepted'?'1px solid rgba(34,197,94,0.2)':st==='rejected'?'1px solid rgba(239,68,68,0.2)':'1px solid rgba(59,130,246,0.2)',
   })
 
   return (
@@ -1026,15 +1028,16 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       <section className="hero" style={{ flexDirection:'column', alignItems:'flex-start', gap:12 }}>
         <div style={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center' }}>
           <div><h1>{form.display_name || t.tab_profile}</h1><p className="muted">{session.user.email}</p></div>
-          <button onClick={signOut} style={{ background:'#fee2e2', color:'#be123c', padding:'10px 16px' }}>{t.logout}</button>
+          <button onClick={signOut} style={{ background:'rgba(239,68,68,0.15)', color:'#f87171', border:'1px solid rgba(239,68,68,0.2)', padding:'10px 16px' }}>{t.logout}</button>
         </div>
       </section>
 
-      <div style={{ display:'flex', gap:4, margin:'16px 0 0', borderBottom:'2px solid #e2e8f0', overflowX:'auto' }}>
+      <div style={{ display:'flex', gap:4, margin:'16px 0 0', borderBottom:'1px solid var(--border)', overflowX:'auto' }}>
         {TABS.map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)} style={{
-            background:'transparent', borderRadius:0, whiteSpace:'nowrap',
-            borderBottom: tab===key ? '3px solid #2563eb' : '3px solid transparent',
+            background:'transparent', border:'none', borderRadius:0, whiteSpace:'nowrap',
+            borderBottom: tab===key ? '2px solid var(--accent)' : '2px solid transparent',
+            color: tab===key ? 'var(--text)' : 'var(--muted2)',
             color: tab===key ? '#2563eb' : '#64748b', fontWeight:900, padding:'12px 14px'
           }}>{label}</button>
         ))}
@@ -1112,14 +1115,16 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
                         <h3 style={{ margin:0 }}>{j.company} — {j.title}</h3>
-                        <span style={{ padding:'3px 10px', borderRadius:999, fontSize:12, fontWeight:800,
-                          background:isClosed?'#fee2e2':'#dcfce7', color:isClosed?'#be123c':'#16a34a' }}>
+                        <span style={{ padding:'3px 10px', borderRadius:999, fontSize:12, fontWeight:700,
+                          background:isClosed?'rgba(239,68,68,0.15)':'rgba(34,197,94,0.15)',
+                          color:isClosed?'#f87171':'#4ade80',
+                          border:isClosed?'1px solid rgba(239,68,68,0.2)':'1px solid rgba(34,197,94,0.2)' }}>
                           {isClosed ? t.badge_closed : t.badge_active}
                         </span>
                       </div>
                       <p className="muted" style={{ fontSize:14 }}>{j.location} / {j.salary}</p>
                     </div>
-                    <span style={{ background:'#dbeafe', color:'#1d4ed8', padding:'6px 12px', borderRadius:999, fontSize:13, fontWeight:800, whiteSpace:'nowrap', flexShrink:0 }}>
+                    <span style={{ background:'rgba(59,130,246,0.15)', color:'#93c5fd', border:'1px solid rgba(59,130,246,0.2)', padding:'5px 12px', borderRadius:999, fontSize:13, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
                       {t.apps_count} {appCount}{t.parts}
                     </span>
                   </div>
@@ -1131,11 +1136,14 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                       {expandedJob===j.id ? t.close_apps : `${t.view_apps} (${appCount})`}
                     </button>
                     <button style={{ fontSize:13, padding:'8px 14px' }} onClick={() => setEditingJob(j)}>{t.edit_job}</button>
-                    <button style={{ fontSize:13, padding:'8px 14px', background:isClosed?'#dcfce7':'#fef9c3', color:isClosed?'#16a34a':'#a16207' }}
+                    <button style={{ fontSize:13, padding:'8px 14px',
+                      background:isClosed?'rgba(34,197,94,0.15)':'rgba(251,191,36,0.12)',
+                      color:isClosed?'#4ade80':'#fbbf24',
+                      border:isClosed?'1px solid rgba(34,197,94,0.2)':'1px solid rgba(251,191,36,0.2)' }}
                       onClick={() => toggleJobStatus(j.id, !isClosed)}>
                       {isClosed ? t.reopen_job : t.close_job}
                     </button>
-                    <button style={{ fontSize:13, padding:'8px 14px', background:'#fee2e2', color:'#be123c' }}
+                    <button style={{ fontSize:13, padding:'8px 14px', background:'rgba(239,68,68,0.15)', color:'#f87171', border:'1px solid rgba(239,68,68,0.2)' }}
                       onClick={() => deleteJob(j.id)}>{t.delete_job}</button>
                   </div>
 
@@ -1146,7 +1154,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                         : (j.applications||[]).map(app => {
                           const p = app.profiles || {}
                           return (
-                            <div key={app.id} style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:16, padding:14, marginBottom:10 }}>
+                            <div key={app.id} style={{ background:'var(--bg2)', border:'1px solid var(--border2)', borderRadius:16, padding:14, marginBottom:10 }}>
                               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
                                 <div className="avatar" style={{ width:42, height:42, fontSize:16 }}>
                                   {p.avatar_url
@@ -1164,16 +1172,16 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                                 </span>
                               </div>
                               {app.message && (
-                                <p style={{ fontSize:14, color:'#334155', background:'#fff', border:'1px solid #e2e8f0', borderRadius:10, padding:'8px 12px', margin:'8px 0' }}>
+                                <p style={{ fontSize:14, color:'var(--muted2)', background:'var(--bg3)', border:'1px solid var(--border)', borderRadius:10, padding:'8px 12px', margin:'8px 0' }}>
                                   "{app.message}"
                                 </p>
                               )}
                               {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:10 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
                               {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>{t.visa_lbl} {p.visa_expiry}</p>}
                               <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                                <button style={{ background:'#dcfce7', color:'#16a34a', fontSize:13, padding:'8px 16px' }}
+                                <button style={{ background:'rgba(34,197,94,0.15)', color:'#4ade80', border:'1px solid rgba(34,197,94,0.2)', fontSize:13, padding:'8px 16px' }}
                                   onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
-                                <button style={{ background:'#fee2e2', color:'#dc2626', fontSize:13, padding:'8px 16px' }}
+                                <button style={{ background:'rgba(239,68,68,0.15)', color:'#f87171', border:'1px solid rgba(239,68,68,0.2)', fontSize:13, padding:'8px 16px' }}
                                   onClick={() => updateAppStatus(app.id, 'rejected')} disabled={app.status==='rejected'}>{t.reject}</button>
                               </div>
                             </div>
