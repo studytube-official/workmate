@@ -15,6 +15,7 @@ create table if not exists jobs (
   description   text,
   image_url     text,
   posted_by     uuid references auth.users(id) on delete set null,
+  is_active     boolean default true,
   created_at    timestamptz default now()
 );
 
@@ -186,10 +187,22 @@ create policy "Authenticated users can insert messages"
     )
   );
 
--- ── 6. Realtime 有効化 ────────────────────────────────────────
+-- ── 6. messages 既読更新ポリシー ─────────────────────────────
+create policy "Participants can update message read status"
+  on messages for update
+  using (
+    exists (
+      select 1 from conversations c
+      where c.id = messages.conversation_id
+        and (c.participant_a = auth.uid() or c.participant_b = auth.uid())
+    )
+  );
+
+-- ── 7. Realtime 有効化 ────────────────────────────────────────
 alter publication supabase_realtime add table messages;
 alter publication supabase_realtime add table conversations;
 alter publication supabase_realtime add table jobs;
+alter publication supabase_realtime add table applications;
 
 -- ── 7. 新規ユーザー登録時にプロフィールを自動生成 ─────────────
 create or replace function public.handle_new_user()

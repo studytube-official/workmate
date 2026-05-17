@@ -1,14 +1,158 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
+import React, {
+  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState
+} from 'react'
 import { createRoot } from 'react-dom/client'
 import { supabase } from './supabase'
 import './style.css'
 
-const fmt = d => new Date(d).toLocaleString('ja-JP', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+// ═════════════════════════════════════════════
+//  i18n
+// ═════════════════════════════════════════════
+const T = {
+  ja: {
+    nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
+    tagline:'シドニーで今日もいい仕事を見つけよう',
+    section_nearby:'近くの求人', section_saved:'保存した求人',
+    login_cta_title:'ログインして全機能を使おう',
+    login_cta_desc:'求人保存・応募・リアルタイムDMが使えるようになります。',
+    profile_completion:'プロフィール完成度',
+    profile_hint:'写真・ビザ期限・勤務可能日を追加すると応募率が上がります。',
+    complete_profile:'プロフィールを完成させる',
+    quick_jobs:'今日のおすすめ求人', quick_jobs_sub:'求人一覧を見る',
+    quick_post:'求人を投稿する', quick_post_sub:'店側が求人を追加',
+    search_jobs:'求人を探す', keyword_ph:'キーワード検索',
+    all_areas:'場所すべて', eng_cond:'英語条件', post_btn:'＋ 求人投稿',
+    no_jobs:'求人がありません。',
+    view_detail:'詳細を見る', save:'♡ 保存', saved_btn:'♥ 保存済み',
+    loc_tbd:'場所未設定', salary_tbd:'時給未設定', no_eng:'英語条件なし',
+    back_jobs:'← 求人一覧へ戻る',
+    apply:'応募する', applied_done:'✓ 応募済み', applying:'応募中...',
+    apply_msg:'応募メッセージ（任意）', apply_ph:'自己紹介や希望シフトなど...',
+    send_apply:'送信して応募', cancel:'キャンセル',
+    view_map:'📍 Google Mapsで見る', dm_btn:'💬 DMする',
+    badge_active:'募集中', badge_closed:'募集終了',
+    post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
+    post_login_desc:'Googleアカウントでログインしてください。',
+    f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
+    f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
+    save_btn:'保存する', saving:'保存中...',
+    required_err:'求人タイトルと店名は必須です。', job_saved:'求人を保存しました。',
+    find_staff:'スタッフを探す', staff_desc:'シドニーで働くスタッフ候補を探せます。',
+    no_staff:'スタッフ登録がまだありません。', contact:'💬 連絡する', visa_lbl:'🛂 ビザ期限:',
+    dm_title:'DM', dm_login_title:'DMを使うにはログインが必要です',
+    no_dm:'まだDMはありません。', no_dm_hint:'求人詳細ページから「DMする」を押してみましょう。',
+    back_dm:'← DM一覧へ戻る', type_msg:'メッセージを入力', send:'送信',
+    first_msg:'最初のメッセージを送ってみましょう 👋', loading:'読み込み中...',
+    logout:'ログアウト',
+    tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
+    change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
+    f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日', f_visa:'ビザ期限', f_bio:'自己紹介',
+    no_applied:'まだ応募した求人はありません。', no_saved_jobs:'まだ保存した求人はありません。',
+    no_posted:'まだ求人を投稿していません。', post_first:'求人を投稿する',
+    apps_count:'応募', view_apps:'▼ 応募者を見る', close_apps:'▲ 閉じる',
+    no_apps:'まだ応募者はいません。', hire:'✓ 採用する', reject:'✗ 不採用',
+    st_accepted:'採用', st_rejected:'不採用', st_pending:'審査中',
+    b_accepted:'✓ 採用', b_rejected:'✗ 不採用', b_pending:'⏳ 審査中',
+    edit_job:'✏️ 編集', delete_job:'🗑 削除', close_job:'募集を終了', reopen_job:'募集を再開',
+    confirm_del:'この求人を削除しますか？', job_deleted:'求人を削除しました。',
+    status_updated:'求人ステータスを更新しました', post_new:'＋ 新しい求人を投稿',
+    login_title:'WorkMateにログイン',
+    login_sub:'シドニーで働く留学生のためのジョブマッチングアプリ',
+    login_google:'Googleでログイン', guest:'← ゲストとして続ける',
+    login_profile:'ログインしてプロフィールを作成',
+    login_profile_desc:'求人保存・応募履歴がここに表示されます。',
+    toast_login:'ログインが必要です', toast_applied_already:'すでに応募済みです',
+    toast_applied_ok:'応募しました！', toast_logout:'ログアウトしました',
+    toast_profile:'プロフィールを保存しました！',
+    toast_no_poster:'この求人の投稿者情報がないためDMできません',
+    toast_self_dm:'自分が投稿した求人にはDMできません',
+    toast_self_dm2:'自分自身にはDMできません',
+    toast_new_app:'📨 新しい応募が届きました！',
+    toast_closed:'この求人は募集終了です',
+    eng_basic:'英語初級OK', eng_none:'英語ほぼ不要', eng_inter:'Intermediate以上',
+    not_set:'未設定', parts:'件', edit_title:'求人を編集する',
+  },
+  en: {
+    nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
+    tagline:'Find your perfect job in Sydney today',
+    section_nearby:'Jobs Near You', section_saved:'Saved Jobs',
+    login_cta_title:'Log in to access all features',
+    login_cta_desc:'Save jobs, apply, and use real-time messaging.',
+    profile_completion:'Profile Completion',
+    profile_hint:'Add your photo, visa expiry and availability to boost applications.',
+    complete_profile:'Complete Your Profile',
+    quick_jobs:"Today's Jobs", quick_jobs_sub:'Browse all listings',
+    quick_post:'Post a Job', quick_post_sub:'For employers',
+    search_jobs:'Find Jobs', keyword_ph:'Search keywords',
+    all_areas:'All areas', eng_cond:'English level', post_btn:'＋ Post Job',
+    no_jobs:'No jobs found.',
+    view_detail:'View Details', save:'♡ Save', saved_btn:'♥ Saved',
+    loc_tbd:'Location TBD', salary_tbd:'Rate TBD', no_eng:'No requirement',
+    back_jobs:'← Back to Jobs',
+    apply:'Apply Now', applied_done:'✓ Applied', applying:'Applying...',
+    apply_msg:'Message (optional)', apply_ph:'Introduce yourself or mention preferred shifts...',
+    send_apply:'Submit Application', cancel:'Cancel',
+    view_map:'📍 View on Google Maps', dm_btn:'💬 Message',
+    badge_active:'Hiring', badge_closed:'Closed',
+    post_title:'Post a Job', post_login_title:'Login required to post',
+    post_login_desc:'Sign in with Google to post job listings.',
+    f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
+    f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
+    save_btn:'Save', saving:'Saving...',
+    required_err:'Job title and business name are required.', job_saved:'Job posted successfully.',
+    find_staff:'Find Staff', staff_desc:'Browse staff candidates available in Sydney.',
+    no_staff:'No staff profiles yet.', contact:'💬 Contact', visa_lbl:'🛂 Visa Expiry:',
+    dm_title:'Messages', dm_login_title:'Log in to use messages',
+    no_dm:'No messages yet.', no_dm_hint:'Tap "Message" on a job to get started.',
+    back_dm:'← Back to Messages', type_msg:'Type a message', send:'Send',
+    first_msg:'Send your first message 👋', loading:'Loading...',
+    logout:'Logout',
+    tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
+    change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
+    f_name:'Name', f_eng_level:'English Level', f_avail:'Available Days',
+    f_visa:'Visa Expiry', f_bio:'Bio',
+    no_applied:'No applications yet.', no_saved_jobs:'No saved jobs yet.',
+    no_posted:'No job listings yet.', post_first:'Post Your First Job',
+    apps_count:'applications', view_apps:'▼ View Applicants', close_apps:'▲ Close',
+    no_apps:'No applicants yet.', hire:'✓ Hire', reject:'✗ Reject',
+    st_accepted:'Hired', st_rejected:'Rejected', st_pending:'Pending',
+    b_accepted:'✓ Hired', b_rejected:'✗ Rejected', b_pending:'⏳ Pending',
+    edit_job:'✏️ Edit', delete_job:'🗑 Delete', close_job:'Close Listing', reopen_job:'Reopen Listing',
+    confirm_del:'Delete this job listing?', job_deleted:'Job deleted.',
+    status_updated:'Job status updated', post_new:'＋ Post New Job',
+    login_title:'Sign in to WorkMate',
+    login_sub:'Job matching for international students in Sydney',
+    login_google:'Sign in with Google', guest:'← Continue as guest',
+    login_profile:'Log in to create your profile',
+    login_profile_desc:'View saved jobs and application history here.',
+    toast_login:'Login required', toast_applied_already:'Already applied',
+    toast_applied_ok:'Application sent!', toast_logout:'Logged out',
+    toast_profile:'Profile saved!',
+    toast_no_poster:'Cannot message: poster info unavailable',
+    toast_self_dm:'Cannot message your own listing',
+    toast_self_dm2:'Cannot message yourself',
+    toast_new_app:'📨 New application received!',
+    toast_closed:'This job is no longer accepting applications',
+    eng_basic:'Basic English OK', eng_none:'No English needed', eng_inter:'Intermediate+',
+    not_set:'Not set', parts:'', edit_title:'Edit Job',
+  }
+}
 
-// ─────────────────────────────────────────────
+const LangCtx = createContext({ lang:'ja', setLang:()=>{}, t:T.ja })
+const useT = () => useContext(LangCtx)
+
+const fmt = (d, lang='ja') =>
+  new Date(d).toLocaleString(lang === 'ja' ? 'ja-JP' : 'en-AU',
+    { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
+
+// ═════════════════════════════════════════════
 //  App
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function App() {
+  const [lang, setLang]     = useState(() => localStorage.getItem('wm_lang') || 'ja')
+  const t = T[lang]
+  const changeLang = l => { setLang(l); localStorage.setItem('wm_lang', l) }
+
   const [page, setPage]               = useState('home')
   const [session, setSession]         = useState(null)
   const [profile, setProfile]         = useState(null)
@@ -17,16 +161,17 @@ function App() {
   const [toast, setToast]             = useState('')
   const [savedJobIds, setSavedJobIds] = useState([])
   const [applications, setApplications] = useState([])
-  const [postedJobs, setPostedJobs]   = useState([])   // 自分が投稿した求人
+  const [postedJobs, setPostedJobs]   = useState([])
   const [search, setSearch]           = useState('')
   const [area, setArea]               = useState('')
   const [english, setEnglish]         = useState('')
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [editingJob, setEditingJob]   = useState(null)
 
-  const notify = useCallback((msg, ms = 3000) => {
-    setToast(msg)
-    setTimeout(() => setToast(''), ms)
+  const notify = useCallback((msg, ms=3000) => {
+    setToast(msg); setTimeout(() => setToast(''), ms)
   }, [])
 
   // ── 認証 ──────────────────────────────────
@@ -35,7 +180,7 @@ function App() {
       setSession(data.session)
       if (data.session) loadUserData(data.session.user.id)
     })
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+    const { data:{ subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s)
       if (s) loadUserData(s.user.id)
       else { setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([]) }
@@ -50,30 +195,40 @@ function App() {
       supabase.from('applications').select('*').eq('user_id', uid),
       supabase.from('conversations').select('*')
         .or(`participant_a.eq.${uid},participant_b.eq.${uid}`)
-        .order('last_message_at', { ascending: false }),
+        .order('last_message_at', { ascending:false }),
       supabase.from('jobs')
         .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
-        .eq('posted_by', uid)
-        .order('id', { ascending: false }),
+        .eq('posted_by', uid).order('id', { ascending:false }),
     ])
     if (profRes.data)   setProfile(profRes.data)
     if (savedRes.data)  setSavedJobIds(savedRes.data.map(r => r.job_id))
     if (appRes.data)    setApplications(appRes.data)
-    if (convRes.data)   setConversations(convRes.data)
+    if (convRes.data) {
+      setConversations(convRes.data)
+      fetchUnread(uid, convRes.data.map(c => c.id))
+    }
     if (postedRes.data) setPostedJobs(postedRes.data)
+  }
+
+  async function fetchUnread(uid, convIds) {
+    if (!convIds.length) { setUnreadCount(0); return }
+    const { count } = await supabase.from('messages')
+      .select('*', { count:'exact', head:true })
+      .eq('read', false).neq('sender_id', uid).in('conversation_id', convIds)
+    setUnreadCount(count || 0)
   }
 
   // ── 求人リアルタイム ───────────────────────
   useEffect(() => {
     loadJobs()
     const ch = supabase.channel('jobs-rt')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, loadJobs)
+      .on('postgres_changes', { event:'*', schema:'public', table:'jobs' }, loadJobs)
       .subscribe()
     return () => supabase.removeChannel(ch)
   }, [])
 
   async function loadJobs() {
-    const { data } = await supabase.from('jobs').select('*').order('id', { ascending: false })
+    const { data } = await supabase.from('jobs').select('*').order('id', { ascending:false })
     if (data) setJobs(data)
   }
 
@@ -82,16 +237,31 @@ function App() {
     if (!session) return
     const uid = session.user.id
     const ch = supabase.channel('conv-rt')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations', filter: `participant_a=eq.${uid}` }, () => loadUserData(uid))
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations', filter: `participant_b=eq.${uid}` }, () => loadUserData(uid))
+      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_a=eq.${uid}` }, () => loadUserData(uid))
+      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_b=eq.${uid}` }, () => loadUserData(uid))
       .subscribe()
     return () => supabase.removeChannel(ch)
   }, [session])
 
+  // ── 新着応募通知（リアルタイム）──────────────
+  useEffect(() => {
+    if (!session || !postedJobs.length) return
+    const ch = supabase.channel('new-apps-rt')
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'applications' }, payload => {
+        if (postedJobs.some(j => j.id === payload.new.job_id)) {
+          notify(t.toast_new_app)
+          loadUserData(session.user.id)
+        }
+      })
+      .subscribe()
+    return () => supabase.removeChannel(ch)
+  }, [session, postedJobs])
+
   const filteredJobs = useMemo(() => jobs.filter(j => {
-    const t = [j.title, j.company, j.location, j.salary, j.english_level, j.description].join(' ').toLowerCase()
-    return (!search || t.includes(search.toLowerCase()))
-        && (!area    || j.location     === area)
+    if (j.is_active === false) return false
+    const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description].join(' ').toLowerCase()
+    return (!search || tx.includes(search.toLowerCase()))
+        && (!area    || j.location      === area)
         && (!english || j.english_level === english)
   }), [jobs, search, area, english])
 
@@ -99,86 +269,109 @@ function App() {
   function openJob(job) { setSelectedJob(job); setPage('job') }
 
   async function toggleSave(jobId) {
-    if (!session) { notify('ログインが必要です'); return }
+    if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
     if (savedJobIds.includes(jobId)) {
       await supabase.from('saved_jobs').delete().eq('user_id', uid).eq('job_id', jobId)
       setSavedJobIds(p => p.filter(x => x !== jobId))
     } else {
-      await supabase.from('saved_jobs').insert({ user_id: uid, job_id: jobId })
+      await supabase.from('saved_jobs').insert({ user_id:uid, job_id:jobId })
       setSavedJobIds(p => [...p, jobId])
     }
   }
   const isSaved = jobId => savedJobIds.includes(jobId)
 
   async function applyToJob(job, msg) {
-    if (!session) { notify('ログインが必要です'); return false }
+    if (!session) { notify(t.toast_login); return false }
+    if (job.is_active === false) { notify(t.toast_closed); return false }
     const uid = session.user.id
-    if (applications.some(a => a.job_id === job.id)) { notify('すでに応募済みです'); return false }
-    const { error } = await supabase.from('applications').insert({ user_id: uid, job_id: job.id, message: msg, status: 'pending' })
-    if (error) { notify('応募できません: ' + error.message); return false }
-    setApplications(p => [...p, { user_id: uid, job_id: job.id, status: 'pending' }])
-    notify('応募しました！')
+    if (applications.some(a => a.job_id === job.id)) { notify(t.toast_applied_already); return false }
+    const { error } = await supabase.from('applications').insert({ user_id:uid, job_id:job.id, message:msg, status:'pending' })
+    if (error) { notify(error.message); return false }
+    setApplications(p => [...p, { user_id:uid, job_id:job.id, status:'pending' }])
+    notify(t.toast_applied_ok)
     return true
   }
   const hasApplied = jobId => applications.some(a => a.job_id === jobId)
 
-  // ── 求人DM（バグ修正済み: posted_by を participant_b に使用）──
+  // ── 求人 DM ────────────────────────────────
   async function startDM(job) {
-    if (!session) { notify('ログインが必要です'); return }
+    if (!session) { notify(t.toast_login); return }
+    if (job.is_active === false) { notify(t.toast_closed); return }
     const uid = session.user.id
-    const employerUid = job.posted_by
-    if (!employerUid)         { notify('この求人の投稿者情報がないためDMできません'); return }
-    if (employerUid === uid)  { notify('自分が投稿した求人にはDMできません'); return }
-
-    let existing = conversations.find(c => c.job_id === job.id)
-    if (!existing) {
+    const empUid = job.posted_by
+    if (!empUid)       { notify(t.toast_no_poster); return }
+    if (empUid === uid){ notify(t.toast_self_dm);  return }
+    let ex = conversations.find(c => c.job_id === job.id)
+    if (!ex) {
       const { data, error } = await supabase.from('conversations').insert({
-        job_id: job.id, participant_a: uid, participant_b: employerUid,
-        company_name: job.company, job_title: job.title,
-        last_message: '', last_message_at: new Date().toISOString()
+        job_id:job.id, participant_a:uid, participant_b:empUid,
+        company_name:job.company, job_title:job.title,
+        last_message:'', last_message_at:new Date().toISOString()
       }).select().single()
-      if (error) { notify('DM開始できません: ' + error.message); return }
-      existing = data
-      setConversations(p => [data, ...p])
+      if (error) { notify(error.message); return }
+      ex = data; setConversations(p => [data, ...p])
     }
-    setActiveConvId(existing.id)
-    setPage('chat')
+    setActiveConvId(ex.id); setPage('chat')
   }
 
-  // ── スタッフDM（新機能）──────────────────────
+  // ── スタッフ DM ───────────────────────────
   async function startStaffDM(targetUid, displayName) {
-    if (!session) { notify('ログインが必要です'); return }
+    if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
-    if (targetUid === uid) { notify('自分自身にはDMできません'); return }
-
-    // 既存会話を双方向で探す
-    let existing = conversations.find(c =>
+    if (targetUid === uid) { notify(t.toast_self_dm2); return }
+    let ex = conversations.find(c =>
       !c.job_id && (
         (c.participant_a === uid && c.participant_b === targetUid) ||
         (c.participant_a === targetUid && c.participant_b === uid)
       )
     )
-    if (!existing) {
+    if (!ex) {
       const { data, error } = await supabase.from('conversations').insert({
-        participant_a: uid, participant_b: targetUid,
-        company_name: displayName, job_title: 'スタッフ',
-        last_message: '', last_message_at: new Date().toISOString()
+        participant_a:uid, participant_b:targetUid,
+        company_name:displayName, job_title:'Staff',
+        last_message:'', last_message_at:new Date().toISOString()
       }).select().single()
-      if (error) { notify('DM開始できません: ' + error.message); return }
-      existing = data
-      setConversations(p => [data, ...p])
+      if (error) { notify(error.message); return }
+      ex = data; setConversations(p => [data, ...p])
     }
-    setActiveConvId(existing.id)
-    setPage('chat')
+    setActiveConvId(ex.id); setPage('chat')
   }
 
-  // ── 応募ステータス更新（採用/不採用）──────────
+  // ── 採用・不採用更新 ──────────────────────
   async function updateAppStatus(appId, status) {
     const { error } = await supabase.from('applications').update({ status }).eq('id', appId)
-    if (error) { notify('更新できません: ' + error.message); return }
+    if (error) { notify(error.message); return }
     if (session) loadUserData(session.user.id)
-    notify(status === 'accepted' ? '採用しました！' : status === 'rejected' ? '不採用にしました' : '更新しました')
+    notify(status === 'accepted' ? t.hire : status === 'rejected' ? t.reject : t.status_updated)
+  }
+
+  // ── 求人ステータス切替 ────────────────────
+  async function toggleJobStatus(jobId, isActive) {
+    const { error } = await supabase.from('jobs').update({ is_active:!isActive }).eq('id', jobId)
+    if (error) { notify(error.message); return }
+    if (session) loadUserData(session.user.id)
+    await loadJobs()
+    notify(t.status_updated)
+  }
+
+  // ── 求人削除 ──────────────────────────────
+  async function deleteJob(jobId) {
+    if (!window.confirm(t.confirm_del)) return
+    const { error } = await supabase.from('jobs').delete().eq('id', jobId)
+    if (error) { notify(error.message); return }
+    if (session) loadUserData(session.user.id)
+    await loadJobs()
+    notify(t.job_deleted)
+  }
+
+  // ── 既読処理 ──────────────────────────────
+  async function markConvRead(convId) {
+    if (!session) return
+    await supabase.from('messages').update({ read:true })
+      .eq('conversation_id', convId).eq('read', false).neq('sender_id', session.user.id)
+    const convIds = conversations.map(c => c.id)
+    fetchUnread(session.user.id, convIds)
   }
 
   function openMap(loc) {
@@ -187,182 +380,194 @@ function App() {
 
   async function signInGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: 'https://workmate-three.vercel.app' }
+      provider:'google',
+      options:{ redirectTo:'https://workmate-three.vercel.app' }
     })
-    if (error) notify('ログインエラー: ' + error.message)
+    if (error) notify(error.message)
   }
 
   async function signOut() {
-    await supabase.auth.signOut()
-    setPage('home')
-    notify('ログアウトしました')
+    await supabase.auth.signOut(); setPage('home'); notify(t.toast_logout)
   }
 
   const avatarLetter = profile?.display_name?.[0]?.toUpperCase()
     || session?.user?.email?.[0]?.toUpperCase() || 'U'
 
   return (
-    <div>
+    <LangCtx.Provider value={{ lang, setLang:changeLang, t }}>
+      {/* 言語切替ボタン（固定）*/}
+      <button className="lang-toggle" onClick={() => changeLang(lang === 'ja' ? 'en' : 'ja')}>
+        {lang === 'ja' ? 'EN' : 'JP'}
+      </button>
+
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
+
       {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
       {page === 'jobs'    && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} />}
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
-      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} />}
-      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} />}
+      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
+      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
       {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} />}
+
+      {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
+
       <nav className="bottom">
-        <button className={page === 'home' ? 'active' : ''} onClick={() => setPage('home')}>🏠<br/><small>Home</small></button>
-        <button className={['jobs','job','post'].includes(page) ? 'active' : ''} onClick={() => setPage('jobs')}>💼<br/><small>Jobs</small></button>
-        <button className={page === 'staff' ? 'active' : ''} onClick={() => setPage('staff')}>👥<br/><small>Staff</small></button>
-        <button className={['dm','chat'].includes(page) ? 'active' : ''} onClick={() => setPage('dm')}>💬<br/><small>DM</small></button>
-        <button className={page === 'profile' ? 'active' : ''} onClick={() => setPage('profile')}>👤<br/><small>Profile</small></button>
+        <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
+        <button className={['jobs','job','post'].includes(page)?'active':''} onClick={() => setPage('jobs')}>💼<br/><small>{t.nav_jobs}</small></button>
+        <button className={page==='staff'?'active':''} onClick={() => setPage('staff')}>👥<br/><small>{t.nav_staff}</small></button>
+        <button className={['dm','chat'].includes(page)?'active':''} onClick={() => setPage('dm')} style={{ position:'relative' }}>
+          💬<br/><small>{t.nav_dm}</small>
+          {unreadCount > 0 && <span className="badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+        </button>
+        <button className={page==='profile'?'active':''} onClick={() => setPage('profile')}>👤<br/><small>{t.nav_profile}</small></button>
       </nav>
-    </div>
+    </LangCtx.Provider>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  Login
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function Login({ signInGoogle, setPage }) {
+  const { t } = useT()
   return (
     <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', gap:24 }}>
       <div style={{ fontSize:56 }}>🤝</div>
-      <h1 style={{ textAlign:'center' }}>WorkMateにログイン</h1>
-      <p className="muted" style={{ textAlign:'center' }}>シドニーで働く留学生のためのジョブマッチングアプリ</p>
+      <h1 style={{ textAlign:'center' }}>{t.login_title}</h1>
+      <p className="muted" style={{ textAlign:'center' }}>{t.login_sub}</p>
       <button className="primary" style={{ width:'100%', maxWidth:320, fontSize:18, padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'center', gap:12 }} onClick={signInGoogle}>
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.5 33.7 29.2 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.6 20-21 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 16.3 3 9.7 7.9 6.3 14.7z"/><path fill="#4CAF50" d="M24 45c5.2 0 10-1.9 13.7-5.1L31.5 35C29.5 36.6 27 37.5 24 37.5c-5.2 0-9.5-3.3-11.3-7.9L6 34.4C9.3 40.5 16.1 45 24 45z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.6-2.7 4.7-5 6L36.7 38C40.9 34.2 44 29.4 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
-        Googleでログイン
+        <GoogleIcon /> {t.login_google}
       </button>
-      <button onClick={() => setPage('home')} style={{ background:'transparent', color:'#64748b' }}>← ゲストとして続ける</button>
+      <button onClick={() => setPage('home')} style={{ background:'transparent', color:'#64748b' }}>{t.guest}</button>
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  Home
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter }) {
+  const { t } = useT()
   const savedJobsList = jobs.filter(j => isSaved(j.id))
   const displayName   = profile?.display_name || session?.user?.email?.split('@')[0] || 'Guest'
   const fields = [profile?.display_name, profile?.bio, profile?.availability, profile?.visa_expiry, profile?.avatar_url]
   const pct    = Math.round((fields.filter(Boolean).length / fields.length) * 100)
-
   return (
     <main>
       <section className="hero">
         <div>
           <p className="muted">Good day 👋</p>
           <h1>Hi, {displayName.split(' ')[0]}</h1>
-          <p className="muted">シドニーで今日もいい仕事を見つけよう</p>
+          <p className="muted">{t.tagline}</p>
         </div>
-        <button className="avatar avatarBtn" onClick={() => setPage('profile')} aria-label="プロフィール">
+        <button className="avatar avatarBtn" onClick={() => setPage('profile')} aria-label="profile">
           {profile?.avatar_url
-            ? <img src={profile.avatar_url} style={{ width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover' }} alt="avatar" />
+            ? <img src={profile.avatar_url} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="avatar" />
             : avatarLetter}
         </button>
       </section>
-
       <section className="quick">
-        <button onClick={() => setPage('jobs')}>💼 今日のおすすめ求人<span>求人一覧を見る</span></button>
-        <button onClick={() => setPage('post')}>🏪 求人を投稿する<span>店側が求人を追加</span></button>
+        <button onClick={() => setPage('jobs')}>💼 {t.quick_jobs}<span>{t.quick_jobs_sub}</span></button>
+        <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>
       </section>
-
       {session && pct < 100 && (
         <section className="card">
-          <h2>プロフィール完成度 {pct}%</h2>
-          <div className="bar"><span style={{ width: pct + '%' }} /></div>
-          <p className="muted">写真・ビザ期限・勤務可能日を追加すると応募率が上がります。</p>
-          <button className="primary" onClick={() => setPage('profile')}>プロフィールを完成させる</button>
+          <h2>{t.profile_completion} {pct}%</h2>
+          <div className="bar"><span style={{ width:pct+'%' }} /></div>
+          <p className="muted">{t.profile_hint}</p>
+          <button className="primary" onClick={() => setPage('profile')}>{t.complete_profile}</button>
         </section>
       )}
-
       {!session && (
         <section className="card" style={{ textAlign:'center' }}>
           <p style={{ fontSize:32, marginBottom:8 }}>🔑</p>
-          <h2>ログインして全機能を使おう</h2>
-          <p className="muted">求人保存・応募・リアルタイムDMが使えるようになります。</p>
-          <button className="primary" onClick={() => setPage('login')}>Googleでログイン</button>
+          <h2>{t.login_cta_title}</h2>
+          <p className="muted">{t.login_cta_desc}</p>
+          <button className="primary" onClick={() => setPage('login')}>{t.login_google}</button>
         </section>
       )}
-
-      <Section title="近くの求人">
-        <JobGrid jobs={jobs.slice(0, 4)} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
+      <Section title={t.section_nearby}>
+        <JobGrid jobs={jobs.filter(j => j.is_active !== false).slice(0, 4)} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
       </Section>
-
-      <Section title="保存した求人">
+      <Section title={t.section_saved}>
         {savedJobsList.length
           ? <JobGrid jobs={savedJobsList} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
-          : <div className="empty">まだ保存した求人はありません。</div>}
+          : <div className="empty">{t.no_saved_jobs}</div>}
       </Section>
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  Jobs
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, setPage, isSaved, toggleSave }) {
+  const { t } = useT()
   return (
     <main>
       <header className="sticky">
-        <h1>求人を探す</h1>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="キーワード検索" />
+        <h1>{t.search_jobs}</h1>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
         <div className="filters">
           <select value={area} onChange={e => setArea(e.target.value)}>
-            <option value="">場所すべて</option>
+            <option value="">{t.all_areas}</option>
             <option>Sydney</option><option>Sydney CBD</option><option>CBD</option>
             <option>Bondi</option><option>Chatswood</option>
           </select>
           <select value={english} onChange={e => setEnglish(e.target.value)}>
-            <option value="">英語条件</option>
-            <option>英語初級OK</option><option>英語ほぼ不要</option><option>Intermediate以上</option>
+            <option value="">{t.eng_cond}</option>
+            <option>{t.eng_basic}</option>
+            <option>{t.eng_none}</option>
+            <option>{t.eng_inter}</option>
           </select>
         </div>
-        <button className="primary" onClick={() => setPage('post')}>＋ 求人投稿</button>
+        <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  JobGrid / JobCard
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function JobGrid({ jobs, openJob, isSaved, toggleSave }) {
-  if (!jobs.length) return <div className="empty">求人がありません。</div>
+  const { t } = useT()
+  if (!jobs.length) return <div className="empty">{t.no_jobs}</div>
   return <div className="grid">{jobs.map(j => <JobCard key={j.id} job={j} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />)}</div>
 }
 
 function JobCard({ job, openJob, isSaved, toggleSave }) {
+  const { t } = useT()
   return (
     <article className="job" onClick={() => openJob(job)}>
       <div className="photo">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
       <h2>{job.company || 'No company'}</h2>
       <p className="muted">{job.title}</p>
-      <p className="muted" style={{ fontSize:13 }}>{job.location || '場所未設定'} / {job.salary || '時給未設定'}</p>
+      <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
-        <span>{job.location || '未設定'}</span>
-        <span>{job.english_level || '英語条件なし'}</span>
+        <span>{job.location || t.loc_tbd}</span>
+        <span>{job.english_level || t.no_eng}</span>
+        {job.is_active === false && <span style={{ background:'#fee2e2', color:'#be123c' }}>{t.badge_closed}</span>}
       </div>
       <div className="actions" onClick={e => e.stopPropagation()}>
-        <button className="primary" onClick={() => openJob(job)}>詳細を見る</button>
-        <button className={isSaved(job.id) ? 'fav' : ''} onClick={() => toggleSave(job.id)}>
-          {isSaved(job.id) ? '♥ 保存済み' : '♡ 保存'}
+        <button className="primary" onClick={() => openJob(job)}>{t.view_detail}</button>
+        <button className={isSaved(job.id)?'fav':''} onClick={() => toggleSave(job.id)}>
+          {isSaved(job.id) ? t.saved_btn : t.save}
         </button>
       </div>
     </article>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  JobDetail
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, hasApplied, openMap, session }) {
+  const { t } = useT()
   const [showApply, setShowApply] = useState(false)
   const [applyMsg,  setApplyMsg]  = useState('')
   const [busy,      setBusy]      = useState(false)
@@ -374,74 +579,81 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
     if (ok) setShowApply(false)
   }
 
+  const isClosed = job.is_active === false
+
   return (
     <main>
-      <button onClick={() => setPage('jobs')}>← 求人一覧へ戻る</button>
+      <button onClick={() => setPage('jobs')}>{t.back_jobs}</button>
       <section className="detail card">
         <div className="photo big">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
-        <h1>{job.company}</h1>
+        <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
+          <h1 style={{ margin:0 }}>{job.company}</h1>
+          <span style={{ padding:'4px 12px', borderRadius:999, fontSize:13, fontWeight:800,
+            background: isClosed ? '#fee2e2' : '#dcfce7',
+            color:      isClosed ? '#be123c' : '#16a34a' }}>
+            {isClosed ? t.badge_closed : t.badge_active}
+          </span>
+        </div>
         <p className="muted">{job.title} / {job.location} / {job.salary}</p>
         <div className="tags"><span>{job.english_level}</span><span>{job.location}</span></div>
         <p style={{ lineHeight:1.8, marginTop:12 }}>{job.description}</p>
-        <div className="row"><b>場所</b><span>{job.location}</span></div>
-        <div className="row"><b>時給</b><span>{job.salary}</span></div>
-        <div className="row"><b>英語条件</b><span>{job.english_level}</span></div>
-        <button onClick={() => openMap(job.location)} style={{ marginTop:12 }}>📍 Google Mapsで見る</button>
+        <div className="row"><b>{t.f_location}</b><span>{job.location}</span></div>
+        <div className="row"><b>{t.f_salary}</b><span>{job.salary}</span></div>
+        <div className="row"><b>{t.f_eng}</b><span>{job.english_level}</span></div>
+        <button onClick={() => openMap(job.location)} style={{ marginTop:12 }}>{t.view_map}</button>
 
         {showApply && (
           <div className="card" style={{ marginTop:16 }}>
-            <h3>応募メッセージ（任意）</h3>
-            <textarea value={applyMsg} onChange={e => setApplyMsg(e.target.value)} placeholder="自己紹介や希望シフトなど..." rows={4} />
+            <h3>{t.apply_msg}</h3>
+            <textarea value={applyMsg} onChange={e => setApplyMsg(e.target.value)} placeholder={t.apply_ph} rows={4} />
             <div className="actions">
-              <button className="primary" onClick={handleApply} disabled={busy}>{busy ? '応募中...' : '送信して応募'}</button>
-              <button onClick={() => setShowApply(false)}>キャンセル</button>
+              <button className="primary" onClick={handleApply} disabled={busy}>{busy ? t.applying : t.send_apply}</button>
+              <button onClick={() => setShowApply(false)}>{t.cancel}</button>
             </div>
           </div>
         )}
 
         <div className="actions" style={{ marginTop:16 }}>
-          {!showApply && (
+          {!showApply && !isClosed && (
             <button className="primary"
               onClick={() => session ? setShowApply(true) : setPage('login')}
               disabled={hasApplied(job.id)}>
-              {hasApplied(job.id) ? '✓ 応募済み' : '応募する'}
+              {hasApplied(job.id) ? t.applied_done : t.apply}
             </button>
           )}
-          <button className={isSaved(job.id) ? 'fav' : ''} onClick={() => toggleSave(job.id)}>
-            {isSaved(job.id) ? '♥ 保存済み' : '♡ 保存'}
+          <button className={isSaved(job.id)?'fav':''} onClick={() => toggleSave(job.id)}>
+            {isSaved(job.id) ? t.saved_btn : t.save}
           </button>
-          <button onClick={() => startDM(job)}>💬 DMする</button>
+          {!isClosed && <button onClick={() => startDM(job)}>{t.dm_btn}</button>}
         </div>
       </section>
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
-//  PostJob — ログイン必須に修正
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
+//  PostJob
+// ═════════════════════════════════════════════
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'' }
 
 function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
+  const { t } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  // ログイン必須ガード
-  if (!session) {
-    return (
-      <main style={{ textAlign:'center', paddingTop:60 }}>
-        <p style={{ fontSize:48 }}>🔒</p>
-        <h2>求人投稿にはログインが必要です</h2>
-        <p className="muted" style={{ marginBottom:20 }}>Googleアカウントでログインして求人を投稿してください。</p>
-        <button className="primary" onClick={signInGoogle}>Googleでログイン</button>
-        <br />
-        <button style={{ marginTop:12, background:'transparent', color:'#64748b' }} onClick={() => setPage('jobs')}>← 求人一覧へ戻る</button>
-      </main>
-    )
-  }
+  if (!session) return (
+    <main style={{ textAlign:'center', paddingTop:60 }}>
+      <p style={{ fontSize:48 }}>🔒</p>
+      <h2>{t.post_login_title}</h2>
+      <p className="muted" style={{ marginBottom:20 }}>{t.post_login_desc}</p>
+      <button className="primary" onClick={signInGoogle}>{t.login_google}</button>
+      <br />
+      <button style={{ marginTop:12, background:'transparent', color:'#64748b' }} onClick={() => setPage('jobs')}>← {t.nav_jobs}</button>
+    </main>
+  )
 
-  function update(k, v) { setJob(p => ({ ...p, [k]: v })) }
+  function update(k, v) { setJob(p => ({ ...p, [k]:v })) }
 
   async function uploadImage() {
     if (!file) return job.image_url
@@ -453,88 +665,130 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
   }
 
   async function submit() {
-    if (!job.title || !job.company) { notify('求人タイトルと店名は必須です。'); return }
+    if (!job.title || !job.company) { notify(t.required_err); return }
     setBusy(true)
     try {
       const image_url = await uploadImage()
-      const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by: session.user.id }])
+      const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
       if (error) throw error
-      notify('求人を保存しました。')
-      setJob(emptyJob); setFile(null)
-      await loadJobs()
-      setPage('jobs')
-    } catch (e) { notify('保存できません: ' + e.message) }
+      notify(t.job_saved); setJob(emptyJob); setFile(null)
+      await loadJobs(); setPage('jobs')
+    } catch(e) { notify(e.message) }
     finally { setBusy(false) }
   }
 
   return (
     <main>
-      <h1>求人を投稿する</h1>
+      <h1>{t.post_title}</h1>
       <section className="card form">
-        <label>求人タイトル *<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
-        <label>店名 *<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
-        <label>場所<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
-        <label>時給<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
-        <label>英語条件
+        <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
+        <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
+        <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
+        <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
+        <label>{t.f_eng}
           <select value={job.english_level} onChange={e => update('english_level', e.target.value)}>
-            <option>英語初級OK</option><option>英語ほぼ不要</option><option>Intermediate以上</option>
+            <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
           </select>
         </label>
-        <label>仕事内容<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder="仕事内容、勤務時間、条件など" /></label>
-        <label>画像<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
-        <button className="primary" onClick={submit} disabled={busy}>{busy ? '保存中...' : '保存する'}</button>
+        <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder="仕事内容、勤務時間、条件など..." /></label>
+        <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+        <button className="primary" onClick={submit} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
       </section>
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
-//  Staff — 実データ化
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
+//  EditJobModal
+// ═════════════════════════════════════════════
+function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData }) {
+  const { t } = useT()
+  const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:job.english_level||'英語初級OK', description:job.description||'' })
+  const [file, setFile] = useState(null)
+  const [busy, setBusy] = useState(false)
+  function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
+
+  async function save() {
+    if (!form.title || !form.company) { notify(t.required_err); return }
+    setBusy(true)
+    try {
+      let image_url = job.image_url
+      if (file) {
+        const ext  = file.name.split('.').pop()
+        const path = `jobs/${Date.now()}.${ext}`
+        const { error:upErr } = await supabase.storage.from('job-images').upload(path, file)
+        if (upErr) throw upErr
+        image_url = supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
+      }
+      const { error } = await supabase.from('jobs').update({ ...form, image_url }).eq('id', job.id)
+      if (error) throw error
+      notify(t.job_saved); await loadJobs(); await loadUserData(); onClose()
+    } catch(e) { notify(e.message) }
+    finally { setBusy(false) }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+          <h2 style={{ margin:0 }}>{t.edit_title}</h2>
+          <button onClick={onClose} style={{ fontSize:20, padding:'4px 10px' }}>×</button>
+        </div>
+        <div className="form">
+          <label>{t.f_title}<input value={form.title} onChange={e => upd('title', e.target.value)} /></label>
+          <label>{t.f_company}<input value={form.company} onChange={e => upd('company', e.target.value)} /></label>
+          <label>{t.f_location}<input value={form.location} onChange={e => upd('location', e.target.value)} /></label>
+          <label>{t.f_salary}<input value={form.salary} onChange={e => upd('salary', e.target.value)} /></label>
+          <label>{t.f_eng}
+            <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
+              <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
+            </select>
+          </label>
+          <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
+          <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+          <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ═════════════════════════════════════════════
+//  Staff
+// ═════════════════════════════════════════════
 function Staff({ setPage, session, startStaffDM }) {
+  const { t } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
 
   useEffect(() => {
     supabase.from('profiles').select('*')
       .not('display_name', 'is', null)
-      .order('updated_at', { ascending: false })
-      .limit(40)
+      .order('updated_at', { ascending:false }).limit(40)
       .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
   }, [])
 
   return (
     <main>
-      <h1>スタッフを探す</h1>
-      <p className="muted" style={{ marginBottom:16 }}>シドニーで働くスタッフ候補を探せます。</p>
-      {loading && <p className="muted" style={{ textAlign:'center', padding:40 }}>読み込み中...</p>}
-      {!loading && !staffList.length && (
-        <div className="empty">スタッフ登録がまだありません。<br />プロフィールを設定するとここに表示されます。</div>
-      )}
+      <h1>{t.find_staff}</h1>
+      <p className="muted" style={{ marginBottom:16 }}>{t.staff_desc}</p>
+      {loading && <SkeletonGrid />}
+      {!loading && !staffList.length && <div className="empty">{t.no_staff}</div>}
       <div className="grid">
         {staffList.map(s => (
           <article className="job" key={s.id} style={{ cursor:'default' }}>
             <div className="photo">
-              {s.avatar_url
-                ? <img src={s.avatar_url} alt={s.display_name} />
-                : <span style={{ fontSize:54 }}>👤</span>}
+              {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
             {s.english_level && <p className="muted">🗣 {s.english_level}</p>}
             {s.availability   && <p className="muted">📅 {s.availability}</p>}
-            {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>🛂 ビザ期限: {s.visa_expiry}</p>}
-            {s.bio && (
-              <p className="muted" style={{ fontSize:13, marginTop:6 }}>
-                {s.bio.slice(0, 80)}{s.bio.length > 80 ? '…' : ''}
-              </p>
-            )}
-            <div className="tags">
-              {s.english_level && <span>{s.english_level}</span>}
-            </div>
-            <button className="primary" onClick={() => {
-              if (!session) { setPage('login'); return }
-              startStaffDM(s.id, s.display_name || 'スタッフ')
-            }}>💬 連絡する</button>
+            {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
+            {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
+            <div className="tags">{s.english_level && <span>{s.english_level}</span>}</div>
+            <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
+              {t.contact}
+            </button>
           </article>
         ))}
       </div>
@@ -542,45 +796,45 @@ function Staff({ setPage, session, startStaffDM }) {
   )
 }
 
-// ─────────────────────────────────────────────
-//  DM リスト
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
+//  DM
+// ═════════════════════════════════════════════
 function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) {
-  if (!session) {
-    return (
-      <main style={{ textAlign:'center', paddingTop:40 }}>
-        <p style={{ fontSize:40 }}>💬</p>
-        <h2>DMを使うにはログインが必要です</h2>
-        <button className="primary" style={{ marginTop:16 }} onClick={signInGoogle}>Googleでログイン</button>
-      </main>
-    )
-  }
+  const { t, lang } = useT()
+  if (!session) return (
+    <main style={{ textAlign:'center', paddingTop:40 }}>
+      <p style={{ fontSize:40 }}>💬</p>
+      <h2>{t.dm_login_title}</h2>
+      <button className="primary" style={{ marginTop:16 }} onClick={signInGoogle}>{t.login_google}</button>
+    </main>
+  )
   return (
     <main>
-      <h1>DM</h1>
+      <h1>{t.dm_title}</h1>
       {!conversations.length && (
-        <div className="empty">まだDMはありません。<br />求人詳細ページから「DMする」を押してみましょう。</div>
+        <div className="empty">{t.no_dm}<br /><small>{t.no_dm_hint}</small></div>
       )}
       {conversations.map(c => (
         <div className="dm" key={c.id} onClick={() => { setActiveConvId(c.id); setPage('chat') }}>
-          <div className="avatar">{c.job_title === 'スタッフ' ? '👤' : '🏪'}</div>
+          <div className="avatar">{c.job_title==='Staff'?'👤':'🏪'}</div>
           <div style={{ flex:1, minWidth:0 }}>
             <b>{c.company_name || 'Unknown'}</b>
             <p className="muted" style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-              {c.last_message || c.job_title || 'メッセージを送ってみましょう'}
+              {c.last_message || c.job_title || t.first_msg}
             </p>
           </div>
-          <small className="muted">{c.last_message_at ? fmt(c.last_message_at) : ''}</small>
+          <small className="muted">{c.last_message_at ? fmt(c.last_message_at, lang) : ''}</small>
         </div>
       ))}
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  Chat
-// ─────────────────────────────────────────────
-function Chat({ convId, setPage, session, conversations, setConversations, notify }) {
+// ═════════════════════════════════════════════
+function Chat({ convId, setPage, session, conversations, setConversations, notify, markConvRead, lang }) {
+  const { t } = useT()
   const [messages, setMessages] = useState([])
   const [text,     setText]     = useState('')
   const [busy,     setBusy]     = useState(false)
@@ -591,8 +845,8 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
   useEffect(() => {
     if (!convId) return
     loadMessages()
-    const ch = supabase.channel('chat-' + convId)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` },
+    const ch = supabase.channel('chat-'+convId)
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:`conversation_id=eq.${convId}` },
         payload => setMessages(p => [...p, payload.new]))
       .subscribe()
     return () => supabase.removeChannel(ch)
@@ -603,71 +857,71 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
   async function loadMessages() {
     setLoading(true)
     const { data } = await supabase.from('messages').select('*')
-      .eq('conversation_id', convId).order('created_at', { ascending: true })
+      .eq('conversation_id', convId).order('created_at', { ascending:true })
     if (data) setMessages(data)
     setLoading(false)
+    markConvRead(convId)
   }
 
   async function send() {
     if (!text.trim() || busy || !session) return
     setBusy(true)
-    const msg = text.trim()
-    setText('')
+    const msg = text.trim(); setText('')
     const { error } = await supabase.from('messages')
-      .insert({ conversation_id: convId, sender_id: session.user.id, text: msg })
-    if (error) { notify('送信できません: ' + error.message); setText(msg) }
+      .insert({ conversation_id:convId, sender_id:session.user.id, text:msg })
+    if (error) { notify(error.message); setText(msg) }
     else {
       const now = new Date().toISOString()
-      await supabase.from('conversations').update({ last_message: msg, last_message_at: now }).eq('id', convId)
-      setConversations(p => p.map(c => c.id === convId ? { ...c, last_message: msg, last_message_at: now } : c))
+      await supabase.from('conversations').update({ last_message:msg, last_message_at:now }).eq('id', convId)
+      setConversations(p => p.map(c => c.id===convId ? { ...c, last_message:msg, last_message_at:now } : c))
     }
     setBusy(false)
   }
 
-  function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }
+  function handleKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send() } }
 
-  if (!conv) return <main><button onClick={() => setPage('dm')}>← 戻る</button><p>トークが見つかりません。</p></main>
+  if (!conv) return <main><button onClick={() => setPage('dm')}>{t.back_dm}</button><p>Not found.</p></main>
 
   return (
     <main style={{ paddingBottom:80 }}>
-      <button onClick={() => setPage('dm')}>← DM一覧へ戻る</button>
+      <button onClick={() => setPage('dm')}>{t.back_dm}</button>
       <section className="chat card">
         <div className="chatHead">
-          <div className="avatar">{conv.job_title === 'スタッフ' ? '👤' : '🏪'}</div>
+          <div className="avatar">{conv.job_title==='Staff'?'👤':'🏪'}</div>
           <div><b>{conv.company_name}</b><p className="muted">{conv.job_title}</p></div>
         </div>
         <div className="bubbles">
-          {loading && <p className="muted" style={{ textAlign:'center' }}>読み込み中...</p>}
-          {!loading && !messages.length && (
-            <p className="muted" style={{ textAlign:'center', marginTop:40 }}>最初のメッセージを送ってみましょう 👋</p>
-          )}
+          {loading && <p className="muted" style={{ textAlign:'center' }}>{t.loading}</p>}
+          {!loading && !messages.length && <p className="muted" style={{ textAlign:'center', marginTop:40 }}>{t.first_msg}</p>}
           {messages.map(m => (
-            <div key={m.id} className={'bubble ' + (m.sender_id === session?.user?.id ? 'me' : 'them')}>
-              {m.text}<small>{fmt(m.created_at)}</small>
+            <div key={m.id} className={'bubble '+(m.sender_id===session?.user?.id?'me':'them')}>
+              {m.text}<small>{fmt(m.created_at, lang)}</small>
             </div>
           ))}
           <div ref={bottomRef} />
         </div>
         <div className="compose">
-          <input value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKey} placeholder="メッセージを入力" />
-          <button className="primary" onClick={send} disabled={busy || !text.trim()}>送信</button>
+          <input value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKey} placeholder={t.type_msg} />
+          <button className="primary" onClick={send} disabled={busy||!text.trim()}>{t.send}</button>
         </div>
       </section>
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
-//  Profile — アバターアップロード＋採用ダッシュボード追加
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
+//  Profile
+// ═════════════════════════════════════════════
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
-                   applications, jobs, isSaved, openJob, savedJobIds, postedJobs, updateAppStatus }) {
-  const [form, setForm] = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'' })
-  const [busy,         setBusy]         = useState(false)
-  const [tab,          setTab]          = useState('profile')
-  const [avatarFile,   setAvatarFile]   = useState(null)
-  const [avatarPreview,setAvatarPreview]= useState(null)
-  const [expandedJob,  setExpandedJob]  = useState(null)
+                   applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
+                   updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
+  const { t } = useT()
+  const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'' })
+  const [busy, setBusy]       = useState(false)
+  const [tab,  setTab]        = useState('profile')
+  const [avatarFile, setAvatarFile]     = useState(null)
+  const [avatarPreview, setAvatarPreview] = useState(null)
+  const [expandedJob, setExpandedJob]   = useState(null)
 
   useEffect(() => {
     if (profile) setForm({
@@ -679,39 +933,31 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     })
   }, [profile])
 
-  function upd(k, v) { setForm(p => ({ ...p, [k]: v })) }
-
+  function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
   function handleAvatarChange(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setAvatarFile(file)
-    setAvatarPreview(URL.createObjectURL(file))
+    const f = e.target.files?.[0]; if (!f) return
+    setAvatarFile(f); setAvatarPreview(URL.createObjectURL(f))
   }
 
   async function uploadAvatar() {
     if (!avatarFile || !session) return profile?.avatar_url || null
     const ext  = avatarFile.name.split('.').pop()
     const path = `${session.user.id}/avatar.${ext}`
-    const { error } = await supabase.storage.from('avatars').upload(path, avatarFile, { upsert: true })
+    const { error } = await supabase.storage.from('avatars').upload(path, avatarFile, { upsert:true })
     if (error) throw error
     return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl
   }
 
   async function save() {
-    if (!session) return
-    setBusy(true)
+    if (!session) return; setBusy(true)
     try {
       const avatar_url = await uploadAvatar()
-      const updates = { id: session.user.id, ...form, updated_at: new Date().toISOString() }
+      const updates = { id:session.user.id, ...form, updated_at:new Date().toISOString() }
       if (avatar_url) updates.avatar_url = avatar_url
       const { data, error } = await supabase.from('profiles').upsert(updates).select().single()
       if (error) throw error
-      setProfile(data)
-      setAvatarFile(null)
-      notify('プロフィールを保存しました！')
-    } catch (e) {
-      notify('保存できません: ' + e.message)
-    }
+      setProfile(data); setAvatarFile(null); notify(t.toast_profile)
+    } catch(e) { notify(e.message) }
     setBusy(false)
   }
 
@@ -719,37 +965,37 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   const savedJobs   = jobs.filter(j => savedJobIds.includes(j.id))
   const currentAvatar = avatarPreview || profile?.avatar_url
 
-  if (!session) {
-    return (
-      <main style={{ textAlign:'center', paddingTop:60 }}>
-        <p style={{ fontSize:56 }}>👤</p>
-        <h2>ログインしてプロフィールを作成</h2>
-        <p className="muted">求人保存・応募履歴がここに表示されます。</p>
-        <button className="primary" style={{ marginTop:20 }} onClick={signInGoogle}>Googleでログイン</button>
-      </main>
-    )
-  }
+  if (!session) return (
+    <main style={{ textAlign:'center', paddingTop:60 }}>
+      <p style={{ fontSize:56 }}>👤</p>
+      <h2>{t.login_profile}</h2>
+      <p className="muted">{t.login_profile_desc}</p>
+      <button className="primary" style={{ marginTop:20 }} onClick={signInGoogle}>{t.login_google}</button>
+    </main>
+  )
 
   const TABS = [
-    ['profile', 'プロフィール'],
-    ['applied', '応募履歴'],
-    ['saved',   '保存済み'],
-    ['posted',  `投稿した求人${postedJobs.length ? ` (${postedJobs.length})` : ''}`],
+    ['profile', t.tab_profile],
+    ['applied', t.tab_applied],
+    ['saved',   t.tab_saved],
+    ['posted',  t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
   ]
+
+  const statusStyle = st => ({
+    padding:'6px 12px', borderRadius:999, fontSize:13, fontWeight:800,
+    background: st==='accepted'?'#dcfce7':st==='rejected'?'#fee2e2':'#dbeafe',
+    color:      st==='accepted'?'#16a34a':st==='rejected'?'#dc2626':'#1d4ed8',
+  })
 
   return (
     <main>
-      <section className="hero" style={{ alignItems:'flex-start', flexDirection:'column', gap:12 }}>
+      <section className="hero" style={{ flexDirection:'column', alignItems:'flex-start', gap:12 }}>
         <div style={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center' }}>
-          <div>
-            <h1>{form.display_name || 'プロフィール'}</h1>
-            <p className="muted">{session.user.email}</p>
-          </div>
-          <button onClick={signOut} style={{ background:'#fee2e2', color:'#be123c', padding:'10px 16px' }}>ログアウト</button>
+          <div><h1>{form.display_name || t.tab_profile}</h1><p className="muted">{session.user.email}</p></div>
+          <button onClick={signOut} style={{ background:'#fee2e2', color:'#be123c', padding:'10px 16px' }}>{t.logout}</button>
         </div>
       </section>
 
-      {/* タブ */}
       <div style={{ display:'flex', gap:4, margin:'16px 0 0', borderBottom:'2px solid #e2e8f0', overflowX:'auto' }}>
         {TABS.map(([key, label]) => (
           <button key={key} onClick={() => setTab(key)} style={{
@@ -763,59 +1009,45 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       {/* ── プロフィール編集 ── */}
       {tab === 'profile' && (
         <section className="card form" style={{ marginTop:16 }}>
-          {/* アバター */}
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10 }}>
             <div className="avatar" style={{ width:96, height:96, fontSize:36, cursor:'pointer' }}
               onClick={() => document.getElementById('avatarInput').click()}>
               {currentAvatar
-                ? <img src={currentAvatar} style={{ width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover' }} alt="avatar" />
+                ? <img src={currentAvatar} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="avatar" />
                 : (form.display_name?.[0]?.toUpperCase() || 'U')}
             </div>
             <input id="avatarInput" type="file" accept="image/*" style={{ display:'none' }} onChange={handleAvatarChange} />
-            <button style={{ fontSize:13, padding:'8px 16px' }} onClick={() => document.getElementById('avatarInput').click()}>
-              📷 写真を変更
-            </button>
-            {avatarPreview && <p className="muted" style={{ fontSize:12 }}>保存するまで反映されません</p>}
+            <button style={{ fontSize:13, padding:'8px 16px' }} onClick={() => document.getElementById('avatarInput').click()}>{t.change_photo}</button>
+            {avatarPreview && <p className="muted" style={{ fontSize:12 }}>{t.photo_pending}</p>}
           </div>
-
-          <label>名前<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
-          <label>英語レベル
+          <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
+          <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
               <option>Basic</option><option>Pre-intermediate</option><option>Intermediate</option>
               <option>Upper-intermediate</option><option>Advanced</option>
             </select>
           </label>
-          <label>勤務可能日<input value={form.availability} onChange={e => upd('availability', e.target.value)} placeholder="Wed, Thu, Fri, Sat" /></label>
-          <label>ビザ期限<input type="date" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} /></label>
-          <label>自己紹介<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
-          <button className="primary" onClick={save} disabled={busy}>{busy ? '保存中...' : '保存する'}</button>
+          <label>{t.f_avail}<input value={form.availability} onChange={e => upd('availability', e.target.value)} placeholder="Wed, Thu, Fri, Sat" /></label>
+          <label>{t.f_visa}<input type="date" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} /></label>
+          <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
+          <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </section>
       )}
 
       {/* ── 応募履歴 ── */}
       {tab === 'applied' && (
         <div style={{ marginTop:16 }}>
-          {!appliedJobs.length
-            ? <div className="empty">まだ応募した求人はありません。</div>
+          {!appliedJobs.length ? <div className="empty">{t.no_applied}</div>
             : appliedJobs.map(j => {
               const app = applications.find(a => a.job_id === j.id)
               return (
                 <div key={j.id} className="dm" onClick={() => openJob(j)} style={{ cursor:'pointer' }}>
                   <div className="avatar" style={{ fontSize:24 }}>
-                    {j.image_url
-                      ? <img src={j.image_url} style={{ width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover' }} alt="" />
-                      : '💼'}
+                    {j.image_url ? <img src={j.image_url} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="" /> : '💼'}
                   </div>
-                  <div style={{ flex:1 }}>
-                    <b>{j.company}</b>
-                    <p className="muted">{j.title}</p>
-                  </div>
-                  <span style={{
-                    padding:'6px 12px', borderRadius:999, fontSize:13, fontWeight:800,
-                    background: app?.status==='accepted' ? '#dcfce7' : app?.status==='rejected' ? '#fee2e2' : '#dbeafe',
-                    color:      app?.status==='accepted' ? '#16a34a' : app?.status==='rejected' ? '#dc2626' : '#1d4ed8',
-                  }}>
-                    {app?.status==='accepted' ? '✓ 採用' : app?.status==='rejected' ? '✗ 不採用' : '⏳ 審査中'}
+                  <div style={{ flex:1 }}><b>{j.company}</b><p className="muted">{j.title}</p></div>
+                  <span style={statusStyle(app?.status)}>
+                    {app?.status==='accepted'?t.b_accepted:app?.status==='rejected'?t.b_rejected:t.b_pending}
                   </span>
                 </div>
               )
@@ -827,8 +1059,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       {/* ── 保存済み ── */}
       {tab === 'saved' && (
         <div style={{ marginTop:16 }}>
-          {!savedJobs.length
-            ? <div className="empty">まだ保存した求人はありません。</div>
+          {!savedJobs.length ? <div className="empty">{t.no_saved_jobs}</div>
             : <JobGrid jobs={savedJobs} openJob={openJob} isSaved={() => true} toggleSave={() => {}} />}
         </div>
       )}
@@ -837,90 +1068,79 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       {tab === 'posted' && (
         <div style={{ marginTop:16 }}>
           {!postedJobs.length
-            ? (
-              <div className="empty">
-                まだ求人を投稿していません。
-                <br />
-                <button className="primary" style={{ marginTop:14 }} onClick={() => setPage('post')}>
-                  求人を投稿する
-                </button>
-              </div>
-            )
+            ? <div className="empty">{t.no_posted}<br /><button className="primary" style={{ marginTop:14 }} onClick={() => setPage('post')}>{t.post_first}</button></div>
             : postedJobs.map(j => {
-              const appCount = (j.applications || []).length
+              const appCount = (j.applications||[]).length
+              const isClosed = j.is_active === false
               return (
                 <div key={j.id} className="card" style={{ marginBottom:16 }}>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:12 }}>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <h3 style={{ margin:'0 0 4px' }}>{j.company} — {j.title}</h3>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+                        <h3 style={{ margin:0 }}>{j.company} — {j.title}</h3>
+                        <span style={{ padding:'3px 10px', borderRadius:999, fontSize:12, fontWeight:800,
+                          background:isClosed?'#fee2e2':'#dcfce7', color:isClosed?'#be123c':'#16a34a' }}>
+                          {isClosed ? t.badge_closed : t.badge_active}
+                        </span>
+                      </div>
                       <p className="muted" style={{ fontSize:14 }}>{j.location} / {j.salary}</p>
                     </div>
                     <span style={{ background:'#dbeafe', color:'#1d4ed8', padding:'6px 12px', borderRadius:999, fontSize:13, fontWeight:800, whiteSpace:'nowrap', flexShrink:0 }}>
-                      応募 {appCount}件
+                      {t.apps_count} {appCount}{t.parts}
                     </span>
                   </div>
 
-                  <button style={{ marginTop:12, fontSize:13, padding:'8px 14px' }}
-                    onClick={() => setExpandedJob(expandedJob === j.id ? null : j.id)}>
-                    {expandedJob === j.id ? '▲ 閉じる' : `▼ 応募者を見る (${appCount})`}
-                  </button>
+                  {/* 操作ボタン */}
+                  <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginTop:12 }}>
+                    <button style={{ fontSize:13, padding:'8px 14px' }}
+                      onClick={() => setExpandedJob(expandedJob===j.id ? null : j.id)}>
+                      {expandedJob===j.id ? t.close_apps : `${t.view_apps} (${appCount})`}
+                    </button>
+                    <button style={{ fontSize:13, padding:'8px 14px' }} onClick={() => setEditingJob(j)}>{t.edit_job}</button>
+                    <button style={{ fontSize:13, padding:'8px 14px', background:isClosed?'#dcfce7':'#fef9c3', color:isClosed?'#16a34a':'#a16207' }}
+                      onClick={() => toggleJobStatus(j.id, !isClosed)}>
+                      {isClosed ? t.reopen_job : t.close_job}
+                    </button>
+                    <button style={{ fontSize:13, padding:'8px 14px', background:'#fee2e2', color:'#be123c' }}
+                      onClick={() => deleteJob(j.id)}>{t.delete_job}</button>
+                  </div>
 
+                  {/* 応募者一覧 */}
                   {expandedJob === j.id && (
                     <div style={{ marginTop:12 }}>
-                      {!appCount
-                        ? <p className="muted" style={{ padding:'12px 0' }}>まだ応募者はいません。</p>
-                        : (j.applications || []).map(app => {
+                      {!appCount ? <p className="muted" style={{ padding:'12px 0' }}>{t.no_apps}</p>
+                        : (j.applications||[]).map(app => {
                           const p = app.profiles || {}
                           return (
                             <div key={app.id} style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:16, padding:14, marginBottom:10 }}>
                               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
                                 <div className="avatar" style={{ width:42, height:42, fontSize:16 }}>
                                   {p.avatar_url
-                                    ? <img src={p.avatar_url} style={{ width:'100%', height:'100%', borderRadius:'50%', objectFit:'cover' }} alt="" />
+                                    ? <img src={p.avatar_url} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="" />
                                     : (p.display_name?.[0]?.toUpperCase() || '?')}
                                 </div>
                                 <div style={{ flex:1, minWidth:0 }}>
-                                  <b>{p.display_name || '匿名'}</b>
+                                  <b>{p.display_name || 'Anonymous'}</b>
                                   <p className="muted" style={{ fontSize:12, margin:0 }}>
-                                    英語: {p.english_level || '未設定'} ／ 勤務可: {p.availability || '未設定'}
+                                    {p.english_level||t.not_set} ／ {p.availability||t.not_set}
                                   </p>
                                 </div>
-                                <span style={{
-                                  padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:800, flexShrink:0,
-                                  background: app.status==='accepted' ? '#dcfce7' : app.status==='rejected' ? '#fee2e2' : '#dbeafe',
-                                  color:      app.status==='accepted' ? '#16a34a' : app.status==='rejected' ? '#dc2626' : '#1d4ed8',
-                                }}>
-                                  {app.status==='accepted' ? '採用' : app.status==='rejected' ? '不採用' : '審査中'}
+                                <span style={statusStyle(app.status)}>
+                                  {app.status==='accepted'?t.st_accepted:app.status==='rejected'?t.st_rejected:t.st_pending}
                                 </span>
                               </div>
-
                               {app.message && (
                                 <p style={{ fontSize:14, color:'#334155', background:'#fff', border:'1px solid #e2e8f0', borderRadius:10, padding:'8px 12px', margin:'8px 0' }}>
                                   "{app.message}"
                                 </p>
                               )}
-                              {p.bio && (
-                                <p className="muted" style={{ fontSize:13, marginBottom:10 }}>
-                                  {p.bio.slice(0,120)}{p.bio.length > 120 ? '…' : ''}
-                                </p>
-                              )}
-                              {p.visa_expiry && (
-                                <p className="muted" style={{ fontSize:12, marginBottom:8 }}>🛂 ビザ期限: {p.visa_expiry}</p>
-                              )}
-
+                              {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:10 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
+                              {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>{t.visa_lbl} {p.visa_expiry}</p>}
                               <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                                <button
-                                  style={{ background:'#dcfce7', color:'#16a34a', fontSize:13, padding:'8px 16px' }}
-                                  onClick={() => updateAppStatus(app.id, 'accepted')}
-                                  disabled={app.status === 'accepted'}>
-                                  ✓ 採用する
-                                </button>
-                                <button
-                                  style={{ background:'#fee2e2', color:'#dc2626', fontSize:13, padding:'8px 16px' }}
-                                  onClick={() => updateAppStatus(app.id, 'rejected')}
-                                  disabled={app.status === 'rejected'}>
-                                  ✗ 不採用
-                                </button>
+                                <button style={{ background:'#dcfce7', color:'#16a34a', fontSize:13, padding:'8px 16px' }}
+                                  onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
+                                <button style={{ background:'#fee2e2', color:'#dc2626', fontSize:13, padding:'8px 16px' }}
+                                  onClick={() => updateAppStatus(app.id, 'rejected')} disabled={app.status==='rejected'}>{t.reject}</button>
                               </div>
                             </div>
                           )
@@ -932,18 +1152,43 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
               )
             })
           }
-          <button className="primary" style={{ marginTop:4 }} onClick={() => setPage('post')}>＋ 新しい求人を投稿</button>
+          <button className="primary" style={{ marginTop:4 }} onClick={() => setPage('post')}>{t.post_new}</button>
         </div>
       )}
     </main>
   )
 }
 
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 //  Utilities
-// ─────────────────────────────────────────────
+// ═════════════════════════════════════════════
 function Section({ title, children }) {
   return <section><h2 className="sectionTitle">{title}</h2>{children}</section>
+}
+
+function SkeletonGrid() {
+  return (
+    <div className="grid">
+      {[1,2,3,4].map(i => (
+        <div key={i} className="job skeleton-card">
+          <div className="skeleton" style={{ height:176, borderRadius:22 }} />
+          <div className="skeleton" style={{ height:20, width:'70%', marginTop:16 }} />
+          <div className="skeleton" style={{ height:14, width:'50%', marginTop:8 }} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function GoogleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 48 48">
+      <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.5 33.7 29.2 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.6 20-21 0-1.3-.1-2.7-.4-4z"/>
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 16.3 3 9.7 7.9 6.3 14.7z"/>
+      <path fill="#4CAF50" d="M24 45c5.2 0 10-1.9 13.7-5.1L31.5 35C29.5 36.6 27 37.5 24 37.5c-5.2 0-9.5-3.3-11.3-7.9L6 34.4C9.3 40.5 16.1 45 24 45z"/>
+      <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.6-2.7 4.7-5 6L36.7 38C40.9 34.2 44 29.4 44 24c0-1.3-.1-2.7-.4-4z"/>
+    </svg>
+  )
 }
 
 createRoot(document.getElementById('root')).render(<App />)
