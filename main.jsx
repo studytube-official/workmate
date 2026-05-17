@@ -186,8 +186,8 @@ function App() {
         } else if (data?.session) {
           setSession(data.session)
           loadUserData(data.session.user.id)
+          setPage('home')  // ログイン後はホームへ
         }
-        // ?code= をURLから削除してリフレッシュループを防ぐ
         window.history.replaceState({}, document.title, window.location.pathname)
       })
       return
@@ -199,8 +199,13 @@ function App() {
     })
     const { data:{ subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s)
-      if (s) loadUserData(s.user.id)
-      else { setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([]) }
+      if (s) {
+        loadUserData(s.user.id)
+        // ログインページにいる場合はホームへリダイレクト
+        setPage(p => p === 'login' ? 'home' : p)
+      } else {
+        setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
+      }
     })
     return () => subscription.unsubscribe()
   }, [])
