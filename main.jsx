@@ -176,6 +176,23 @@ function App() {
 
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
+    // PKCE: URLに ?code= がある場合は明示的にコード交換してセッションを取得
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+        if (error) {
+          console.error('Code exchange error:', error)
+        } else if (data?.session) {
+          setSession(data.session)
+          loadUserData(data.session.user.id)
+        }
+        // ?code= をURLから削除してリフレッシュループを防ぐ
+        window.history.replaceState({}, document.title, window.location.pathname)
+      })
+      return
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
       if (data.session) loadUserData(data.session.user.id)
