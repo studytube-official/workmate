@@ -61,6 +61,14 @@ const T = {
     login_google:'Googleでログイン', guest:'← ゲストとして続ける',
     login_profile:'ログインしてプロフィールを作成',
     login_profile_desc:'求人保存・応募履歴がここに表示されます。',
+    signup_tab:'新規登録', login_tab:'ログイン',
+    f_email:'メールアドレス', f_password:'パスワード', f_displayname:'名前（表示名）',
+    signup_btn:'アカウントを作成', login_btn:'ログイン',
+    or_google:'または',
+    err_required:'名前・メール・パスワードを入力してください',
+    err_password_short:'パスワードは6文字以上にしてください',
+    signup_ok:'アカウントを作成しました！',
+    check_email:'確認メールを送信しました。メールのリンクをクリックしてください。',
     toast_login:'ログインが必要です', toast_applied_already:'すでに応募済みです',
     toast_applied_ok:'応募しました！', toast_logout:'ログアウトしました',
     toast_profile:'プロフィールを保存しました！',
@@ -125,6 +133,14 @@ const T = {
     login_google:'Sign in with Google', guest:'← Continue as guest',
     login_profile:'Log in to create your profile',
     login_profile_desc:'View saved jobs and application history here.',
+    signup_tab:'Sign Up', login_tab:'Log In',
+    f_email:'Email', f_password:'Password', f_displayname:'Display Name',
+    signup_btn:'Create Account', login_btn:'Log In',
+    or_google:'or',
+    err_required:'Please fill in name, email and password',
+    err_password_short:'Password must be at least 6 characters',
+    signup_ok:'Account created!',
+    check_email:'Check your email and click the confirmation link.',
     toast_login:'Login required', toast_applied_already:'Already applied',
     toast_applied_ok:'Application sent!', toast_logout:'Logged out',
     toast_profile:'Profile saved!',
@@ -436,7 +452,7 @@ function App() {
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
       {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
       {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
-      {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} />}
+      {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
@@ -460,17 +476,100 @@ function App() {
 // ═════════════════════════════════════════════
 //  Login
 // ═════════════════════════════════════════════
-function Login({ signInGoogle, setPage }) {
+function Login({ signInGoogle, setPage, notify }) {
   const { t } = useT()
+  const [tab,      setTab]      = useState('signup')
+  const [name,     setName]     = useState('')
+  const [email,    setEmail]    = useState('')
+  const [password, setPassword] = useState('')
+  const [busy,     setBusy]     = useState(false)
+  const [done,     setDone]     = useState(false)
+
+  async function handleSignup() {
+    if (!name.trim() || !email.trim() || !password) { notify(t.err_required); return }
+    if (password.length < 6) { notify(t.err_password_short); return }
+    setBusy(true)
+    const { error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: name } }
+    })
+    setBusy(false)
+    if (error) { notify(error.message); return }
+    setDone(true)
+  }
+
+  async function handleLogin() {
+    if (!email.trim() || !password) { notify(t.err_required); return }
+    setBusy(true)
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setBusy(false)
+    if (error) { notify(error.message) }
+    // 成功時は onAuthStateChange が page を切り替える
+  }
+
+  if (done) return (
+    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', gap:16, textAlign:'center', padding:'0 24px' }}>
+      <div style={{ fontSize:56 }}>📧</div>
+      <h2>{t.signup_ok}</h2>
+      <p className="muted">{t.check_email}</p>
+      <button onClick={() => setDone(false)} style={{ marginTop:8 }}>{t.login_tab}</button>
+    </main>
+  )
+
   return (
-    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', gap:24 }}>
-      <div style={{ fontSize:56 }}>🤝</div>
-      <h1 style={{ textAlign:'center' }}>{t.login_title}</h1>
-      <p className="muted" style={{ textAlign:'center' }}>{t.login_sub}</p>
-      <button className="primary" style={{ width:'100%', maxWidth:320, fontSize:18, padding:'16px 24px', display:'flex', alignItems:'center', justifyContent:'center', gap:12 }} onClick={signInGoogle}>
-        <GoogleIcon /> {t.login_google}
-      </button>
-      <button onClick={() => setPage('home')} style={{ background:'transparent', border:'none', color:'var(--muted2)' }}>{t.guest}</button>
+    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', padding:'0 24px' }}>
+      <div style={{ width:'100%', maxWidth:380 }}>
+        <div style={{ textAlign:'center', marginBottom:28 }}>
+          <div style={{ fontSize:48, marginBottom:8 }}>🤝</div>
+          <h1 style={{ margin:'0 0 6px' }}>{t.login_title}</h1>
+          <p className="muted" style={{ margin:0 }}>{t.login_sub}</p>
+        </div>
+
+        {/* タブ */}
+        <div style={{ display:'flex', background:'var(--bg2)', borderRadius:'var(--radius)', padding:4, marginBottom:22, border:'1px solid var(--border)' }}>
+          {[['signup', t.signup_tab], ['login', t.login_tab]].map(([key, label]) => (
+            <button key={key} onClick={() => setTab(key)} style={{
+              flex:1, borderRadius:10, border:'none', padding:'10px 0', fontWeight:700, fontSize:14,
+              background: tab===key ? 'var(--bg4)' : 'transparent',
+              color: tab===key ? 'var(--text)' : 'var(--muted2)',
+              boxShadow: tab===key ? '0 1px 4px rgba(0,0,0,0.3)' : 'none',
+              transition:'all .15s'
+            }}>{label}</button>
+          ))}
+        </div>
+
+        <div className="form">
+          {tab === 'signup' && (
+            <label>{t.f_displayname}
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="山田 太郎" />
+            </label>
+          )}
+          <label>{t.f_email}
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+          </label>
+          <label>{t.f_password}
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="6文字以上" />
+          </label>
+          <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16, marginTop:4 }}
+            onClick={tab==='signup' ? handleSignup : handleLogin} disabled={busy}>
+            {busy ? '...' : tab==='signup' ? t.signup_btn : t.login_btn}
+          </button>
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0', color:'var(--muted)' }}>
+          <div style={{ flex:1, height:1, background:'var(--border)' }} />
+          <span style={{ fontSize:13 }}>{t.or_google}</span>
+          <div style={{ flex:1, height:1, background:'var(--border)' }} />
+        </div>
+
+        <button onClick={signInGoogle} style={{ width:'100%', padding:'13px', display:'flex', alignItems:'center', justifyContent:'center', gap:10, fontSize:15 }}>
+          <GoogleIcon /> {t.login_google}
+        </button>
+
+        <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:12, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
+          {t.guest}
+        </button>
+      </div>
     </main>
   )
 }
@@ -1010,11 +1109,13 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   const currentAvatar = avatarPreview || profile?.avatar_url
 
   if (!session) return (
-    <main style={{ textAlign:'center', paddingTop:60 }}>
+    <main style={{ textAlign:'center', paddingTop:60, padding:'60px 24px 0' }}>
       <p style={{ fontSize:56 }}>👤</p>
       <h2>{t.login_profile}</h2>
-      <p className="muted">{t.login_profile_desc}</p>
-      <button className="primary" style={{ marginTop:20 }} onClick={signInGoogle}>{t.login_google}</button>
+      <p className="muted" style={{ marginBottom:20 }}>{t.login_profile_desc}</p>
+      <button className="primary" style={{ padding:'14px 32px', fontSize:16 }} onClick={() => setPage('login')}>
+        {t.signup_tab} / {t.login_tab}
+      </button>
     </main>
   )
 
