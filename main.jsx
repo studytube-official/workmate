@@ -180,13 +180,14 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
         if (error) {
           console.error('Code exchange error:', error)
         } else if (data?.session) {
           setSession(data.session)
-          loadUserData(data.session.user.id)
-          setPage('home')  // ログイン後はホームへ
+          const prof = await loadUserData(data.session.user.id)
+          // 初回ログイン（名前未設定）はプロフィール設定へ、それ以外はホームへ
+          setPage(!prof?.display_name ? 'profile' : 'home')
         }
         window.history.replaceState({}, document.title, window.location.pathname)
       })
@@ -197,12 +198,14 @@ function App() {
       setSession(data.session)
       if (data.session) loadUserData(data.session.user.id)
     })
-    const { data:{ subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+    const { data:{ subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
       setSession(s)
       if (s) {
-        loadUserData(s.user.id)
-        // ログインページにいる場合はホームへリダイレクト
-        setPage(p => p === 'login' ? 'home' : p)
+        const prof = await loadUserData(s.user.id)
+        if (event === 'SIGNED_IN') {
+          // 初回ログインはプロフィール設定へ、復帰ユーザーはホームへ
+          setPage(!prof?.display_name ? 'profile' : 'home')
+        }
       } else {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
       }
@@ -230,6 +233,7 @@ function App() {
       fetchUnread(uid, convRes.data.map(c => c.id))
     }
     if (postedRes.data) setPostedJobs(postedRes.data)
+    return profRes.data  // ログイン後の遷移判定に使う
   }
 
   async function fetchUnread(uid, convIds) {
