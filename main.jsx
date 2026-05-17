@@ -423,7 +423,7 @@ function App() {
       {page === 'jobs'    && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
-      {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} />}
+      {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} />}
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
       {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
       {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
@@ -434,7 +434,10 @@ function App() {
       <nav className="bottom">
         <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
         <button className={['jobs','job','post'].includes(page)?'active':''} onClick={() => setPage('jobs')}>💼<br/><small>{t.nav_jobs}</small></button>
-        <button className={page==='staff'?'active':''} onClick={() => setPage('staff')}>👥<br/><small>{t.nav_staff}</small></button>
+        {/* 雇用主（求人投稿者）のみスタッフタブを表示 */}
+        {session && postedJobs.length > 0 && (
+          <button className={page==='staff'?'active':''} onClick={() => setPage('staff')}>👥<br/><small>{t.nav_staff}</small></button>
+        )}
         <button className={['dm','chat'].includes(page)?'active':''} onClick={() => setPage('dm')} style={{ position:'relative' }}>
           💬<br/><small>{t.nav_dm}</small>
           {unreadCount > 0 && <span className="badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
@@ -773,10 +776,24 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
 // ═════════════════════════════════════════════
 //  Staff
 // ═════════════════════════════════════════════
-function Staff({ setPage, session, startStaffDM }) {
-  const { t } = useT()
+function Staff({ setPage, session, startStaffDM, isEmployer }) {
+  const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
+
+  // 雇用主以外はアクセス不可
+  if (!session || !isEmployer) return (
+    <main>
+      <div className="empty" style={{ marginTop:40 }}>
+        <div style={{ fontSize:48, marginBottom:12 }}>🔒</div>
+        <b style={{ fontSize:18 }}>{lang === 'ja' ? '雇用主専用ページです' : 'Employers Only'}</b>
+        <p style={{ marginTop:8 }}>{lang === 'ja'
+          ? '求人を1件以上投稿すると閲覧できます。'
+          : 'Post a job listing to access this page.'}</p>
+        <button className="primary" style={{ marginTop:16 }} onClick={() => setPage('post')}>{t.quick_post}</button>
+      </div>
+    </main>
+  )
 
   useEffect(() => {
     supabase.from('profiles').select('*')
