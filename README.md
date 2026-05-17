@@ -1,29 +1,36 @@
 # WorkMate — セットアップ手順
 
-## ① ファイル配置
-
-既存の `workmate-react-v1/src/` の以下のファイルを上書き：
-
-```
-src/main.jsx   ← 完全版（Auth + Realtime DM + Applications）
-src/supabase.js ← auth設定追加
-src/style.css  ← スタイル更新
-```
+シドニーで働く留学生と雇用主をつなぐジョブマッチングアプリ。
 
 ---
 
-## ② Supabase でテーブル作成
+## ① Supabase でテーブル作成
 
 1. [Supabase Dashboard](https://supabase.com/dashboard) → プロジェクト選択
 2. 左メニュー「SQL Editor」を開く
 3. `SUPABASE_SETUP.sql` の内容を全部貼り付けて「Run」
 
 作成されるテーブル：
-- `profiles` — ユーザープロフィール（Google Auth連携）
-- `saved_jobs` — 保存した求人（localStorageから移行）
-- `applications` — 応募履歴
-- `conversations` — DMスレッド
-- `messages` — リアルタイムメッセージ
+
+| テーブル | 内容 |
+|----------|------|
+| `jobs` | 求人情報（posted_by で投稿者を紐付け）|
+| `profiles` | ユーザープロフィール（Google Auth 連携）|
+| `saved_jobs` | 保存した求人 |
+| `applications` | 応募履歴 |
+| `conversations` | DMスレッド（求人DM / スタッフDM）|
+| `messages` | リアルタイムメッセージ |
+
+---
+
+## ② ストレージバケット作成
+
+Supabase Dashboard > Storage > New bucket で **2つ** 作成：
+
+| バケット名 | Public | 用途 |
+|-----------|--------|------|
+| `job-images` | ON | 求人の写真 |
+| `avatars` | ON | プロフィール写真 |
 
 ---
 
@@ -41,16 +48,18 @@ src/style.css  ← スタイル更新
 
 ### Supabase Dashboard
 1. 左メニュー「Authentication」→「Providers」
-2. 「Google」をクリック → Enable にする
+2. 「Google」→ Enable にする
 3. Client ID と Client Secret を貼り付けて保存
 
 ---
 
 ## ④ Realtime 有効化
 
-Supabase Dashboard:
-1. 左メニュー「Database」→「Replication」
-2. `messages` テーブルと `conversations` テーブルの Realtime を **ON** にする
+Supabase Dashboard > Database > Replication で以下の3テーブルを ON：
+
+- `messages`
+- `conversations`
+- `jobs`
 
 ---
 
@@ -63,14 +72,14 @@ npm run dev
 
 ---
 
-## ⑥ Netlify deploy（クレジット回復後）
+## ⑥ Vercel / Netlify デプロイ
 
 ```bash
 npm run build
-# dist/ フォルダを Netlify にドラッグ&ドロップ
+# dist/ フォルダをデプロイ
 ```
 
-Netlify 環境変数は不要（Supabase URLとKeyはコードに含まれています）。
+環境変数不要（Supabase URLとKeyはコードに含まれています）。
 
 ---
 
@@ -78,24 +87,37 @@ Netlify 環境変数は不要（Supabase URLとKeyはコードに含まれてい
 
 | 機能 | 状態 |
 |------|------|
-| 求人一覧・詳細 | ✅ 既存 |
-| 求人投稿・画像アップロード | ✅ 既存 |
-| 検索・フィルター | ✅ 既存 |
-| Google ログイン | ✅ 新規 |
-| 求人保存（Supabase） | ✅ 新規 |
-| 応募システム | ✅ 新規 |
-| リアルタイムDM | ✅ 新規 |
-| プロフィール編集 | ✅ 新規 |
-| 応募履歴タブ | ✅ 新規 |
-| 保存済み求人タブ | ✅ 新規 |
-| プロフィール完成度 | ✅ 新規 |
+| 求人一覧・詳細 | ✅ |
+| 求人投稿（ログイン必須・posted_by 記録）| ✅ |
+| 求人画像アップロード | ✅ |
+| 検索・フィルター | ✅ |
+| Google ログイン | ✅ |
+| 求人保存 | ✅ |
+| 応募システム | ✅ |
+| リアルタイムDM（求人→企業）| ✅ バグ修正済み |
+| スタッフ→ユーザー間DM | ✅ 新機能 |
+| プロフィール編集 | ✅ |
+| プロフィール写真アップロード | ✅ 新機能 |
+| 応募履歴タブ | ✅ |
+| 保存済み求人タブ | ✅ |
+| Staffページ（実データ）| ✅ 新機能 |
+| 採用ダッシュボード（応募者管理）| ✅ 新機能 |
+| 採用・不採用ボタン | ✅ 新機能 |
+| プロフィール完成度バー | ✅ |
+
+---
+
+## 修正済みバグ
+
+- **DM の participant_b バグ**: 自分自身とのDMが開かれていた問題を修正。`job.posted_by` を相手として使用するよう修正。
+- **PostJob 未認証投稿**: ログインなしで求人が投稿できた問題を修正。ログイン必須ガードを追加。
+- **jobs テーブル欠落**: SQL に jobs テーブルが未定義だった問題を修正。
 
 ---
 
 ## 今後の拡張候補
 
-- [ ] 求人投稿者（店側）専用画面
 - [ ] Push通知（Supabase Edge Functions）
-- [ ] 画像プロフィール写真アップロード
-- [ ] 応募ステータス更新（店側が承認/却下）
 - [ ] 多言語対応（英語/日本語切替）
+- [ ] 求人の編集・削除機能
+- [ ] 未読メッセージバッジ
