@@ -47,6 +47,8 @@ const T = {
     no_dm:'No messages yet.', no_dm_hint:'Tap "Message" on a job to get started.',
     back_dm:'← Back to Messages', type_msg:'Type a message', send:'Send',
     first_msg:'Send your first message 👋', loading:'Loading...',
+    attach_file:'Attach file', file_too_large:'File is too large (max 10MB)',
+    download:'Download', uploading:'Uploading...',
     logout:'Logout',
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
@@ -127,6 +129,8 @@ const T = {
     no_dm:'まだDMはありません。', no_dm_hint:'求人詳細ページから「DMする」を押してみましょう。',
     back_dm:'← DM一覧へ戻る', type_msg:'メッセージを入力', send:'送信',
     first_msg:'最初のメッセージを送ってみましょう 👋', loading:'読み込み中...',
+    attach_file:'ファイルを添付', file_too_large:'ファイルが大きすぎます（最大10MB）',
+    download:'ダウンロード', uploading:'送信中...',
     logout:'ログアウト',
     tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
@@ -206,6 +210,8 @@ const T = {
     no_dm:'메시지가 없습니다.', no_dm_hint:'구인 상세 페이지에서 "메시지" 버튼을 눌러보세요.',
     back_dm:'← 메시지 목록으로', type_msg:'메시지 입력', send:'전송',
     first_msg:'첫 메시지를 보내보세요 👋', loading:'로딩 중...',
+    attach_file:'파일 첨부', file_too_large:'파일이 너무 큽니다 (최대 10MB)',
+    download:'다운로드', uploading:'전송 중...',
     logout:'로그아웃',
     tab_profile:'프로필', tab_applied:'지원 내역', tab_saved:'저장됨', tab_posted:'내 구인',
     change_photo:'📷 사진 변경', photo_pending:'저장 후 반영됩니다',
@@ -285,6 +291,8 @@ const T = {
     no_dm:'暂无消息。', no_dm_hint:'在职位详情页点击"发消息"即可开始。',
     back_dm:'← 返回消息列表', type_msg:'输入消息', send:'发送',
     first_msg:'发送第一条消息吧 👋', loading:'加载中...',
+    attach_file:'附加文件', file_too_large:'文件太大（最大10MB）',
+    download:'下载', uploading:'发送中...',
     logout:'退出登录',
     tab_profile:'个人资料', tab_applied:'申请记录', tab_saved:'已收藏', tab_posted:'我发布的',
     change_photo:'📷 更换头像', photo_pending:'保存后生效',
@@ -364,6 +372,8 @@ const T = {
     no_dm:'Aún no hay mensajes.', no_dm_hint:'Toca "Mensaje" en un empleo para comenzar.',
     back_dm:'← Volver a mensajes', type_msg:'Escribe un mensaje', send:'Enviar',
     first_msg:'Envía tu primer mensaje 👋', loading:'Cargando...',
+    attach_file:'Adjuntar archivo', file_too_large:'Archivo demasiado grande (máx. 10MB)',
+    download:'Descargar', uploading:'Enviando...',
     logout:'Cerrar sesión',
     tab_profile:'Perfil', tab_applied:'Postulaciones', tab_saved:'Guardados', tab_posted:'Mis Anuncios',
     change_photo:'📷 Cambiar foto', photo_pending:'Guarda para aplicar cambios',
@@ -443,6 +453,8 @@ const T = {
     no_dm:'Aucun message pour le moment.', no_dm_hint:'Appuyez sur "Message" depuis une offre pour commencer.',
     back_dm:'← Retour aux messages', type_msg:'Écrire un message', send:'Envoyer',
     first_msg:'Envoyez votre premier message 👋', loading:'Chargement...',
+    attach_file:'Joindre un fichier', file_too_large:'Fichier trop volumineux (max 10 Mo)',
+    download:'Télécharger', uploading:'Envoi...',
     logout:'Déconnexion',
     tab_profile:'Profil', tab_applied:'Candidatures', tab_saved:'Sauvegardés', tab_posted:'Mes offres',
     change_photo:'📷 Changer la photo', photo_pending:'Sauvegardez pour appliquer les changements',
@@ -522,6 +534,8 @@ const T = {
     no_dm:'Ainda não há mensagens.', no_dm_hint:'Toque em "Mensagem" em uma vaga para começar.',
     back_dm:'← Voltar às mensagens', type_msg:'Digite uma mensagem', send:'Enviar',
     first_msg:'Envie sua primeira mensagem 👋', loading:'Carregando...',
+    attach_file:'Anexar arquivo', file_too_large:'Arquivo muito grande (máx. 10MB)',
+    download:'Baixar', uploading:'Enviando...',
     logout:'Sair',
     tab_profile:'Perfil', tab_applied:'Candidaturas', tab_saved:'Salvos', tab_posted:'Minhas Vagas',
     change_photo:'📷 Mudar Foto', photo_pending:'Salve para aplicar as mudanças',
@@ -601,6 +615,8 @@ const T = {
     no_dm:'Chưa có tin nhắn.', no_dm_hint:'Nhấn "Nhắn tin" từ tin tuyển dụng để bắt đầu.',
     back_dm:'← Quay lại tin nhắn', type_msg:'Nhập tin nhắn', send:'Gửi',
     first_msg:'Hãy gửi tin nhắn đầu tiên 👋', loading:'Đang tải...',
+    attach_file:'Đính kèm tệp', file_too_large:'Tệp quá lớn (tối đa 10MB)',
+    download:'Tải xuống', uploading:'Đang gửi...',
     logout:'Đăng xuất',
     tab_profile:'Hồ sơ', tab_applied:'Đơn ứng tuyển', tab_saved:'Đã lưu', tab_posted:'Tin đã đăng',
     change_photo:'📷 Đổi ảnh', photo_pending:'Lưu để áp dụng thay đổi',
@@ -680,6 +696,8 @@ const T = {
     no_dm:'Belum ada pesan.', no_dm_hint:'Ketuk "Pesan" di lowongan untuk memulai.',
     back_dm:'← Kembali ke Pesan', type_msg:'Ketik pesan', send:'Kirim',
     first_msg:'Kirim pesan pertama Anda 👋', loading:'Memuat...',
+    attach_file:'Lampirkan file', file_too_large:'File terlalu besar (maks. 10MB)',
+    download:'Unduh', uploading:'Mengirim...',
     logout:'Keluar',
     tab_profile:'Profil', tab_applied:'Lamaran', tab_saved:'Tersimpan', tab_posted:'Lowongan Saya',
     change_photo:'📷 Ganti Foto', photo_pending:'Simpan untuk menerapkan perubahan',
@@ -2096,11 +2114,15 @@ function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) 
 // ═════════════════════════════════════════════
 function Chat({ convId, setPage, session, conversations, setConversations, notify, markConvRead, lang }) {
   const { t } = useT()
-  const [messages, setMessages] = useState([])
-  const [text,     setText]     = useState('')
-  const [busy,     setBusy]     = useState(false)
-  const [loading,  setLoading]  = useState(true)
-  const bottomRef = useRef(null)
+  const [messages,      setMessages]      = useState([])
+  const [text,          setText]          = useState('')
+  const [busy,          setBusy]          = useState(false)
+  const [loading,       setLoading]       = useState(true)
+  const [attachFile,    setAttachFile]    = useState(null)
+  const [attachPreview, setAttachPreview] = useState(null)
+  const [lightbox,      setLightbox]      = useState(null)
+  const bottomRef   = useRef(null)
+  const fileInputRef = useRef(null)
   const conv = conversations.find(c => c.id === convId)
 
   useEffect(() => {
@@ -2115,6 +2137,9 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:'smooth' }) }, [messages])
 
+  // ObjectURL をコンポーネント破棄時に解放
+  useEffect(() => () => { if (attachPreview?.objUrl) URL.revokeObjectURL(attachPreview.objUrl) }, [])
+
   async function loadMessages() {
     setLoading(true)
     const { data } = await supabase.from('messages').select('*')
@@ -2124,22 +2149,72 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
     markConvRead(convId)
   }
 
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    if (file.size > 10 * 1024 * 1024) { notify(t.file_too_large); return }
+    setAttachFile(file)
+    if (file.type.startsWith('image/')) {
+      const objUrl = URL.createObjectURL(file)
+      setAttachPreview({ kind:'image', objUrl, name:file.name })
+    } else {
+      setAttachPreview({ kind:'file', name:file.name, mime:file.type })
+    }
+  }
+
+  function removeAttach() {
+    if (attachPreview?.objUrl) URL.revokeObjectURL(attachPreview.objUrl)
+    setAttachFile(null); setAttachPreview(null)
+  }
+
+  async function uploadAttach(file) {
+    const ext  = file.name.split('.').pop()
+    const path = `${convId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    const { error } = await supabase.storage.from('dm-files').upload(path, file)
+    if (error) throw error
+    return {
+      file_url:  supabase.storage.from('dm-files').getPublicUrl(path).data.publicUrl,
+      file_name: file.name,
+      file_type: file.type,
+    }
+  }
+
   async function send() {
-    if (!text.trim() || busy || !session) return
+    if ((!text.trim() && !attachFile) || busy || !session) return
     setBusy(true)
     const msg = text.trim(); setText('')
-    const { error } = await supabase.from('messages')
-      .insert({ conversation_id:convId, sender_id:session.user.id, text:msg })
-    if (error) { notify(error.message); setText(msg) }
-    else {
+    try {
+      let fileData = {}
+      if (attachFile) {
+        fileData = await uploadAttach(attachFile)
+        removeAttach()
+      }
+      const { error } = await supabase.from('messages').insert({
+        conversation_id: convId,
+        sender_id:       session.user.id,
+        text:            msg || null,
+        ...fileData,
+      })
+      if (error) throw error
+      const preview = msg || fileData.file_name || 'File'
       const now = new Date().toISOString()
-      await supabase.from('conversations').update({ last_message:msg, last_message_at:now }).eq('id', convId)
-      setConversations(p => p.map(c => c.id===convId ? { ...c, last_message:msg, last_message_at:now } : c))
-    }
+      await supabase.from('conversations').update({ last_message:preview, last_message_at:now }).eq('id', convId)
+      setConversations(p => p.map(c => c.id===convId ? { ...c, last_message:preview, last_message_at:now } : c))
+    } catch(e) { notify(e.message); setText(msg) }
     setBusy(false)
   }
 
   function handleKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send() } }
+
+  function fileIcon(mime) {
+    if (!mime) return '📄'
+    if (mime.includes('pdf'))  return '📕'
+    if (mime.includes('word') || mime.includes('document')) return '📝'
+    if (mime.includes('sheet') || mime.includes('excel'))   return '📊'
+    if (mime.includes('zip') || mime.includes('rar'))       return '🗜'
+    return '📄'
+  }
 
   if (!conv) return <main><button onClick={() => setPage('dm')}>{t.back_dm}</button><p>Not found.</p></main>
 
@@ -2151,21 +2226,68 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
           <div className="avatar">{conv.job_title==='Staff'?'👤':'🏪'}</div>
           <div><b>{conv.company_name}</b><p className="muted">{conv.job_title}</p></div>
         </div>
+
         <div className="bubbles">
           {loading && <p className="muted" style={{ textAlign:'center' }}>{t.loading}</p>}
           {!loading && !messages.length && <p className="muted" style={{ textAlign:'center', marginTop:40 }}>{t.first_msg}</p>}
           {messages.map(m => (
             <div key={m.id} className={'bubble '+(m.sender_id===session?.user?.id?'me':'them')}>
-              {m.text}<small>{fmt(m.created_at, lang)}</small>
+              {/* テキスト */}
+              {m.text && <span className="bubble-text">{m.text}</span>}
+              {/* 画像 */}
+              {m.file_url && m.file_type?.startsWith('image/') && (
+                <img
+                  src={m.file_url} alt={m.file_name} className="bubble-image"
+                  onClick={() => setLightbox(m.file_url)}
+                />
+              )}
+              {/* PDF・その他ファイル */}
+              {m.file_url && !m.file_type?.startsWith('image/') && (
+                <a href={m.file_url} target="_blank" rel="noopener noreferrer" className="bubble-file">
+                  <span className="bubble-file-icon">{fileIcon(m.file_type)}</span>
+                  <span className="bubble-file-name">{m.file_name}</span>
+                  <span className="bubble-file-dl">↓ {t.download}</span>
+                </a>
+              )}
+              <small>{fmt(m.created_at, lang)}</small>
             </div>
           ))}
           <div ref={bottomRef} />
         </div>
+
+        {/* 添付プレビュー */}
+        {attachPreview && (
+          <div className="attach-preview">
+            {attachPreview.kind === 'image'
+              ? <img src={attachPreview.objUrl} alt={attachPreview.name} className="attach-preview-img" />
+              : <div className="attach-preview-file">
+                  <span>{fileIcon(attachPreview.mime)}</span>
+                  <span>{attachPreview.name}</span>
+                </div>
+            }
+            <button className="attach-preview-remove" onClick={removeAttach}>×</button>
+          </div>
+        )}
+
         <div className="compose">
+          <input type="file" ref={fileInputRef} style={{ display:'none' }}
+            accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.zip"
+            onChange={handleFileSelect} />
+          <button className="attach-btn" onClick={() => fileInputRef.current?.click()} title={t.attach_file}>📎</button>
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKey} placeholder={t.type_msg} />
-          <button className="primary" onClick={send} disabled={busy||!text.trim()}>{t.send}</button>
+          <button className="primary" onClick={send} disabled={busy||(!text.trim()&&!attachFile)}>
+            {busy ? '···' : t.send}
+          </button>
         </div>
       </section>
+
+      {/* 画像ライトボックス */}
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <img src={lightbox} alt="" onClick={e => e.stopPropagation()} />
+          <button className="lightbox-close" onClick={() => setLightbox(null)}>×</button>
+        </div>
+      )}
     </main>
   )
 }

@@ -496,6 +496,81 @@ textarea { min-height: 120px; resize: vertical }
   color: var(--muted2); display: flex; align-items: center; justify-content: center;
 }
 
+/* ── Chat file attachment ── */
+.compose {
+  display: flex; gap: 8px; align-items: flex-end;
+}
+.attach-btn {
+  flex-shrink: 0; width: 40px; height: 40px;
+  border-radius: 50%; font-size: 18px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.attach-btn:hover { background: var(--accent-dim); border-color: var(--amber) }
+
+/* 添付プレビュー */
+.attach-preview {
+  position: relative; padding: 10px 12px;
+  background: var(--bg2); border-top: 1px solid var(--border2);
+  display: flex; align-items: center; gap: 10px;
+}
+.attach-preview-img {
+  height: 72px; border-radius: 8px; object-fit: cover; max-width: 120px;
+}
+.attach-preview-file {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text);
+}
+.attach-preview-remove {
+  margin-left: auto; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--red-dim); border: none; color: var(--red);
+  font-size: 15px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* バブル内の画像・ファイル */
+.bubble-text { display: block; margin-bottom: 4px }
+.bubble-image {
+  display: block; max-width: 220px; max-height: 260px;
+  border-radius: 10px; object-fit: cover; cursor: zoom-in;
+  margin-bottom: 4px;
+}
+.bubble-file {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,0,0,0.06); border-radius: 10px;
+  padding: 10px 12px; text-decoration: none; color: inherit;
+  margin-bottom: 4px; max-width: 240px;
+}
+.bubble.me .bubble-file { background: rgba(255,255,255,0.15) }
+.bubble-file-icon { font-size: 22px; flex-shrink: 0 }
+.bubble-file-name {
+  flex: 1; font-size: 13px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.bubble-file-dl { font-size: 12px; opacity: 0.7; flex-shrink: 0 }
+
+/* ライトボックス */
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.88); display: flex;
+  align-items: center; justify-content: center;
+  animation: fade-in 0.15s ease;
+}
+@keyframes fade-in { from { opacity:0 } to { opacity:1 } }
+.lightbox img {
+  max-width: 92vw; max-height: 88vh;
+  border-radius: 12px; object-fit: contain;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+}
+.lightbox-close {
+  position: absolute; top: 18px; right: 18px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); border: none;
+  color: #fff; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
 /* ── Salary input ── */
 .salary-input {
   display: flex; align-items: stretch; gap: 8px;
