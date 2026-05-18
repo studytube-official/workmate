@@ -46,7 +46,7 @@ const T = {
     logout:'ログアウト',
     tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
-    f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日', f_visa:'ビザ期限', f_bio:'自己紹介',
+    f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日・時間帯', f_visa:'ビザ期限', f_bio:'自己紹介',
     no_applied:'まだ応募した求人はありません。', no_saved_jobs:'まだ保存した求人はありません。',
     no_posted:'まだ求人を投稿していません。', post_first:'求人を投稿する',
     apps_count:'応募', view_apps:'▼ 応募者を見る', close_apps:'▲ 閉じる',
@@ -117,7 +117,7 @@ const T = {
     logout:'Logout',
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
-    f_name:'Name', f_eng_level:'English Level', f_avail:'Available Days',
+    f_name:'Name', f_eng_level:'English Level', f_avail:'Availability',
     f_visa:'Visa Expiry', f_bio:'Bio',
     no_applied:'No applications yet.', no_saved_jobs:'No saved jobs yet.',
     no_posted:'No job listings yet.', post_first:'Post Your First Job',
@@ -883,6 +883,91 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
 }
 
 // ═════════════════════════════════════════════
+//  AvailabilityPicker
+// ═════════════════════════════════════════════
+const DAYS_JA = ['月','火','水','木','金','土','日']
+const DAYS_EN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+const HOURS = Array.from({length:19}, (_,i) => {
+  const h = i + 6  // 6:00〜24:00
+  return `${String(h).padStart(2,'0')}:00`
+})
+
+// "月・水・金 09:00〜18:00" → { days:['月','水','金'], start:'09:00', end:'18:00' }
+function parseAvailability(str) {
+  if (!str) return { days:[], start:'09:00', end:'18:00' }
+  const m = str.match(/^([月火水木金土日Mon Tue Wed Thu Fri Sat Sun・,]+)\s+(\d{2}:\d{2})〜(\d{2}:\d{2})/)
+  if (m) {
+    const days = m[1].split(/[・,\s]+/).filter(Boolean)
+    return { days, start: m[2], end: m[3] }
+  }
+  return { days:[], start:'09:00', end:'18:00' }
+}
+
+// { days, start, end } → "月・水・金 09:00〜18:00"
+function formatAvailability({ days, start, end }) {
+  if (!days.length) return ''
+  return `${days.join('・')} ${start}〜${end}`
+}
+
+function AvailabilityPicker({ value, onChange }) {
+  const { lang } = useT()
+  const parsed = useMemo(() => parseAvailability(value), [value])
+  const days   = parsed.days
+  const DAYS   = lang === 'ja' ? DAYS_JA : DAYS_EN
+
+  function toggleDay(d) {
+    const next = days.includes(d) ? days.filter(x => x !== d) : [...days, d]
+    // 曜日の順番を固定
+    const ordered = DAYS_JA.filter(x => next.includes(x))
+    onChange(formatAvailability({ days: ordered, start: parsed.start, end: parsed.end }))
+  }
+  function setTime(key, val) {
+    onChange(formatAvailability({ days, start: parsed.start, end: parsed.end, [key]: val }))
+  }
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+      {/* 曜日ボタン */}
+      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+        {DAYS_JA.map((d, i) => {
+          const active = days.includes(d)
+          const isWeekend = i >= 5
+          return (
+            <button key={d} type="button" onClick={() => toggleDay(d)} style={{
+              padding:'8px 0', width:44, borderRadius:10, fontWeight:700, fontSize:14,
+              border: active ? 'none' : '1px solid var(--border2)',
+              background: active
+                ? isWeekend ? 'linear-gradient(135deg,#be185d,#9333ea)' : 'linear-gradient(135deg,#1d6bd8,#7c3aed)'
+                : 'var(--bg2)',
+              color: active ? 'white' : 'var(--muted2)',
+              boxShadow: active ? '0 0 12px rgba(88,166,255,0.3)' : 'none',
+              transition:'all .15s'
+            }}>
+              {lang === 'ja' ? d : DAYS_EN[i]}
+            </button>
+          )
+        })}
+      </div>
+      {/* 時間帯 */}
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <select value={parsed.start} onChange={e => setTime('start', e.target.value)}
+          style={{ flex:1, padding:'10px 12px' }}>
+          {HOURS.map(h => <option key={h}>{h}</option>)}
+        </select>
+        <span style={{ color:'var(--muted2)', fontWeight:700 }}>〜</span>
+        <select value={parsed.end} onChange={e => setTime('end', e.target.value)}
+          style={{ flex:1, padding:'10px 12px' }}>
+          {HOURS.map(h => <option key={h}>{h}</option>)}
+        </select>
+      </div>
+      {value && (
+        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>📅 {value}</p>
+      )}
+    </div>
+  )
+}
+
+// ═════════════════════════════════════════════
 //  Staff
 // ═════════════════════════════════════════════
 function Staff({ setPage, session, startStaffDM, isEmployer }) {
@@ -1174,7 +1259,9 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
               <option>Upper-intermediate</option><option>Advanced</option>
             </select>
           </label>
-          <label>{t.f_avail}<input value={form.availability} onChange={e => upd('availability', e.target.value)} placeholder="Wed, Thu, Fri, Sat" /></label>
+          <label>{t.f_avail}
+            <AvailabilityPicker value={form.availability} onChange={v => upd('availability', v)} />
+          </label>
           <label>{t.f_visa}<input type="date" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} /></label>
           <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
