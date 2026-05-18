@@ -35,7 +35,7 @@ const T = {
     post_login_desc:'Googleアカウントでログインしてください。',
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
     f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
-    f_categories:'職種（最大3つ選択）',
+    f_categories:'職種（最大5つ選択）',
     save_btn:'保存する', saving:'保存中...',
     required_err:'求人タイトルと店名は必須です。', job_saved:'求人を保存しました。',
     find_staff:'スタッフを探す', staff_desc:'シドニーで働くスタッフ候補を探せます。',
@@ -108,7 +108,7 @@ const T = {
     post_login_desc:'Sign in with Google to post job listings.',
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
     f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
-    f_categories:'Job Type (up to 3)',
+    f_categories:'Job Type (up to 5)',
     save_btn:'Save', saving:'Saving...',
     required_err:'Job title and business name are required.', job_saved:'Job posted successfully.',
     find_staff:'Find Staff', staff_desc:'Browse staff candidates available in Sydney.',
@@ -163,17 +163,45 @@ const useT = () => useContext(LangCtx)
 
 // ─── 職種マスタ ───────────────────────────────
 const JOB_CATEGORIES = [
-  { group:'飲食・フード',    en:'Food & Beverage',
+  { group:'FOH（ホール・接客）', en:'FOH – Front of House',
     items:[
-      {ja:'カフェ・コーヒー',  en:'Café / Coffee'},
-      {ja:'レストラン',        en:'Restaurant'},
-      {ja:'キッチン・調理',    en:'Kitchen / Cook'},
-      {ja:'居酒屋・バー',      en:'Izakaya / Bar'},
-      {ja:'ファストフード',    en:'Fast Food'},
-      {ja:'寿司・和食',        en:'Sushi / Japanese'},
-      {ja:'ベーカリー',        en:'Bakery'},
-      {ja:'フードコート',      en:'Food Court'},
-      {ja:'デリバリー',        en:'Delivery'},
+      {ja:'ウェイター・ウェイトレス', en:'Waiter / Waitress'},
+      {ja:'フロアスタッフ',           en:'Floor Staff'},
+      {ja:'ホスト・ホステス',         en:'Host / Hostess'},
+      {ja:'ランナー（料理運び）',     en:'Food Runner'},
+      {ja:'バリスタ',                 en:'Barista'},
+      {ja:'バーテンダー',             en:'Bartender'},
+      {ja:'カクテルバー',             en:'Cocktail Bar'},
+      {ja:'レジ・キャッシャー',       en:'Cashier'},
+    ]},
+  { group:'BOH（キッチン・調理）', en:'BOH – Back of House',
+    items:[
+      {ja:'キッチンハンド',           en:'Kitchen Hand'},
+      {ja:'ライン・コック',           en:'Line Cook'},
+      {ja:'プレップ・クック',         en:'Prep Cook'},
+      {ja:'シェフ',                   en:'Chef'},
+      {ja:'スーシェフ',               en:'Sous Chef'},
+      {ja:'ペイストリーシェフ',       en:'Pastry Chef'},
+      {ja:'ディッシュウォッシャー',   en:'Dishwasher'},
+      {ja:'ストア・マン（食材管理）', en:'Storeroom / Stock'},
+    ]},
+  { group:'飲食ジャンル・業態',  en:'Cuisine & Venue Type',
+    items:[
+      {ja:'カフェ・コーヒーショップ', en:'Café / Coffee Shop'},
+      {ja:'居酒屋・和食レストラン',   en:'Izakaya / Japanese Restaurant'},
+      {ja:'寿司・寿司屋',             en:'Sushi Restaurant'},
+      {ja:'ラーメン・麺類',           en:'Ramen / Noodle Shop'},
+      {ja:'焼肉・BBQ',                en:'BBQ / Korean BBQ'},
+      {ja:'洋食・ダイニング',         en:'Western / Fine Dining'},
+      {ja:'中華・アジア料理',         en:'Chinese / Asian Cuisine'},
+      {ja:'ピザ・イタリアン',         en:'Pizza / Italian'},
+      {ja:'ベーカリー・パン屋',       en:'Bakery'},
+      {ja:'ファストフード',           en:'Fast Food'},
+      {ja:'フードコート・フードホール',en:'Food Court / Food Hall'},
+      {ja:'デリバリー・テイクアウト', en:'Delivery / Takeaway'},
+      {ja:'ケータリング・イベント',   en:'Catering / Events'},
+      {ja:'バー・パブ',               en:'Bar / Pub'},
+      {ja:'ナイトクラブ・ラウンジ',   en:'Nightclub / Lounge'},
     ]},
   { group:'販売・小売',      en:'Retail & Sales',
     items:[
@@ -949,7 +977,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
         <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
         <label>{t.f_categories}
-          <CategoryPicker value={job.categories} onChange={v => update('categories', v)} max={3} />
+          <CategoryPicker value={job.categories} onChange={v => update('categories', v)} max={5} />
         </label>
         <label>{t.f_eng}
           <select value={job.english_level} onChange={e => update('english_level', e.target.value)}>
