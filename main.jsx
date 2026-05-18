@@ -35,6 +35,7 @@ const T = {
     post_login_desc:'Googleアカウントでログインしてください。',
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
     f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
+    f_categories:'職種（最大3つ選択）',
     save_btn:'保存する', saving:'保存中...',
     required_err:'求人タイトルと店名は必須です。', job_saved:'求人を保存しました。',
     find_staff:'スタッフを探す', staff_desc:'シドニーで働くスタッフ候補を探せます。',
@@ -47,6 +48,7 @@ const T = {
     tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
     f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日・時間帯', f_visa:'ビザ期限', f_bio:'自己紹介',
+    f_job_categories:'希望職種（最大5つ）',
     no_applied:'まだ応募した求人はありません。', no_saved_jobs:'まだ保存した求人はありません。',
     no_posted:'まだ求人を投稿していません。', post_first:'求人を投稿する',
     apps_count:'応募', view_apps:'▼ 応募者を見る', close_apps:'▲ 閉じる',
@@ -106,6 +108,7 @@ const T = {
     post_login_desc:'Sign in with Google to post job listings.',
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
     f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
+    f_categories:'Job Type (up to 3)',
     save_btn:'Save', saving:'Saving...',
     required_err:'Job title and business name are required.', job_saved:'Job posted successfully.',
     find_staff:'Find Staff', staff_desc:'Browse staff candidates available in Sydney.',
@@ -118,6 +121,7 @@ const T = {
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
     f_name:'Name', f_eng_level:'English Level', f_avail:'Availability',
+    f_job_categories:'Preferred Job Types (up to 5)',
     f_visa:'Visa Expiry', f_bio:'Bio',
     no_applied:'No applications yet.', no_saved_jobs:'No saved jobs yet.',
     no_posted:'No job listings yet.', post_first:'Post Your First Job',
@@ -156,6 +160,136 @@ const T = {
 
 const LangCtx = createContext({ lang:'ja', setLang:()=>{}, t:T.ja })
 const useT = () => useContext(LangCtx)
+
+// ─── 職種マスタ ───────────────────────────────
+const JOB_CATEGORIES = [
+  { group:'飲食・フード',    en:'Food & Beverage',
+    items:[
+      {ja:'カフェ・コーヒー',  en:'Café / Coffee'},
+      {ja:'レストラン',        en:'Restaurant'},
+      {ja:'キッチン・調理',    en:'Kitchen / Cook'},
+      {ja:'居酒屋・バー',      en:'Izakaya / Bar'},
+      {ja:'ファストフード',    en:'Fast Food'},
+      {ja:'寿司・和食',        en:'Sushi / Japanese'},
+      {ja:'ベーカリー',        en:'Bakery'},
+      {ja:'フードコート',      en:'Food Court'},
+      {ja:'デリバリー',        en:'Delivery'},
+    ]},
+  { group:'販売・小売',      en:'Retail & Sales',
+    items:[
+      {ja:'コンビニ・スーパー',en:'Convenience / Supermarket'},
+      {ja:'アパレル',          en:'Apparel / Fashion'},
+      {ja:'ドラッグストア',    en:'Pharmacy / Drugstore'},
+      {ja:'免税店',            en:'Duty Free'},
+      {ja:'家電・雑貨',        en:'Electronics / Goods'},
+    ]},
+  { group:'ホテル・サービス',en:'Hotel & Service',
+    items:[
+      {ja:'ホテル・宿泊',      en:'Hotel / Accommodation'},
+      {ja:'受付・フロント',    en:'Receptionist / Front desk'},
+      {ja:'清掃・ハウスキーピング', en:'Cleaning / Housekeeping'},
+      {ja:'ツアーガイド',      en:'Tour Guide'},
+      {ja:'旅行・観光',        en:'Travel & Tourism'},
+    ]},
+  { group:'オフィス・IT',    en:'Office & IT',
+    items:[
+      {ja:'事務・データ入力',  en:'Admin / Data Entry'},
+      {ja:'翻訳・通訳',        en:'Translation / Interpretation'},
+      {ja:'IT・プログラミング',en:'IT / Programming'},
+      {ja:'マーケティング・SNS',en:'Marketing / SNS'},
+      {ja:'営業',              en:'Sales'},
+    ]},
+  { group:'教育',            en:'Education',
+    items:[
+      {ja:'日本語教師',        en:'Japanese Teacher'},
+      {ja:'家庭教師・塾',      en:'Tutor'},
+      {ja:'保育・チャイルドケア',en:'Childcare'},
+    ]},
+  { group:'美容・ヘルス',    en:'Beauty & Health',
+    items:[
+      {ja:'美容師・ヘアサロン',en:'Hair Salon'},
+      {ja:'ネイリスト',        en:'Nail Technician'},
+      {ja:'エステ・スパ',      en:'Beauty / Spa'},
+      {ja:'マッサージ・整体',  en:'Massage / Therapy'},
+    ]},
+  { group:'エンタメ・クリエイティブ', en:'Entertainment & Creative',
+    items:[
+      {ja:'イベントスタッフ',  en:'Event Staff'},
+      {ja:'写真・映像',        en:'Photography / Video'},
+      {ja:'音楽・DJ',          en:'Music / DJ'},
+    ]},
+  { group:'農業・アウトドア',en:'Agriculture & Outdoor',
+    items:[
+      {ja:'ファームワーク・農業',en:'Farm Work'},
+      {ja:'フルーツピッキング',en:'Fruit Picking'},
+      {ja:'漁業',              en:'Fishing'},
+    ]},
+  { group:'物流・製造',      en:'Logistics & Manufacturing',
+    items:[
+      {ja:'倉庫・ピッキング',  en:'Warehouse'},
+      {ja:'配達・ドライバー',  en:'Delivery / Driver'},
+      {ja:'工場・製造',        en:'Factory / Manufacturing'},
+      {ja:'引越し',            en:'Moving / Removals'},
+    ]},
+  { group:'その他',          en:'Other',
+    items:[
+      {ja:'ベビーシッター',    en:'Babysitter'},
+      {ja:'ペットシッター',    en:'Pet Sitter'},
+      {ja:'建設・大工',        en:'Construction'},
+      {ja:'その他',            en:'Other'},
+    ]},
+]
+
+// カンマ区切り文字列 ↔ 配列
+const parseCats  = s => s ? s.split(',').map(x => x.trim()).filter(Boolean) : []
+const formatCats = a => a.join(',')
+
+// CategoryPicker コンポーネント
+function CategoryPicker({ value, onChange, max = 5 }) {
+  const { lang } = useT()
+  const selected = parseCats(value)
+
+  function toggle(jaName) {
+    const next = selected.includes(jaName)
+      ? selected.filter(x => x !== jaName)
+      : selected.length < max ? [...selected, jaName] : selected
+    onChange(formatCats(next))
+  }
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+      {JOB_CATEGORIES.map(({ group, en, items }) => (
+        <div key={group}>
+          <p style={{ margin:'0 0 6px', fontSize:12, fontWeight:700, color:'var(--muted2)', textTransform:'uppercase', letterSpacing:'.06em' }}>
+            {lang === 'ja' ? group : en}
+          </p>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+            {items.map(({ ja, en: enLabel }) => {
+              const active = selected.includes(ja)
+              return (
+                <button key={ja} type="button" onClick={() => toggle(ja)} style={{
+                  padding:'7px 14px', borderRadius:999, fontSize:13, fontWeight:700,
+                  border: active ? 'none' : '1px solid var(--border2)',
+                  background: active ? 'linear-gradient(135deg,#1d6bd8,#7c3aed)' : 'var(--bg2)',
+                  color: active ? 'white' : 'var(--muted2)',
+                  boxShadow: active ? '0 0 10px rgba(88,166,255,0.25)' : 'none',
+                  transition:'all .15s',
+                }}>
+                  {lang === 'ja' ? ja : enLabel}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+      {selected.length > 0 && (
+        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>
+          ✓ {selected.length}/{max}件選択中: {selected.join('・')}
+        </p>
+      )}
+    </div>
+  )
+}
 
 const fmt = (d, lang='ja') =>
   new Date(d).toLocaleString(lang === 'ja' ? 'ja-JP' : 'en-AU',
@@ -677,7 +811,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
       <p className="muted">{job.title}</p>
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
-        <span>{job.location || t.loc_tbd}</span>
+        {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{c}</span>)}
         <span>{job.english_level || t.no_eng}</span>
         {job.is_active === false && <span style={{ background:'rgba(239,68,68,0.15)', color:'#f87171', border:'1px solid rgba(239,68,68,0.2)', padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:700 }}>{t.badge_closed}</span>}
       </div>
@@ -763,7 +897,7 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 // ═════════════════════════════════════════════
 //  PostJob
 // ═════════════════════════════════════════════
-const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'' }
+const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
 
 function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
   const { t } = useT()
@@ -814,6 +948,9 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
         <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
+        <label>{t.f_categories}
+          <CategoryPicker value={job.categories} onChange={v => update('categories', v)} max={3} />
+        </label>
         <label>{t.f_eng}
           <select value={job.english_level} onChange={e => update('english_level', e.target.value)}>
             <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
@@ -1013,7 +1150,10 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
             {s.availability   && <p className="muted">📅 {s.availability}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
-            <div className="tags">{s.english_level && <span>{s.english_level}</span>}</div>
+            <div className="tags">
+              {s.english_level && <span>{s.english_level}</span>}
+              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{c}</span>)}
+            </div>
             <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
               {t.contact}
             </button>
@@ -1144,7 +1284,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
   const { t } = useT()
-  const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'' })
+  const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
   const [tab,  setTab]        = useState('profile')
   const [avatarFile, setAvatarFile]     = useState(null)
@@ -1155,9 +1295,10 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     if (profile) setForm({
       display_name:  profile.display_name  || '',
       english_level: profile.english_level || 'Basic',
-      availability:  profile.availability  || '',
-      bio:           profile.bio           || '',
-      visa_expiry:   profile.visa_expiry   || '',
+      availability:    profile.availability    || '',
+      bio:             profile.bio             || '',
+      visa_expiry:     profile.visa_expiry     || '',
+      job_categories:  profile.job_categories  || '',
     })
   }, [profile])
 
@@ -1261,6 +1402,9 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
           </label>
           <label>{t.f_avail}
             <AvailabilityPicker value={form.availability} onChange={v => upd('availability', v)} />
+          </label>
+          <label>{t.f_job_categories}
+            <CategoryPicker value={form.job_categories} onChange={v => upd('job_categories', v)} max={5} />
           </label>
           <label>{t.f_visa}<input type="date" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} /></label>
           <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
