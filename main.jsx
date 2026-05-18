@@ -47,6 +47,8 @@ const T = {
     logout:'Logout',
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
+    photo_tip:'Adding a photo helps employers recognise you and boosts your chances!',
+    photo_privacy:'🔒 Your profile and photo are only visible to employers — not to other users.',
     f_name:'Name', f_eng_level:'English Level', f_avail:'Availability',
     f_job_categories:'Preferred Job Types (up to 5)',
     f_visa:'Visa Expiry', f_bio:'Bio',
@@ -121,6 +123,8 @@ const T = {
     logout:'ログアウト',
     tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
+    photo_tip:'写真を追加すると採用率がアップします！',
+    photo_privacy:'🔒 プロフィールと写真は求人を投稿した店側のみに表示されます。他のユーザーには見えません。',
     f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日・時間帯', f_visa:'ビザ期限', f_bio:'自己紹介',
     f_job_categories:'希望職種（最大5つ）',
     no_applied:'まだ応募した求人はありません。', no_saved_jobs:'まだ保存した求人はありません。',
@@ -194,6 +198,8 @@ const T = {
     logout:'로그아웃',
     tab_profile:'프로필', tab_applied:'지원 내역', tab_saved:'저장됨', tab_posted:'내 구인',
     change_photo:'📷 사진 변경', photo_pending:'저장 후 반영됩니다',
+    photo_tip:'사진을 추가하면 채용 확률이 높아집니다!',
+    photo_privacy:'🔒 프로필과 사진은 구인을 등록한 사업주에게만 공개됩니다. 다른 사용자에게는 보이지 않습니다.',
     f_name:'이름', f_eng_level:'영어 수준', f_avail:'근무 가능 시간', f_visa:'비자 만료일', f_bio:'자기소개',
     f_job_categories:'희망 직종 (최대 5개)',
     no_applied:'아직 지원한 구인이 없습니다.', no_saved_jobs:'아직 저장한 구인이 없습니다.',
@@ -267,6 +273,8 @@ const T = {
     logout:'退出登录',
     tab_profile:'个人资料', tab_applied:'申请记录', tab_saved:'已收藏', tab_posted:'我发布的',
     change_photo:'📷 更换头像', photo_pending:'保存后生效',
+    photo_tip:'添加照片能让雇主更了解你，提高录用机会！',
+    photo_privacy:'🔒 你的资料和照片仅对发布招聘的雇主可见，其他用户无法查看。',
     f_name:'姓名', f_eng_level:'英语水平', f_avail:'可工作时间', f_visa:'签证到期日', f_bio:'个人简介',
     f_job_categories:'期望职种（最多5个）',
     no_applied:'还没有申请记录。', no_saved_jobs:'还没有收藏的职位。',
@@ -340,6 +348,8 @@ const T = {
     logout:'Cerrar sesión',
     tab_profile:'Perfil', tab_applied:'Postulaciones', tab_saved:'Guardados', tab_posted:'Mis Anuncios',
     change_photo:'📷 Cambiar foto', photo_pending:'Guarda para aplicar cambios',
+    photo_tip:'¡Agregar una foto aumenta tus chances de ser contratado!',
+    photo_privacy:'🔒 Tu perfil y foto solo son visibles para los empleadores, no para otros usuarios.',
     f_name:'Nombre', f_eng_level:'Nivel de inglés', f_avail:'Disponibilidad', f_visa:'Vencimiento de visa', f_bio:'Sobre mí',
     f_job_categories:'Tipos de empleo preferidos (máx. 5)',
     no_applied:'Aún no te has postulado.', no_saved_jobs:'Aún no tienes empleos guardados.',
@@ -413,6 +423,8 @@ const T = {
     logout:'Déconnexion',
     tab_profile:'Profil', tab_applied:'Candidatures', tab_saved:'Sauvegardés', tab_posted:'Mes offres',
     change_photo:'📷 Changer la photo', photo_pending:'Sauvegardez pour appliquer les changements',
+    photo_tip:"Ajouter une photo augmente vos chances d'être recruté !",
+    photo_privacy:'🔒 Votre profil et votre photo ne sont visibles que par les employeurs, pas par les autres utilisateurs.',
     f_name:'Nom', f_eng_level:"Niveau d'anglais", f_avail:'Disponibilités', f_visa:'Expiration du visa', f_bio:'À propos de moi',
     f_job_categories:"Types d'emploi souhaités (max 5)",
     no_applied:'Aucune candidature pour le moment.', no_saved_jobs:'Aucune offre sauvegardée.',
@@ -486,6 +498,8 @@ const T = {
     logout:'Sair',
     tab_profile:'Perfil', tab_applied:'Candidaturas', tab_saved:'Salvos', tab_posted:'Minhas Vagas',
     change_photo:'📷 Mudar Foto', photo_pending:'Salve para aplicar as mudanças',
+    photo_tip:'Adicionar uma foto aumenta suas chances de ser contratado!',
+    photo_privacy:'🔒 Seu perfil e foto são visíveis apenas para empregadores, não para outros usuários.',
     f_name:'Nome', f_eng_level:'Nível de inglês', f_avail:'Disponibilidade', f_visa:'Vencimento do visto', f_bio:'Sobre mim',
     f_job_categories:'Tipos de vaga preferidos (máx. 5)',
     no_applied:'Ainda não se candidatou.', no_saved_jobs:'Ainda não há vagas salvas.',
@@ -559,6 +573,8 @@ const T = {
     logout:'Đăng xuất',
     tab_profile:'Hồ sơ', tab_applied:'Đơn ứng tuyển', tab_saved:'Đã lưu', tab_posted:'Tin đã đăng',
     change_photo:'📷 Đổi ảnh', photo_pending:'Lưu để áp dụng thay đổi',
+    photo_tip:'Thêm ảnh giúp tăng cơ hội được tuyển dụng!',
+    photo_privacy:'🔒 Hồ sơ và ảnh của bạn chỉ hiển thị với nhà tuyển dụng, không hiển thị với người dùng khác.',
     f_name:'Họ tên', f_eng_level:'Trình độ tiếng Anh', f_avail:'Thời gian có thể làm', f_visa:'Hạn visa', f_bio:'Giới thiệu bản thân',
     f_job_categories:'Loại việc mong muốn (tối đa 5)',
     no_applied:'Chưa có đơn ứng tuyển.', no_saved_jobs:'Chưa có việc làm đã lưu.',
@@ -632,6 +648,8 @@ const T = {
     logout:'Keluar',
     tab_profile:'Profil', tab_applied:'Lamaran', tab_saved:'Tersimpan', tab_posted:'Lowongan Saya',
     change_photo:'📷 Ganti Foto', photo_pending:'Simpan untuk menerapkan perubahan',
+    photo_tip:'Menambahkan foto meningkatkan peluang Anda diterima kerja!',
+    photo_privacy:'🔒 Profil dan foto Anda hanya terlihat oleh pengusaha, bukan pengguna lain.',
     f_name:'Nama', f_eng_level:'Tingkat Bahasa Inggris', f_avail:'Ketersediaan', f_visa:'Kedaluwarsa Visa', f_bio:'Tentang Saya',
     f_job_categories:'Jenis Pekerjaan Diinginkan (maks. 5)',
     no_applied:'Belum ada lamaran.', no_saved_jobs:'Belum ada lowongan tersimpan.',
@@ -1983,6 +2001,18 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
             <button style={{ fontSize:13, padding:'8px 16px' }} onClick={() => document.getElementById('avatarInput').click()}>{t.change_photo}</button>
             {avatarPreview && <p className="muted" style={{ fontSize:12 }}>{t.photo_pending}</p>}
           </div>
+
+          {/* 写真推奨 & プライバシー通知 */}
+          <div className="photo-notice">
+            <div className="photo-notice-tip">
+              <span className="photo-notice-icon">✨</span>
+              <span>{t.photo_tip}</span>
+            </div>
+            <div className="photo-notice-privacy">
+              {t.photo_privacy}
+            </div>
+          </div>
+
           <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
           <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
