@@ -34,8 +34,10 @@ const T = {
     post_title:'Post a Job', post_login_title:'Login required to post',
     post_login_desc:'Sign in with Google to post job listings.',
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
-    f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
+    f_salary:'Pay Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
     f_categories:'Job Type (up to 5)',
+    pay_hour:'/ hr', pay_day:'/ day', pay_week:'/ week', pay_month:'/ month', pay_casual:'Casual / Negotiable',
+    map_verify_hint:'Check the pin is correct — adjust the address if needed.',
     save_btn:'Save', saving:'Saving...',
     required_err:'Job title and business name are required.', job_saved:'Job posted successfully.',
     find_staff:'Find Staff', staff_desc:'Browse staff candidates available in Sydney.',
@@ -111,8 +113,10 @@ const T = {
     post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
     post_login_desc:'Googleアカウントでログインしてください。',
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
-    f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
+    f_salary:'給与', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
     f_categories:'職種（最大5つ選択）',
+    pay_hour:'時給', pay_day:'日給', pay_week:'週給', pay_month:'月給', pay_casual:'都度払い・応相談',
+    map_verify_hint:'ピンが正しい場所にあるか確認し、必要なら住所を調整してください。',
     save_btn:'保存する', saving:'保存中...',
     required_err:'求人タイトルと店名は必須です。', job_saved:'求人を保存しました。',
     find_staff:'スタッフを探す', staff_desc:'シドニーで働くスタッフ候補を探せます。',
@@ -187,8 +191,10 @@ const T = {
     post_title:'구인 등록', post_login_title:'로그인 후 등록 가능',
     post_login_desc:'Google 계정으로 로그인해 주세요.',
     f_title:'직종 *', f_company:'가게 이름 *', f_location:'장소',
-    f_salary:'시급', f_eng:'영어 조건', f_desc:'업무 내용', f_img:'사진',
+    f_salary:'급여', f_eng:'영어 조건', f_desc:'업무 내용', f_img:'사진',
     f_categories:'직종 (최대 5개)',
+    pay_hour:'시간당', pay_day:'일당', pay_week:'주급', pay_month:'월급', pay_casual:'건별 지급 / 협의',
+    map_verify_hint:'핀이 올바른 위치에 있는지 확인하고, 필요하면 주소를 수정하세요.',
     save_btn:'저장', saving:'저장 중...',
     required_err:'직종과 가게 이름은 필수입니다.', job_saved:'구인이 등록되었습니다.',
     find_staff:'직원 찾기', staff_desc:'시드니에서 일할 수 있는 직원 후보를 찾아보세요.',
@@ -263,8 +269,10 @@ const T = {
     post_title:'发布招聘', post_login_title:'发布招聘需要登录',
     post_login_desc:'请用Google账号登录。',
     f_title:'职位名称 *', f_company:'店铺名称 *', f_location:'地点',
-    f_salary:'时薪', f_eng:'英语要求', f_desc:'工作内容', f_img:'图片',
+    f_salary:'薪资', f_eng:'英语要求', f_desc:'工作内容', f_img:'图片',
     f_categories:'职种（最多5个）',
+    pay_hour:'/ 小时', pay_day:'/ 天', pay_week:'/ 周', pay_month:'/ 月', pay_casual:'临时 / 协商',
+    map_verify_hint:'请确认地图上的标点位置正确，如需要可调整地址。',
     save_btn:'保存', saving:'保存中...',
     required_err:'职位名称和店铺名称为必填项。', job_saved:'招聘已发布。',
     find_staff:'找员工', staff_desc:'寻找在悉尼可以工作的候选人。',
@@ -339,8 +347,10 @@ const T = {
     post_title:'Publicar Empleo', post_login_title:'Inicia sesión para publicar',
     post_login_desc:'Inicia sesión con Google para publicar empleos.',
     f_title:'Título del puesto *', f_company:'Nombre del negocio *', f_location:'Ubicación',
-    f_salary:'Tarifa por hora', f_eng:'Requisito de inglés', f_desc:'Descripción del trabajo', f_img:'Foto',
+    f_salary:'Remuneración', f_eng:'Requisito de inglés', f_desc:'Descripción del trabajo', f_img:'Foto',
     f_categories:'Tipo de empleo (máx. 5)',
+    pay_hour:'/ hora', pay_day:'/ día', pay_week:'/ semana', pay_month:'/ mes', pay_casual:'Casual / A convenir',
+    map_verify_hint:'Verifica que el marcador esté en el lugar correcto y ajusta la dirección si es necesario.',
     save_btn:'Guardar', saving:'Guardando...',
     required_err:'El título y el nombre del negocio son obligatorios.', job_saved:'Empleo publicado con éxito.',
     find_staff:'Buscar Personal', staff_desc:'Encuentra candidatos disponibles en Sídney.',
@@ -415,8 +425,10 @@ const T = {
     post_title:'Publier une offre', post_login_title:'Connexion requise',
     post_login_desc:'Connectez-vous avec Google pour publier des offres.',
     f_title:'Intitulé du poste *', f_company:"Nom de l'établissement *", f_location:'Lieu',
-    f_salary:'Taux horaire', f_eng:'Exigence en anglais', f_desc:'Description du poste', f_img:'Photo',
+    f_salary:'Rémunération', f_eng:'Exigence en anglais', f_desc:'Description du poste', f_img:'Photo',
     f_categories:"Type d'emploi (max 5)",
+    pay_hour:'/ heure', pay_day:'/ jour', pay_week:'/ semaine', pay_month:'/ mois', pay_casual:'Occasionnel / À négocier',
+    map_verify_hint:"Vérifiez que l'épingle est au bon endroit et ajustez l'adresse si nécessaire.",
     save_btn:'Sauvegarder', saving:'Sauvegarde...',
     required_err:"L'intitulé et le nom de l'établissement sont obligatoires.", job_saved:'Offre publiée avec succès.',
     find_staff:'Trouver du personnel', staff_desc:'Parcourez les candidats disponibles à Sydney.',
@@ -491,8 +503,10 @@ const T = {
     post_title:'Publicar Vaga', post_login_title:'Login necessário para publicar',
     post_login_desc:'Entre com sua conta Google para publicar vagas.',
     f_title:'Título da vaga *', f_company:'Nome do negócio *', f_location:'Local',
-    f_salary:'Valor por hora', f_eng:'Requisito de inglês', f_desc:'Descrição da vaga', f_img:'Foto',
+    f_salary:'Remuneração', f_eng:'Requisito de inglês', f_desc:'Descrição da vaga', f_img:'Foto',
     f_categories:'Tipo de vaga (máx. 5)',
+    pay_hour:'/ hora', pay_day:'/ dia', pay_week:'/ semana', pay_month:'/ mês', pay_casual:'Eventual / A combinar',
+    map_verify_hint:'Verifique se o marcador está no lugar certo e ajuste o endereço se necessário.',
     save_btn:'Salvar', saving:'Salvando...',
     required_err:'Título e nome do negócio são obrigatórios.', job_saved:'Vaga publicada com sucesso.',
     find_staff:'Encontrar Funcionários', staff_desc:'Encontre candidatos disponíveis em Sydney.',
@@ -567,8 +581,10 @@ const T = {
     post_title:'Đăng tuyển dụng', post_login_title:'Cần đăng nhập để đăng tin',
     post_login_desc:'Vui lòng đăng nhập bằng Google.',
     f_title:'Tên vị trí *', f_company:'Tên cơ sở *', f_location:'Địa điểm',
-    f_salary:'Lương theo giờ', f_eng:'Yêu cầu tiếng Anh', f_desc:'Mô tả công việc', f_img:'Ảnh',
+    f_salary:'Mức lương', f_eng:'Yêu cầu tiếng Anh', f_desc:'Mô tả công việc', f_img:'Ảnh',
     f_categories:'Loại việc (tối đa 5)',
+    pay_hour:'/ giờ', pay_day:'/ ngày', pay_week:'/ tuần', pay_month:'/ tháng', pay_casual:'Theo ca / Thỏa thuận',
+    map_verify_hint:'Kiểm tra xem ghim có đúng vị trí không — điều chỉnh địa chỉ nếu cần.',
     save_btn:'Lưu', saving:'Đang lưu...',
     required_err:'Tên vị trí và tên cơ sở là bắt buộc.', job_saved:'Đăng tuyển thành công.',
     find_staff:'Tìm nhân viên', staff_desc:'Tìm ứng viên có thể làm việc tại Sydney.',
@@ -643,8 +659,10 @@ const T = {
     post_title:'Pasang Lowongan', post_login_title:'Login diperlukan untuk memasang',
     post_login_desc:'Masuk dengan Google untuk memasang lowongan.',
     f_title:'Judul Pekerjaan *', f_company:'Nama Usaha *', f_location:'Lokasi',
-    f_salary:'Upah per Jam', f_eng:'Persyaratan Bahasa Inggris', f_desc:'Deskripsi Pekerjaan', f_img:'Foto',
+    f_salary:'Upah', f_eng:'Persyaratan Bahasa Inggris', f_desc:'Deskripsi Pekerjaan', f_img:'Foto',
     f_categories:'Jenis Pekerjaan (maks. 5)',
+    pay_hour:'/ jam', pay_day:'/ hari', pay_week:'/ minggu', pay_month:'/ bulan', pay_casual:'Kasual / Negosiasi',
+    map_verify_hint:'Pastikan pin berada di lokasi yang benar — sesuaikan alamat jika perlu.',
     save_btn:'Simpan', saving:'Menyimpan...',
     required_err:'Judul pekerjaan dan nama usaha wajib diisi.', job_saved:'Lowongan berhasil dipasang.',
     find_staff:'Cari Staf', staff_desc:'Temukan kandidat yang tersedia di Sydney.',
@@ -1514,7 +1532,82 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 // ═════════════════════════════════════════════
 //  PostJob
 // ═════════════════════════════════════════════
-const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
+// ─── 給与入力コンポーネント ───────────────────
+function parseSalary(str) {
+  if (!str) return { amount:'', period:'hour' }
+  const lower = str.toLowerCase()
+  const m = str.match(/\$?(\d+(?:\.\d+)?)/)
+  const amount = m ? m[1] : ''
+  if (lower.includes('casual') || lower.includes('negotiable') || lower.includes('都度') || lower.includes('応相談') || lower.includes('協議')) return { amount, period:'casual' }
+  if (lower.includes('month') || lower.includes('月給') || lower.includes('월급') || lower.includes('月')) return { amount, period:'month' }
+  if (lower.includes('week') || lower.includes('週給') || lower.includes('주급') || lower.includes('周')) return { amount, period:'week' }
+  if (lower.includes('day') || lower.includes('日給') || lower.includes('일당') || lower.includes('天')) return { amount, period:'day' }
+  return { amount, period:'hour' }
+}
+function formatSalary(amount, period, t) {
+  if (period === 'casual') return t.pay_casual
+  if (!amount) return ''
+  return `$${amount} ${t['pay_' + period] || t.pay_hour}`
+}
+function SalaryInput({ value, onChange }) {
+  const { t } = useT()
+  const parsed = parseSalary(value)
+  const [amount, setAmount] = useState(parsed.amount)
+  const [period, setPeriod] = useState(parsed.period)
+  useEffect(() => {
+    const p = parseSalary(value)
+    setAmount(p.amount); setPeriod(p.period)
+  }, [value])
+  function emit(a, p) { onChange(formatSalary(a, p, t)) }
+  return (
+    <div className="salary-input">
+      {period !== 'casual' && (
+        <div className="salary-amount">
+          <span className="salary-dollar">$</span>
+          <input type="number" min="0" step="0.5" value={amount}
+            onChange={e => { setAmount(e.target.value); emit(e.target.value, period) }}
+            placeholder="25" />
+        </div>
+      )}
+      <select value={period}
+        onChange={e => { setPeriod(e.target.value); emit(amount, e.target.value) }}
+        style={{ flex: period === 'casual' ? 1 : 'none' }}>
+        <option value="hour">{t.pay_hour}</option>
+        <option value="day">{t.pay_day}</option>
+        <option value="week">{t.pay_week}</option>
+        <option value="month">{t.pay_month}</option>
+        <option value="casual">{t.pay_casual}</option>
+      </select>
+    </div>
+  )
+}
+
+// ─── 地図プレビューコンポーネント ─────────────
+function MapPreview({ query, hint }) {
+  const [liveQuery, setLiveQuery] = useState('')
+  const timer = useRef(null)
+  useEffect(() => {
+    clearTimeout(timer.current)
+    if (!query?.trim()) { setLiveQuery(''); return }
+    timer.current = setTimeout(() => setLiveQuery(query.trim()), 900)
+    return () => clearTimeout(timer.current)
+  }, [query])
+  if (!liveQuery) return null
+  return (
+    <div className="map-preview">
+      <iframe
+        key={liveQuery}
+        title="map-preview"
+        src={`https://maps.google.com/maps?q=${encodeURIComponent(liveQuery)}&output=embed&hl=en`}
+        loading="lazy"
+        allowFullScreen
+      />
+      <p className="map-preview-hint">📍 {hint}</p>
+    </div>
+  )
+}
+
+const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'Basic English OK', description:'', image_url:'', categories:'' }
 
 function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
   const { t } = useT()
@@ -1563,8 +1656,9 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
       <section className="card form">
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
-        <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
-        <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
+        <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Shop 5, 123 George St, Sydney CBD" /></label>
+        <MapPreview query={job.location} hint={t.map_verify_hint} />
+        <label>{t.f_salary}<SalaryInput value={job.salary} onChange={v => update('salary', v)} /></label>
         <label>{t.f_categories}
           <CategoryPicker value={job.categories} onChange={v => update('categories', v)} max={5} />
         </label>
@@ -1586,7 +1680,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
 // ═════════════════════════════════════════════
 function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData }) {
   const { t } = useT()
-  const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:job.english_level||'英語初級OK', description:job.description||'' })
+  const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:job.english_level||'Basic English OK', description:job.description||'' })
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
@@ -1621,7 +1715,8 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
           <label>{t.f_title}<input value={form.title} onChange={e => upd('title', e.target.value)} /></label>
           <label>{t.f_company}<input value={form.company} onChange={e => upd('company', e.target.value)} /></label>
           <label>{t.f_location}<input value={form.location} onChange={e => upd('location', e.target.value)} /></label>
-          <label>{t.f_salary}<input value={form.salary} onChange={e => upd('salary', e.target.value)} /></label>
+          <MapPreview query={form.location} hint={t.map_verify_hint} />
+          <label>{t.f_salary}<SalaryInput value={form.salary} onChange={v => upd('salary', v)} /></label>
           <label>{t.f_eng}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
               <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
