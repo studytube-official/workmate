@@ -68,6 +68,7 @@ const T = {
     login_profile_desc:'View saved jobs and application history here.',
     signup_tab:'Sign Up', login_tab:'Log In',
     f_email:'Email', f_password:'Password', f_displayname:'Display Name',
+    name_ph:'Your name', password_ph:'At least 6 characters',
     signup_btn:'Create Account', login_btn:'Log In',
     or_google:'or',
     err_required:'Please fill in name, email and password',
@@ -143,6 +144,7 @@ const T = {
     login_profile_desc:'求人保存・応募履歴がここに表示されます。',
     signup_tab:'新規登録', login_tab:'ログイン',
     f_email:'メールアドレス', f_password:'パスワード', f_displayname:'名前（表示名）',
+    name_ph:'名前を入力', password_ph:'6文字以上',
     signup_btn:'アカウントを作成', login_btn:'ログイン',
     or_google:'または',
     err_required:'名前・メール・パスワードを入力してください',
@@ -218,6 +220,7 @@ const T = {
     login_profile_desc:'저장한 구인과 지원 내역을 확인하세요.',
     signup_tab:'회원가입', login_tab:'로그인',
     f_email:'이메일', f_password:'비밀번호', f_displayname:'표시 이름',
+    name_ph:'이름 입력', password_ph:'6자 이상',
     signup_btn:'계정 만들기', login_btn:'로그인',
     or_google:'또는',
     err_required:'이름, 이메일, 비밀번호를 입력해주세요',
@@ -293,6 +296,7 @@ const T = {
     login_profile_desc:'在此查看收藏职位和申请记录。',
     signup_tab:'注册', login_tab:'登录',
     f_email:'邮箱', f_password:'密码', f_displayname:'显示名称',
+    name_ph:'请输入姓名', password_ph:'至少6位字符',
     signup_btn:'创建账户', login_btn:'登录',
     or_google:'或',
     err_required:'请填写姓名、邮箱和密码',
@@ -368,6 +372,7 @@ const T = {
     login_profile_desc:'Aquí verás tus empleos guardados y postulaciones.',
     signup_tab:'Registrarse', login_tab:'Iniciar sesión',
     f_email:'Correo electrónico', f_password:'Contraseña', f_displayname:'Nombre visible',
+    name_ph:'Tu nombre', password_ph:'Mínimo 6 caracteres',
     signup_btn:'Crear cuenta', login_btn:'Iniciar sesión',
     or_google:'o',
     err_required:'Por favor completa nombre, correo y contraseña',
@@ -443,6 +448,7 @@ const T = {
     login_profile_desc:'Retrouvez ici vos offres sauvegardées et candidatures.',
     signup_tab:"S'inscrire", login_tab:'Se connecter',
     f_email:'Adresse e-mail', f_password:'Mot de passe', f_displayname:'Pseudo',
+    name_ph:'Votre nom', password_ph:'Minimum 6 caractères',
     signup_btn:'Créer un compte', login_btn:'Se connecter',
     or_google:'ou',
     err_required:'Veuillez renseigner nom, e-mail et mot de passe',
@@ -518,6 +524,7 @@ const T = {
     login_profile_desc:'Veja suas vagas salvas e candidaturas aqui.',
     signup_tab:'Cadastrar', login_tab:'Entrar',
     f_email:'E-mail', f_password:'Senha', f_displayname:'Nome de exibição',
+    name_ph:'Seu nome', password_ph:'Mínimo 6 caracteres',
     signup_btn:'Criar conta', login_btn:'Entrar',
     or_google:'ou',
     err_required:'Por favor preencha nome, e-mail e senha',
@@ -593,6 +600,7 @@ const T = {
     login_profile_desc:'Xem tin đã lưu và lịch sử ứng tuyển tại đây.',
     signup_tab:'Đăng ký', login_tab:'Đăng nhập',
     f_email:'Email', f_password:'Mật khẩu', f_displayname:'Tên hiển thị',
+    name_ph:'Họ và tên', password_ph:'Ít nhất 6 ký tự',
     signup_btn:'Tạo tài khoản', login_btn:'Đăng nhập',
     or_google:'hoặc',
     err_required:'Vui lòng nhập họ tên, email và mật khẩu',
@@ -668,6 +676,7 @@ const T = {
     login_profile_desc:'Lihat lowongan tersimpan dan riwayat lamaran di sini.',
     signup_tab:'Daftar', login_tab:'Masuk',
     f_email:'Email', f_password:'Kata Sandi', f_displayname:'Nama Tampilan',
+    name_ph:'Nama Anda', password_ph:'Minimal 6 karakter',
     signup_btn:'Buat Akun', login_btn:'Masuk',
     or_google:'atau',
     err_required:'Harap isi nama, email, dan kata sandi',
@@ -1283,14 +1292,14 @@ function Login({ signInGoogle, setPage, notify }) {
         <div className="form">
           {tab === 'signup' && (
             <label>{t.f_displayname}
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="山田 太郎" />
+              <input value={name} onChange={e => setName(e.target.value)} placeholder={t.name_ph} />
             </label>
           )}
           <label>{t.f_email}
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
           </label>
           <label>{t.f_password}
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="6文字以上" />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t.password_ph} />
           </label>
           <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16, marginTop:4 }}
             onClick={tab==='signup' ? handleSignup : handleLogin} disabled={busy}>
@@ -2013,7 +2022,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
             </div>
           </div>
 
-          <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
+          <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder={t.name_ph} /></label>
           <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
               <option>Basic</option><option>Pre-intermediate</option><option>Intermediate</option>
