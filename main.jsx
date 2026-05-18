@@ -1750,26 +1750,34 @@ function formatSalary(amount, period, t) {
 }
 function SalaryInput({ value, onChange }) {
   const { t } = useT()
-  const parsed = parseSalary(value)
-  const [amount, setAmount] = useState(parsed.amount)
-  const [period, setPeriod] = useState(parsed.period)
-  useEffect(() => {
-    const p = parseSalary(value)
-    setAmount(p.amount); setPeriod(p.period)
-  }, [value])
-  function emit(a, p) { onChange(formatSalary(a, p, t)) }
+  // 初期値のみpropから取得。useEffectで同期しないことで入力中の上書きを防ぐ
+  const init = parseSalary(value)
+  const [amount, setAmount] = useState(init.amount)
+  const [period, setPeriod] = useState(init.period)
+
+  function handleAmount(a) {
+    setAmount(a)
+    onChange(formatSalary(a, period, t))
+  }
+  function handlePeriod(p) {
+    setPeriod(p)
+    onChange(formatSalary(amount, p, t))
+  }
+
   return (
     <div className="salary-input">
       {period !== 'casual' && (
         <div className="salary-amount">
           <span className="salary-dollar">$</span>
-          <input type="number" min="0" step="0.5" value={amount}
-            onChange={e => { setAmount(e.target.value); emit(e.target.value, period) }}
-            placeholder="25" />
+          <input
+            type="number" min="0" step="0.5"
+            value={amount}
+            onChange={e => handleAmount(e.target.value)}
+            placeholder="25"
+          />
         </div>
       )}
-      <select value={period}
-        onChange={e => { setPeriod(e.target.value); emit(amount, e.target.value) }}
+      <select value={period} onChange={e => handlePeriod(e.target.value)}
         style={{ flex: period === 'casual' ? 1 : 'none' }}>
         <option value="hour">{t.pay_hour}</option>
         <option value="day">{t.pay_day}</option>
