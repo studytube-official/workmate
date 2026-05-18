@@ -436,6 +436,66 @@ textarea { min-height: 120px; resize: vertical }
 .lang-option-label { flex: 1 }
 .lang-check { font-size: 12px; color: var(--accent) }
 
+/* ── View toggle (List / Map) ── */
+.view-toggle {
+  display: flex; border-radius: 10px; overflow: hidden;
+  border: 1px solid var(--border2); flex-shrink: 0;
+}
+.view-toggle button {
+  padding: 7px 13px; font-size: 13px; font-weight: 600;
+  background: transparent; border: none; color: var(--muted2);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.view-toggle button.active {
+  background: var(--accent); color: #fff;
+}
+.view-toggle button:not(.active):hover { background: var(--accent-dim); color: var(--text) }
+
+/* ── Job map ── */
+.map-view-wrap {
+  flex: 1; position: relative; display: flex; flex-direction: column;
+  min-height: 0;
+}
+.job-map-container {
+  flex: 1; min-height: 0; width: 100%;
+}
+/* Leaflet override for warm theme */
+.map-pin {
+  width: 36px; height: 36px; border-radius: 50% 50% 50% 0;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transform: rotate(-45deg);
+  box-shadow: 0 2px 8px rgba(155,79,26,0.35);
+  border: 2px solid #fff;
+}
+.map-pin > * { transform: rotate(45deg) }
+.map-unmapped-note {
+  position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: rgba(250,248,244,0.92); backdrop-filter: blur(8px);
+  border: 1px solid var(--border2); border-radius: 999px;
+  padding: 6px 14px; font-size: 12px; color: var(--muted2);
+  white-space: nowrap; pointer-events: none;
+  z-index: 1000;
+}
+.map-job-card {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--bg3); border-top: 1px solid var(--border2);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 32px;
+  box-shadow: 0 -8px 32px rgba(160,125,85,0.15);
+  animation: slide-up 0.22s ease;
+}
+@keyframes slide-up {
+  from { transform: translateY(100%) }
+  to   { transform: translateY(0) }
+}
+.map-job-card-close {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--bg4); border: none; border-radius: 999px;
+  width: 28px; height: 28px; font-size: 16px; cursor: pointer;
+  color: var(--muted2); display: flex; align-items: center; justify-content: center;
+}
+
 /* ── Salary input ── */
 .salary-input {
   display: flex; align-items: stretch; gap: 8px;

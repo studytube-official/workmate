@@ -21,6 +21,7 @@ const T = {
     quick_jobs:"Today's Jobs", quick_jobs_sub:'Browse all listings',
     quick_post:'Post a Job', quick_post_sub:'For employers',
     search_jobs:'Find Jobs', keyword_ph:'Search keywords',
+    view_list:'List', view_map:'Map', map_no_coords:'Some jobs could not be placed on the map',
     all_areas:'All areas', eng_cond:'English level', post_btn:'＋ Post Job',
     no_jobs:'No jobs found.',
     view_detail:'View Details', save:'♡ Save', saved_btn:'♥ Saved',
@@ -100,6 +101,7 @@ const T = {
     quick_jobs:'今日のおすすめ求人', quick_jobs_sub:'求人一覧を見る',
     quick_post:'求人を投稿する', quick_post_sub:'店側が求人を追加',
     search_jobs:'求人を探す', keyword_ph:'キーワード検索',
+    view_list:'リスト', view_map:'地図', map_no_coords:'一部の求人は地図に表示できませんでした',
     all_areas:'場所すべて', eng_cond:'英語条件', post_btn:'＋ 求人投稿',
     no_jobs:'求人がありません。',
     view_detail:'詳細を見る', save:'♡ 保存', saved_btn:'♥ 保存済み',
@@ -178,6 +180,7 @@ const T = {
     quick_jobs:'오늘의 추천 구인', quick_jobs_sub:'전체 구인 보기',
     quick_post:'구인 등록', quick_post_sub:'사업주 전용',
     search_jobs:'구인 검색', keyword_ph:'키워드 검색',
+    view_list:'목록', view_map:'지도', map_no_coords:'일부 구인은 지도에 표시되지 않을 수 있습니다',
     all_areas:'전체 지역', eng_cond:'영어 조건', post_btn:'＋ 구인 등록',
     no_jobs:'구인이 없습니다.',
     view_detail:'상세 보기', save:'♡ 저장', saved_btn:'♥ 저장됨',
@@ -256,6 +259,7 @@ const T = {
     quick_jobs:'今日推荐', quick_jobs_sub:'查看全部招聘',
     quick_post:'发布招聘', quick_post_sub:'雇主专用',
     search_jobs:'搜索职位', keyword_ph:'关键词搜索',
+    view_list:'列表', view_map:'地图', map_no_coords:'部分职位无法在地图上显示',
     all_areas:'全部地区', eng_cond:'英语要求', post_btn:'＋ 发布招聘',
     no_jobs:'暂无职位。',
     view_detail:'查看详情', save:'♡ 收藏', saved_btn:'♥ 已收藏',
@@ -334,6 +338,7 @@ const T = {
     quick_jobs:'Empleos de Hoy', quick_jobs_sub:'Ver todos los anuncios',
     quick_post:'Publicar Empleo', quick_post_sub:'Para empleadores',
     search_jobs:'Buscar Empleos', keyword_ph:'Buscar por palabra clave',
+    view_list:'Lista', view_map:'Mapa', map_no_coords:'Algunos empleos no se pudieron ubicar en el mapa',
     all_areas:'Todas las zonas', eng_cond:'Nivel de inglés', post_btn:'＋ Publicar',
     no_jobs:'No se encontraron empleos.',
     view_detail:'Ver Detalles', save:'♡ Guardar', saved_btn:'♥ Guardado',
@@ -412,6 +417,7 @@ const T = {
     quick_jobs:'Emplois du jour', quick_jobs_sub:'Voir toutes les offres',
     quick_post:'Publier une offre', quick_post_sub:'Pour les employeurs',
     search_jobs:'Rechercher des emplois', keyword_ph:'Rechercher par mot-clé',
+    view_list:'Liste', view_map:'Carte', map_no_coords:'Certains emplois ne peuvent pas être affichés sur la carte',
     all_areas:'Toutes les zones', eng_cond:"Niveau d'anglais", post_btn:'＋ Publier',
     no_jobs:'Aucune offre trouvée.',
     view_detail:'Voir les détails', save:'♡ Sauvegarder', saved_btn:'♥ Sauvegardé',
@@ -490,6 +496,7 @@ const T = {
     quick_jobs:'Vagas de Hoje', quick_jobs_sub:'Ver todas as vagas',
     quick_post:'Publicar Vaga', quick_post_sub:'Para empregadores',
     search_jobs:'Buscar Vagas', keyword_ph:'Buscar por palavra-chave',
+    view_list:'Lista', view_map:'Mapa', map_no_coords:'Algumas vagas não puderam ser localizadas no mapa',
     all_areas:'Todas as áreas', eng_cond:'Nível de inglês', post_btn:'＋ Publicar Vaga',
     no_jobs:'Nenhuma vaga encontrada.',
     view_detail:'Ver Detalhes', save:'♡ Salvar', saved_btn:'♥ Salvo',
@@ -568,6 +575,7 @@ const T = {
     quick_jobs:'Việc làm hôm nay', quick_jobs_sub:'Xem tất cả tin tuyển dụng',
     quick_post:'Đăng tuyển dụng', quick_post_sub:'Dành cho nhà tuyển dụng',
     search_jobs:'Tìm việc làm', keyword_ph:'Tìm kiếm theo từ khóa',
+    view_list:'Danh sách', view_map:'Bản đồ', map_no_coords:'Một số việc làm không thể hiển thị trên bản đồ',
     all_areas:'Tất cả khu vực', eng_cond:'Yêu cầu tiếng Anh', post_btn:'＋ Đăng tuyển',
     no_jobs:'Không có việc làm nào.',
     view_detail:'Xem chi tiết', save:'♡ Lưu', saved_btn:'♥ Đã lưu',
@@ -646,6 +654,7 @@ const T = {
     quick_jobs:'Lowongan Hari Ini', quick_jobs_sub:'Lihat semua lowongan',
     quick_post:'Pasang Lowongan', quick_post_sub:'Untuk pengusaha',
     search_jobs:'Cari Lowongan', keyword_ph:'Cari kata kunci',
+    view_list:'Daftar', view_map:'Peta', map_no_coords:'Beberapa lowongan tidak dapat ditampilkan di peta',
     all_areas:'Semua area', eng_cond:'Persyaratan bahasa Inggris', post_btn:'＋ Pasang Lowongan',
     no_jobs:'Tidak ada lowongan ditemukan.',
     view_detail:'Lihat Detail', save:'♡ Simpan', saved_btn:'♥ Tersimpan',
@@ -728,6 +737,167 @@ const LANGS = [
 
 const LangCtx = createContext({ lang:'en', setLang:()=>{}, t:T.en })
 const useT = () => useContext(LangCtx)
+
+// ─── シドニー主要エリア座標テーブル ────────────
+const SYDNEY_COORDS = {
+  // Central
+  'sydney cbd':[-33.8688,151.2093], 'sydney city':[-33.8688,151.2093],
+  'cbd':[-33.8688,151.2093], 'city':[-33.8695,151.2070],
+  'haymarket':[-33.8793,151.2034], 'chinatown':[-33.8793,151.2034],
+  'world square':[-33.8747,151.2068], 'george st':[-33.8688,151.2073],
+  'circular quay':[-33.8617,151.2107], 'the rocks':[-33.8599,151.2085],
+  'barangaroo':[-33.8637,151.2000], 'darling harbour':[-33.8723,151.1985],
+  'pyrmont':[-33.8701,151.1950], 'ultimo':[-33.8790,151.1985],
+  'chippendale':[-33.8878,151.1967], 'redfern':[-33.8926,151.2047],
+  // Inner East
+  'surry hills':[-33.8862,151.2100], 'darlinghurst':[-33.8778,151.2210],
+  'kings cross':[-33.8753,151.2267], 'potts point':[-33.8711,151.2262],
+  'woolloomooloo':[-33.8694,151.2196], 'paddington':[-33.8837,151.2263],
+  'moore park':[-33.8948,151.2157], 'centennial park':[-33.9044,151.2340],
+  // Inner West
+  'newtown':[-33.8966,151.1776], 'glebe':[-33.8817,151.1868],
+  'balmain':[-33.8603,151.1808], 'rozelle':[-33.8620,151.1709],
+  'leichhardt':[-33.8840,151.1575], 'annandale':[-33.8856,151.1705],
+  'ashfield':[-33.8881,151.1235], 'burwood':[-33.8770,151.1033],
+  'strathfield':[-33.8751,151.0826], 'homebush':[-33.8655,151.0850],
+  'olympic park':[-33.8434,151.0706], 'concord':[-33.8673,151.0948],
+  // East
+  'bondi junction':[-33.8917,151.2495], 'bondi beach':[-33.8915,151.2767],
+  'bondi':[-33.8951,151.2749], 'coogee':[-33.9222,151.2567],
+  'randwick':[-33.9151,151.2375], 'kensington':[-33.9052,151.2211],
+  'maroubra':[-33.9444,151.2501], 'mascot':[-33.9261,151.1933],
+  'airport':[-33.9399,151.1753], 'wolli creek':[-33.9551,151.1571],
+  // North Shore
+  'north sydney':[-33.8401,151.2072], 'milsons point':[-33.8489,151.2119],
+  'kirribilli':[-33.8503,151.2193], 'neutral bay':[-33.8370,151.2161],
+  'cremorne':[-33.8387,151.2239], 'mosman':[-33.8268,151.2432],
+  'crows nest':[-33.8285,151.2009], 'st leonards':[-33.8222,151.1946],
+  'artarmon':[-33.8175,151.1830], 'chatswood':[-33.7972,151.1834],
+  'lane cove':[-33.8173,151.1677], 'willoughby':[-33.8016,151.1993],
+  'manly':[-33.7969,151.2876], 'dee why':[-33.7505,151.2877],
+  'brookvale':[-33.7627,151.2686], 'frenchs forest':[-33.7503,151.2291],
+  // Upper North Shore
+  'gordon':[-33.7567,151.1499], 'turramurra':[-33.7414,151.1354],
+  'pymble':[-33.7348,151.1421], 'hornsby':[-33.7038,151.0994],
+  'waitara':[-33.7163,151.1013],
+  // North West
+  'ryde':[-33.8198,151.1009], 'meadowbank':[-33.8286,151.0891],
+  'rhodes':[-33.8297,151.0887], 'epping':[-33.7727,151.0816],
+  'eastwood':[-33.7899,151.0814], 'carlingford':[-33.7786,151.0479],
+  'parramatta':[-33.8148,151.0017], 'westmead':[-33.8082,150.9882],
+  'castle hill':[-33.7327,151.0044], 'hills':[-33.7206,151.0034],
+  'norwest':[-33.7331,150.9706], 'bella vista':[-33.7298,150.9619],
+  // West
+  'seven hills':[-33.7731,150.9354], 'blacktown':[-33.7688,150.9057],
+  'penrith':[-33.7511,150.6942], 'st marys':[-33.7615,150.7752],
+  'mount druitt':[-33.7694,150.8197],
+  // South West
+  'bankstown':[-33.9200,151.0346], 'lakemba':[-33.9261,151.0724],
+  'campsie':[-33.9098,151.1032], 'hurstville':[-33.9668,151.1019],
+  'kogarah':[-33.9632,151.1316], 'rockdale':[-33.9518,151.1377],
+  'brighton':[-33.9596,151.1565], 'ramsgate':[-33.9832,151.1366],
+  'miranda':[-34.0307,151.1009], 'sutherland':[-34.0319,151.0576],
+  'cronulla':[-34.0566,151.1520],
+  // South
+  'fairfield':[-33.8712,150.9571], 'cabramatta':[-33.8951,150.9400],
+  'liverpool':[-33.9207,150.9227],
+}
+
+function getJobCoords(location) {
+  if (!location) return null
+  const lower = location.toLowerCase()
+  const entries = Object.entries(SYDNEY_COORDS).sort((a, b) => b[0].length - a[0].length)
+  for (const [key, coords] of entries) {
+    if (lower.includes(key)) return coords
+  }
+  return null
+}
+
+// ─── JobMap コンポーネント ──────────────────────
+function JobMap({ jobs, openJob }) {
+  const { t } = useT()
+  const mapRef      = useRef(null)
+  const leafletRef  = useRef(null)
+  const markersRef  = useRef([])
+  const [selected, setSelected] = useState(null)
+
+  // 地図初期化（マウント時のみ）
+  useEffect(() => {
+    if (!window.L || !mapRef.current || leafletRef.current) return
+    leafletRef.current = window.L.map(mapRef.current, { zoomControl:true })
+      .setView([-33.8688, 151.2093], 12)
+    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom:19,
+    }).addTo(leafletRef.current)
+    return () => {
+      if (leafletRef.current) { leafletRef.current.remove(); leafletRef.current = null }
+    }
+  }, [])
+
+  // マーカー更新（jobs が変わるたび）
+  useEffect(() => {
+    if (!leafletRef.current) return
+    markersRef.current.forEach(m => m.remove())
+    markersRef.current = []
+
+    const pinIcon = window.L.divIcon({
+      className:'',
+      html:`<div class="map-pin">💼</div>`,
+      iconSize:[36,36], iconAnchor:[18,36], popupAnchor:[0,-36],
+    })
+
+    const placed = []
+    jobs.forEach(job => {
+      const coords = getJobCoords(job.location)
+      if (!coords) return
+      const marker = window.L.marker(coords, { icon: pinIcon })
+        .addTo(leafletRef.current)
+      marker.on('click', () => { setSelected(job); leafletRef.current.panTo(coords) })
+      markersRef.current.push(marker)
+      placed.push(coords)
+    })
+
+    if (placed.length > 0) {
+      leafletRef.current.fitBounds(window.L.latLngBounds(placed).pad(0.25))
+    }
+
+    setTimeout(() => leafletRef.current?.invalidateSize(), 100)
+  }, [jobs])
+
+  const unmapped = jobs.filter(j => !getJobCoords(j.location)).length
+
+  return (
+    <div className="map-view-wrap">
+      <div ref={mapRef} className="job-map-container" />
+      {unmapped > 0 && (
+        <p className="map-unmapped-note">⚠ {unmapped} {t.map_no_coords}</p>
+      )}
+      {selected && (
+        <div className="map-job-card">
+          <button className="map-job-card-close" onClick={() => setSelected(null)}>×</button>
+          <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
+            <div className="photo" style={{ width:56, height:56, flexShrink:0, fontSize:22 }}>
+              {selected.image_url
+                ? <img src={selected.image_url} alt={selected.company} style={{ width:'100%', height:'100%', objectFit:'cover', borderRadius:10 }} />
+                : '💼'}
+            </div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <h3 style={{ margin:'0 0 2px', fontSize:16 }}>{selected.company}</h3>
+              <p style={{ margin:'0 0 4px', color:'var(--muted)', fontSize:14 }}>{selected.title}</p>
+              <p style={{ margin:0, fontSize:13, color:'var(--muted)' }}>
+                📍 {selected.location || t.loc_tbd} · {selected.salary || t.salary_tbd}
+              </p>
+            </div>
+          </div>
+          <button className="primary" style={{ width:'100%', marginTop:12 }} onClick={() => openJob(selected)}>
+            {t.view_detail} →
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // ─── 職種マスタ ───────────────────────────────
 const JOB_CATEGORIES = [
@@ -1403,16 +1573,24 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, setPage, isSaved, toggleSave }) {
   const { t } = useT()
+  const [view, setView] = useState('list')
   return (
-    <main>
+    <main style={ view === 'map' ? { display:'flex', flexDirection:'column', height:'100dvh', overflow:'hidden' } : {} }>
       <header className="sticky">
-        <h1>{t.search_jobs}</h1>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:8 }}>
+          <h1 style={{ margin:0 }}>{t.search_jobs}</h1>
+          <div className="view-toggle">
+            <button className={view==='list'?'active':''} onClick={() => setView('list')}>☰ {t.view_list}</button>
+            <button className={view==='map'?'active':''} onClick={() => setView('map')}>🗺 {t.view_map}</button>
+          </div>
+        </div>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
         <div className="filters">
           <select value={area} onChange={e => setArea(e.target.value)}>
             <option value="">{t.all_areas}</option>
-            <option>Sydney</option><option>Sydney CBD</option><option>CBD</option>
-            <option>Bondi</option><option>Chatswood</option>
+            <option>Sydney CBD</option><option>Bondi</option><option>Chatswood</option>
+            <option>Parramatta</option><option>Surry Hills</option><option>Newtown</option>
+            <option>North Sydney</option><option>Hurstville</option><option>Cabramatta</option>
           </select>
           <select value={english} onChange={e => setEnglish(e.target.value)}>
             <option value="">{t.eng_cond}</option>
@@ -1423,7 +1601,10 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
         </div>
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
-      <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
+      {view === 'list'
+        ? <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
+        : <JobMap jobs={jobs} openJob={openJob} />
+      }
     </main>
   )
 }
