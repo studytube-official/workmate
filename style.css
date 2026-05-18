@@ -573,26 +573,30 @@ textarea { min-height: 120px; resize: vertical }
 
 /* ── Salary input ── */
 .salary-input {
-  display: flex; align-items: stretch; gap: 8px;
+  display: flex; align-items: stretch; gap: 8px; width: 100%;
 }
 .salary-amount {
   display: flex; align-items: center;
   background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 10px; overflow: hidden; flex: 1;
+  border-radius: 10px; overflow: hidden; flex: 1; min-width: 0;
 }
 .salary-dollar {
   padding: 0 10px; color: var(--muted); font-weight: 600; font-size: 15px;
-  border-right: 1px solid var(--border2);
+  border-right: 1px solid var(--border2); flex-shrink: 0;
 }
+/* グローバルの width:100% を上書き */
 .salary-amount input {
-  border: none; background: transparent; flex: 1; padding: 10px 12px;
-  font-size: 15px; color: var(--text);
+  border: none !important; background: transparent !important;
+  width: 0 !important; flex: 1 !important;
+  padding: 10px 12px !important; font-size: 15px !important;
+  color: var(--text) !important; box-shadow: none !important;
 }
-.salary-amount input:focus { outline: none }
+.salary-amount input:focus { outline: none !important; box-shadow: none !important }
 .salary-input select {
+  width: auto !important; flex-shrink: 0;
   background: var(--bg2); border: 1px solid var(--border2);
   border-radius: 10px; padding: 10px 12px; font-size: 14px;
-  color: var(--text); min-width: 130px;
+  color: var(--text); min-width: 150px;
 }
 
 /* ── Map preview ── */
