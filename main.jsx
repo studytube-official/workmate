@@ -2508,16 +2508,16 @@ function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
 
   async function choose(role) {
     if (!session) return
-    setBusy(true)
-    try {
-      const { data, error } = await supabase.from('profiles')
-        .upsert({ id: session.user.id, role, updated_at: new Date().toISOString() })
-        .select().single()
-      if (error) throw error
-      setProfile(data)
-      setPage(role === 'employer' ? 'post' : 'profile')
-    } catch(e) { notify(e.message) }
-    setBusy(false)
+    // 先にページ遷移してからバックグラウンドで保存
+    setProfile(p => ({ ...(p || {}), id: session.user.id, role }))
+    setPage(role === 'employer' ? 'post' : 'profile')
+    supabase.from('profiles')
+      .upsert({ id: session.user.id, role, updated_at: new Date().toISOString() })
+      .select().single()
+      .then(({ data, error }) => {
+        if (error) console.error('role save error:', error)
+        else if (data) setProfile(data)
+      })
   }
 
   return (
@@ -2607,16 +2607,27 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   }
 
   async function save() {
-    if (!session) return; setBusy(true)
+    if (!session) return
+    setBusy(true)
     try {
       const avatar_url = await uploadAvatar()
       const updates = { id:session.user.id, ...form, updated_at:new Date().toISOString() }
       if (avatar_url) updates.avatar_url = avatar_url
-      const { data, error } = await supabase.from('profiles').upsert(updates).select().single()
-      if (error) throw error
-      setProfile(data); setAvatarFile(null); notify(t.toast_profile)
-    } catch(e) { notify(e.message || 'Save failed') }
-    finally { setBusy(false) }
+      // 先にUIを楽観的更新
+      setProfile(p => ({ ...(p || {}), ...updates }))
+      setAvatarFile(null)
+      notify(t.toast_profile)
+      setBusy(false)
+      // バックグラウンドでDB保存
+      supabase.from('profiles').upsert(updates).select().single()
+        .then(({ data, error }) => {
+          if (error) { console.error('profile save error:', error); notify('Save failed: ' + error.message) }
+          else if (data) setProfile(data)
+        })
+    } catch(e) {
+      notify(e.message || 'Save failed')
+      setBusy(false)
+    }
   }
 
   const appliedJobs = jobs.filter(j => applications.some(a => a.job_id === j.id))
