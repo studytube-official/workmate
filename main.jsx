@@ -1489,7 +1489,7 @@ function App() {
       {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
       {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
-      {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} />}
+      {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} signOut={signOut} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
@@ -2404,7 +2404,7 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 // ═════════════════════════════════════════════
 //  RoleSelect  ─ 初回ログイン時のロール選択画面
 // ═════════════════════════════════════════════
-function RoleSelect({ session, setProfile, notify, setPage }) {
+function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
   const { t } = useT()
   const [busy, setBusy] = useState(false)
 
@@ -2455,6 +2455,10 @@ function RoleSelect({ session, setProfile, notify, setPage }) {
         </button>
       </div>
       {busy && <p className="muted">{t.saving}</p>}
+      <button onClick={signOut}
+        style={{ marginTop:8, background:'transparent', border:'none', color:'var(--muted2)', fontSize:13, cursor:'pointer' }}>
+        {t.logout}
+      </button>
     </main>
   )
 }
@@ -2469,20 +2473,24 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   const isEmployer = profile?.role === 'employer'
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
-  const [tab,  setTab]        = useState(() => profile?.role === 'employer' ? 'posted' : 'profile')
+  const [tab,  setTab]        = useState('profile')
   const [avatarFile, setAvatarFile]     = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [expandedJob, setExpandedJob]   = useState(null)
 
   useEffect(() => {
-    if (profile) setForm({
-      display_name:  profile.display_name  || '',
-      english_level: profile.english_level || 'Basic',
-      availability:    profile.availability    || '',
-      bio:             profile.bio             || '',
-      visa_expiry:     profile.visa_expiry     || '',
-      job_categories:  profile.job_categories  || '',
-    })
+    if (profile) {
+      setForm({
+        display_name:  profile.display_name  || '',
+        english_level: profile.english_level || 'Basic',
+        availability:    profile.availability    || '',
+        bio:             profile.bio             || '',
+        visa_expiry:     profile.visa_expiry     || '',
+        job_categories:  profile.job_categories  || '',
+      })
+      // 雇用主はpostedタブをデフォルトに
+      if (profile.role === 'employer') setTab('posted')
+    }
   }, [profile])
 
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
