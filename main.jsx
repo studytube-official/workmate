@@ -96,6 +96,7 @@ const T = {
     role_employer:'Hiring staff', role_employer_desc:'Post job listings and find the right staff',
     not_set:'Not set', parts:'', edit_title:'Edit Job',
     staff_employers_only:'Employers Only', staff_post_required:'Post a job listing to access this page.',
+    cat_selected:'selected',
   },
   ja: {
     nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
@@ -183,6 +184,7 @@ const T = {
     role_employer:'スタッフを採用したい', role_employer_desc:'求人を投稿してスタッフを探せます',
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
     staff_employers_only:'雇用主専用ページです', staff_post_required:'求人を1件以上投稿すると閲覧できます。',
+    cat_selected:'件選択中',
   },
   ko: {
     nav_home:'홈', nav_jobs:'구인', nav_staff:'직원', nav_dm:'메시지', nav_profile:'프로필',
@@ -270,6 +272,7 @@ const T = {
     role_employer:'직원을 채용하고 싶어요', role_employer_desc:'구인을 등록하고 적합한 직원을 찾으세요',
     not_set:'미설정', parts:'건', edit_title:'구인 수정',
     staff_employers_only:'사업주 전용 페이지', staff_post_required:'구인을 1개 이상 등록하면 이용할 수 있습니다.',
+    cat_selected:'개 선택됨',
   },
   zh: {
     nav_home:'首页', nav_jobs:'招聘', nav_staff:'员工', nav_dm:'消息', nav_profile:'我的',
@@ -357,6 +360,7 @@ const T = {
     role_employer:'我要招聘员工', role_employer_desc:'发布招聘信息，找到合适的员工',
     not_set:'未设置', parts:'条', edit_title:'编辑招聘',
     staff_employers_only:'仅限雇主', staff_post_required:'发布至少一条招聘即可访问此页面。',
+    cat_selected:'项已选',
   },
   es: {
     nav_home:'Inicio', nav_jobs:'Empleos', nav_staff:'Personal', nav_dm:'Mensajes', nav_profile:'Perfil',
@@ -444,6 +448,7 @@ const T = {
     role_employer:'Quiero contratar personal', role_employer_desc:'Publica ofertas y encuentra al personal ideal',
     not_set:'No especificado', parts:'', edit_title:'Editar empleo',
     staff_employers_only:'Solo empleadores', staff_post_required:'Publica una oferta de trabajo para acceder a esta página.',
+    cat_selected:'seleccionados',
   },
   fr: {
     nav_home:'Accueil', nav_jobs:'Emplois', nav_staff:'Équipe', nav_dm:'Messages', nav_profile:'Profil',
@@ -531,6 +536,7 @@ const T = {
     role_employer:'Je recrute du personnel', role_employer_desc:'Publiez des offres et trouvez le personnel idéal',
     not_set:'Non renseigné', parts:'', edit_title:"Modifier l'offre",
     staff_employers_only:'Réservé aux employeurs', staff_post_required:"Publiez une offre d'emploi pour accéder à cette page.",
+    cat_selected:'sélectionnés',
   },
   pt: {
     nav_home:'Início', nav_jobs:'Vagas', nav_staff:'Equipe', nav_dm:'Mensagens', nav_profile:'Perfil',
@@ -618,6 +624,7 @@ const T = {
     role_employer:'Quero contratar funcionários', role_employer_desc:'Publique vagas e encontre os funcionários certos',
     not_set:'Não definido', parts:'', edit_title:'Editar Vaga',
     staff_employers_only:'Apenas empregadores', staff_post_required:'Publique uma vaga para acessar esta página.',
+    cat_selected:'selecionados',
   },
   vi: {
     nav_home:'Trang chủ', nav_jobs:'Việc làm', nav_staff:'Nhân viên', nav_dm:'Tin nhắn', nav_profile:'Hồ sơ',
@@ -705,6 +712,7 @@ const T = {
     role_employer:'Tôi muốn tuyển dụng nhân viên', role_employer_desc:'Đăng tin tuyển dụng và tìm nhân viên phù hợp',
     not_set:'Chưa đặt', parts:'', edit_title:'Sửa tin tuyển',
     staff_employers_only:'Chỉ dành cho nhà tuyển dụng', staff_post_required:'Đăng ít nhất một tin tuyển dụng để truy cập trang này.',
+    cat_selected:'đã chọn',
   },
   id: {
     nav_home:'Beranda', nav_jobs:'Lowongan', nav_staff:'Staf', nav_dm:'Pesan', nav_profile:'Profil',
@@ -792,6 +800,7 @@ const T = {
     role_employer:'Saya ingin merekrut staf', role_employer_desc:'Pasang lowongan dan temukan staf yang tepat',
     not_set:'Belum diatur', parts:'', edit_title:'Edit Lowongan',
     staff_employers_only:'Khusus Pengusaha', staff_post_required:'Pasang lowongan untuk mengakses halaman ini.',
+    cat_selected:'dipilih',
   },
 }
 
@@ -1118,8 +1127,17 @@ const formatCats = a => a.join(',')
 
 // CategoryPicker コンポーネント
 function CategoryPicker({ value, onChange, max = 5 }) {
-  const { lang } = useT()
+  const { lang, t } = useT()
   const selected = parseCats(value)
+
+  // jaキー → 現在の言語のラベルに変換
+  const jaToLabel = ja => {
+    for (const { items } of JOB_CATEGORIES) {
+      const item = items.find(i => i.ja === ja)
+      if (item) return lang === 'ja' ? item.ja : item.en
+    }
+    return ja
+  }
 
   function toggle(jaName) {
     const next = selected.includes(jaName)
@@ -1156,7 +1174,7 @@ function CategoryPicker({ value, onChange, max = 5 }) {
       ))}
       {selected.length > 0 && (
         <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>
-          ✓ {selected.length}/{max}件選択中: {selected.join('・')}
+          ✓ {selected.length}/{max} {t.cat_selected}: {selected.map(jaToLabel).join(' · ')}
         </p>
       )}
     </div>
