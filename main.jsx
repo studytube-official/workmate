@@ -91,6 +91,9 @@ const T = {
     eng_basic:'Basic English OK', eng_none:'No English needed', eng_inter:'Intermediate+',
     plvl_basic:'Basic', plvl_pre:'Pre-intermediate', plvl_inter:'Intermediate', plvl_upper:'Upper-intermediate', plvl_adv:'Advanced',
     staff_eng_min:'Min. English', desc_ph:'Job description, hours, requirements...',
+    role_title:'How will you use WorkMate?',
+    role_student:'Looking for work', role_student_desc:'Find jobs, apply, and chat with employers',
+    role_employer:'Hiring staff', role_employer_desc:'Post job listings and find the right staff',
     not_set:'Not set', parts:'', edit_title:'Edit Job',
   },
   ja: {
@@ -174,6 +177,9 @@ const T = {
     eng_basic:'英語初級OK', eng_none:'英語ほぼ不要', eng_inter:'Intermediate以上',
     plvl_basic:'初級', plvl_pre:'初中級', plvl_inter:'中級', plvl_upper:'中上級', plvl_adv:'上級',
     staff_eng_min:'英語レベル（最低）', desc_ph:'仕事内容、勤務時間、条件など...',
+    role_title:'WorkMateをどのように使いますか？',
+    role_student:'仕事を探している', role_student_desc:'求人を探して応募・チャットができます',
+    role_employer:'スタッフを採用したい', role_employer_desc:'求人を投稿してスタッフを探せます',
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
   },
   ko: {
@@ -257,6 +263,9 @@ const T = {
     eng_basic:'기초 영어 OK', eng_none:'영어 불필요', eng_inter:'중급 이상',
     plvl_basic:'기초', plvl_pre:'초중급', plvl_inter:'중급', plvl_upper:'중상급', plvl_adv:'고급',
     staff_eng_min:'최소 영어 수준', desc_ph:'업무 내용, 근무 시간, 조건 등...',
+    role_title:'WorkMate를 어떻게 사용하실 건가요?',
+    role_student:'일자리를 찾고 있어요', role_student_desc:'구인 검색, 지원, 사업주와 채팅',
+    role_employer:'직원을 채용하고 싶어요', role_employer_desc:'구인을 등록하고 적합한 직원을 찾으세요',
     not_set:'미설정', parts:'건', edit_title:'구인 수정',
   },
   zh: {
@@ -340,6 +349,9 @@ const T = {
     eng_basic:'基础英语OK', eng_none:'无需英语', eng_inter:'中级以上',
     plvl_basic:'基础', plvl_pre:'初中级', plvl_inter:'中级', plvl_upper:'中高级', plvl_adv:'高级',
     staff_eng_min:'最低英语水平', desc_ph:'工作内容、工作时间、要求等...',
+    role_title:'您将如何使用WorkMate？',
+    role_student:'我在找工作', role_student_desc:'搜索职位、投递简历、与雇主聊天',
+    role_employer:'我要招聘员工', role_employer_desc:'发布招聘信息，找到合适的员工',
     not_set:'未设置', parts:'条', edit_title:'编辑招聘',
   },
   es: {
@@ -423,6 +435,9 @@ const T = {
     eng_basic:'Inglés básico OK', eng_none:'Sin inglés necesario', eng_inter:'Intermedio+',
     plvl_basic:'Básico', plvl_pre:'Preintermedio', plvl_inter:'Intermedio', plvl_upper:'Intermedio alto', plvl_adv:'Avanzado',
     staff_eng_min:'Inglés mín.', desc_ph:'Descripción, horarios, requisitos...',
+    role_title:'¿Cómo usarás WorkMate?',
+    role_student:'Busco trabajo', role_student_desc:'Busca empleos, postúlate y chatea con empleadores',
+    role_employer:'Quiero contratar personal', role_employer_desc:'Publica ofertas y encuentra al personal ideal',
     not_set:'No especificado', parts:'', edit_title:'Editar empleo',
   },
   fr: {
@@ -506,6 +521,9 @@ const T = {
     eng_basic:'Anglais de base OK', eng_none:"Pas d'anglais requis", eng_inter:'Intermédiaire+',
     plvl_basic:'Débutant', plvl_pre:'Pré-intermédiaire', plvl_inter:'Intermédiaire', plvl_upper:'Intermédiaire avancé', plvl_adv:'Avancé',
     staff_eng_min:'Anglais min.', desc_ph:'Description, horaires, conditions...',
+    role_title:'Comment allez-vous utiliser WorkMate ?',
+    role_student:'Je cherche un emploi', role_student_desc:'Trouvez des emplois, postulez et discutez avec les employeurs',
+    role_employer:'Je recrute du personnel', role_employer_desc:'Publiez des offres et trouvez le personnel idéal',
     not_set:'Non renseigné', parts:'', edit_title:"Modifier l'offre",
   },
   pt: {
@@ -589,6 +607,9 @@ const T = {
     eng_basic:'Inglês básico OK', eng_none:'Sem inglês necessário', eng_inter:'Intermediário+',
     plvl_basic:'Básico', plvl_pre:'Pré-intermediário', plvl_inter:'Intermediário', plvl_upper:'Intermediário avançado', plvl_adv:'Avançado',
     staff_eng_min:'Inglês mín.', desc_ph:'Descrição, horários, requisitos...',
+    role_title:'Como você vai usar o WorkMate?',
+    role_student:'Estou procurando emprego', role_student_desc:'Encontre vagas, candidate-se e converse com empregadores',
+    role_employer:'Quero contratar funcionários', role_employer_desc:'Publique vagas e encontre os funcionários certos',
     not_set:'Não definido', parts:'', edit_title:'Editar Vaga',
   },
   vi: {
@@ -672,6 +693,9 @@ const T = {
     eng_basic:'Tiếng Anh cơ bản OK', eng_none:'Không cần tiếng Anh', eng_inter:'Trung cấp trở lên',
     plvl_basic:'Cơ bản', plvl_pre:'Sơ trung cấp', plvl_inter:'Trung cấp', plvl_upper:'Trung cao cấp', plvl_adv:'Nâng cao',
     staff_eng_min:'Tiếng Anh tối thiểu', desc_ph:'Mô tả công việc, giờ làm, yêu cầu...',
+    role_title:'Bạn sẽ dùng WorkMate như thế nào?',
+    role_student:'Tôi đang tìm việc', role_student_desc:'Tìm việc, ứng tuyển và chat với nhà tuyển dụng',
+    role_employer:'Tôi muốn tuyển dụng nhân viên', role_employer_desc:'Đăng tin tuyển dụng và tìm nhân viên phù hợp',
     not_set:'Chưa đặt', parts:'', edit_title:'Sửa tin tuyển',
   },
   id: {
@@ -755,6 +779,9 @@ const T = {
     eng_basic:'Bahasa Inggris dasar OK', eng_none:'Tanpa bahasa Inggris', eng_inter:'Menengah ke atas',
     plvl_basic:'Dasar', plvl_pre:'Pra-menengah', plvl_inter:'Menengah', plvl_upper:'Menengah atas', plvl_adv:'Mahir',
     staff_eng_min:'B. Inggris min.', desc_ph:'Deskripsi pekerjaan, jam kerja, syarat...',
+    role_title:'Bagaimana Anda akan menggunakan WorkMate?',
+    role_student:'Saya mencari pekerjaan', role_student_desc:'Cari lowongan, lamar, dan chat dengan pemberi kerja',
+    role_employer:'Saya ingin merekrut staf', role_employer_desc:'Pasang lowongan dan temukan staf yang tepat',
     not_set:'Belum diatur', parts:'', edit_title:'Edit Lowongan',
   },
 }
@@ -1214,8 +1241,8 @@ function App() {
         } else if (data?.session) {
           setSession(data.session)
           const prof = await loadUserData(data.session.user.id)
-          // 初回ログイン（名前未設定）はプロフィール設定へ、それ以外はホームへ
-          setPage(!prof?.display_name ? 'profile' : 'home')
+          // 初回ログイン（role未設定）はロール選択へ、それ以外はホームへ
+          setPage(!prof?.role ? 'role_select' : 'home')
         }
         window.history.replaceState({}, document.title, window.location.pathname)
       })
@@ -1231,8 +1258,8 @@ function App() {
       if (s) {
         const prof = await loadUserData(s.user.id)
         if (event === 'SIGNED_IN') {
-          // 初回ログインはプロフィール設定へ、復帰ユーザーはホームへ
-          setPage(!prof?.display_name ? 'profile' : 'home')
+          // 初回ログインはロール選択へ、復帰ユーザーはホームへ
+          setPage(!prof?.role ? 'role_select' : 'home')
         }
       } else {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
@@ -1453,23 +1480,24 @@ function App() {
 
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
 
-      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
-      {page === 'jobs'    && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
-      {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
+      {page === 'home'        && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
+      {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
+      {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
-      {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} />}
-      {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
-      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
-      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
-      {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
+      {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
+      {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
+      {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
+      {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
+      {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
+      {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
       <nav className="bottom">
         <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
         <button className={['jobs','job','post'].includes(page)?'active':''} onClick={() => setPage('jobs')}>💼<br/><small>{t.nav_jobs}</small></button>
-        {/* 雇用主（求人投稿者）のみスタッフタブを表示 */}
-        {session && postedJobs.length > 0 && (
+        {/* 雇用主のみスタッフタブを表示 */}
+        {profile?.role === 'employer' && (
           <button className={page==='staff'?'active':''} onClick={() => setPage('staff')}>👥<br/><small>{t.nav_staff}</small></button>
         )}
         <button className={['dm','chat'].includes(page)?'active':''} onClick={() => setPage('dm')} style={{ position:'relative' }}>
@@ -2374,15 +2402,74 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 }
 
 // ═════════════════════════════════════════════
+//  RoleSelect  ─ 初回ログイン時のロール選択画面
+// ═════════════════════════════════════════════
+function RoleSelect({ session, setProfile, notify, setPage }) {
+  const { t } = useT()
+  const [busy, setBusy] = useState(false)
+
+  async function choose(role) {
+    if (!session) return
+    setBusy(true)
+    try {
+      const { data, error } = await supabase.from('profiles')
+        .upsert({ id: session.user.id, role, updated_at: new Date().toISOString() })
+        .select().single()
+      if (error) throw error
+      setProfile(data)
+      setPage(role === 'employer' ? 'post' : 'profile')
+    } catch(e) { notify(e.message) }
+    setBusy(false)
+  }
+
+  return (
+    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', gap:24, padding:'0 24px' }}>
+      <div style={{ textAlign:'center', marginBottom:8 }}>
+        <div style={{ fontSize:52, marginBottom:12 }}>👋</div>
+        <h1 style={{ fontSize:22, marginBottom:6 }}>{t.role_title}</h1>
+      </div>
+      <div style={{ display:'flex', flexDirection:'column', gap:16, width:'100%', maxWidth:380 }}>
+        <button disabled={busy} onClick={() => choose('student')}
+          style={{ display:'flex', alignItems:'center', gap:18, padding:'20px 24px', borderRadius:16,
+            background:'var(--card)', border:'2px solid var(--border2)', cursor:'pointer',
+            textAlign:'left', transition:'border-color 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.borderColor='var(--accent)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor='var(--border2)'}>
+          <span style={{ fontSize:40 }}>🧑‍💼</span>
+          <div>
+            <div style={{ fontWeight:700, fontSize:16, color:'var(--text)', marginBottom:4 }}>{t.role_student}</div>
+            <div style={{ fontSize:13, color:'var(--muted2)' }}>{t.role_student_desc}</div>
+          </div>
+        </button>
+        <button disabled={busy} onClick={() => choose('employer')}
+          style={{ display:'flex', alignItems:'center', gap:18, padding:'20px 24px', borderRadius:16,
+            background:'var(--card)', border:'2px solid var(--border2)', cursor:'pointer',
+            textAlign:'left', transition:'border-color 0.2s' }}
+          onMouseEnter={e => e.currentTarget.style.borderColor='var(--accent)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor='var(--border2)'}>
+          <span style={{ fontSize:40 }}>🏪</span>
+          <div>
+            <div style={{ fontWeight:700, fontSize:16, color:'var(--text)', marginBottom:4 }}>{t.role_employer}</div>
+            <div style={{ fontSize:13, color:'var(--muted2)' }}>{t.role_employer_desc}</div>
+          </div>
+        </button>
+      </div>
+      {busy && <p className="muted">{t.saving}</p>}
+    </main>
+  )
+}
+
+// ═════════════════════════════════════════════
 //  Profile
 // ═════════════════════════════════════════════
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
   const { t } = useT()
+  const isEmployer = profile?.role === 'employer'
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
-  const [tab,  setTab]        = useState('profile')
+  const [tab,  setTab]        = useState(() => profile?.role === 'employer' ? 'posted' : 'profile')
   const [avatarFile, setAvatarFile]     = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [expandedJob, setExpandedJob]   = useState(null)
@@ -2441,12 +2528,14 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     </main>
   )
 
-  const TABS = [
-    ['profile', t.tab_profile],
-    ['applied', t.tab_applied],
-    ['saved',   t.tab_saved],
-    ['posted',  t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
-  ]
+  const TABS = isEmployer
+    ? [['posted', t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')]]
+    : [
+        ['profile', t.tab_profile],
+        ['applied', t.tab_applied],
+        ['saved',   t.tab_saved],
+        ['posted',  t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
+      ]
 
   const statusStyle = st => ({
     padding:'5px 12px', borderRadius:999, fontSize:12, fontWeight:700,
