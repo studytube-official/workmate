@@ -1251,20 +1251,20 @@ function App() {
       if (data.session) loadUserData(data.session.user.id).catch(console.error)
     })
 
-    const { data:{ subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
+    const { data:{ subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s)
       if (s) {
-        try {
-          const prof = await loadUserData(s.user.id)
-          if (event === 'PASSWORD_RECOVERY') {
-            setPage('set_password')
-          } else if (event === 'SIGNED_IN') {
-            setPage(!prof?.role ? 'role_select' : 'home')
-          }
-        } catch(e) {
-          console.error('loadUserData error:', e)
-          if (event === 'PASSWORD_RECOVERY') setPage('set_password')
-          else if (event === 'SIGNED_IN') setPage('home')
+        if (event === 'PASSWORD_RECOVERY') {
+          setPage('set_password')
+          loadUserData(s.user.id).catch(console.error)
+        } else if (event === 'SIGNED_IN') {
+          // ページ遷移を先に行い、データ読み込みはバックグラウンドで
+          setPage('home')
+          loadUserData(s.user.id)
+            .then(prof => { if (!prof?.role) setPage('role_select') })
+            .catch(e => console.error('loadUserData error:', e))
+        } else {
+          loadUserData(s.user.id).catch(console.error)
         }
       } else {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
@@ -1275,8 +1275,16 @@ function App() {
   }, [])
 
   async function loadUserData(uid) {
-    const [profRes, savedRes, appRes, convRes, postedRes] = await Promise.all([
+    // プロフィールだけ先に取得（ページ遷移の判定に必要）
+    const timeout = ms => new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))
+    const profRes = await Promise.race([
       supabase.from('profiles').select('*').eq('id', uid).single(),
+      timeout(8000)
+    ]).catch(() => ({ data: null }))
+    if (profRes.data) setProfile(profRes.data)
+
+    // 残りのデータはバックグラウンドで非同期に取得（ページ遷移を止めない）
+    Promise.all([
       supabase.from('saved_jobs').select('job_id').eq('user_id', uid),
       supabase.from('applications').select('*').eq('user_id', uid),
       supabase.from('conversations').select('*')
@@ -1285,15 +1293,16 @@ function App() {
       supabase.from('jobs')
         .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
         .eq('posted_by', uid).order('id', { ascending:false }),
-    ])
-    if (profRes.data)   setProfile(profRes.data)
-    if (savedRes.data)  setSavedJobIds(savedRes.data.map(r => r.job_id))
-    if (appRes.data)    setApplications(appRes.data)
-    if (convRes.data) {
-      setConversations(convRes.data)
-      fetchUnread(uid, convRes.data.map(c => c.id))
-    }
-    if (postedRes.data) setPostedJobs(postedRes.data)
+    ]).then(([savedRes, appRes, convRes, postedRes]) => {
+      if (savedRes.data)  setSavedJobIds(savedRes.data.map(r => r.job_id))
+      if (appRes.data)    setApplications(appRes.data)
+      if (convRes.data) {
+        setConversations(convRes.data)
+        fetchUnread(uid, convRes.data.map(c => c.id))
+      }
+      if (postedRes.data) setPostedJobs(postedRes.data)
+    }).catch(console.error)
+
     return profRes.data  // ログイン後の遷移判定に使う
   }
 
@@ -1540,14 +1549,18 @@ function Login({ signInGoogle, setPage, notify }) {
     if (password.length < 6) { showErr(t.err_password_short); return }
     setBusy(true)
     try {
-      const { error } = await supabase.auth.signUp({
+      const signupPromise = supabase.auth.signUp({
         email, password,
         options: { data: { full_name: name } }
       })
+      const timeout = new Promise((_, rej) =>
+        setTimeout(() => rej(new Error('Connection timed out. Please try again.')), 15000)
+      )
+      const { error } = await Promise.race([signupPromise, timeout])
       if (error) { showErr(error.message); return }
       setDone(true)
     } catch(e) {
-      showErr('Connection error. Please try again.')
+      showErr(e.message || 'Connection error. Please try again.')
     } finally {
       setBusy(false)
     }
