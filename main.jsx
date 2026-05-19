@@ -2003,12 +2003,12 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
     if (!file) return job.image_url
     const ext  = file.name.split('.').pop()
     const path = `jobs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('upload_timeout')), 15000))
-    const { error } = await Promise.race([
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Photo upload timed out. Please try a smaller image or check your connection.')), 30000))
+    const result = await Promise.race([
       supabase.storage.from('job-images').upload(path, file),
       timeout
     ])
-    if (error) throw error
+    if (result.error) throw result.error
     return supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
   }
 
@@ -2016,14 +2016,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
     if (!job.title || !job.company) { notify(t.required_err); return }
     setBusy(true)
     try {
-      let image_url = job.image_url
-      try {
-        image_url = await uploadImage()
-      } catch(uploadErr) {
-        // 画像アップロード失敗でも投稿は続行（画像なし）
-        console.warn('Image upload failed, posting without image:', uploadErr.message)
-        notify('Photo could not be uploaded, posting without it.')
-      }
+      const image_url = await uploadImage()
       // 楽観的に即座にUIへ追加してページ遷移
       const optimistic = { ...job, image_url, posted_by:session.user.id, is_active:true, id:`tmp_${Date.now()}`, applications:[] }
       setPostedJobs(prev => [optimistic, ...prev])
@@ -2038,7 +2031,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
           if (error) { notify('Post failed: ' + error.message); setPostedJobs(prev => prev.filter(j => j.id !== optimistic.id)) }
           else { loadJobs(); setPostedJobs(prev => prev.map(j => j.id === optimistic.id ? { ...data, applications:[] } : j)) }
         })
-    } catch(e) { notify(e.message); setBusy(false) }
+    } catch(e) { notify(e.message || 'Upload failed'); setBusy(false) }
   }
 
   return (
@@ -2062,7 +2055,9 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
         </label>
         <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={t.desc_ph} /></label>
         <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
-        <button className="primary" onClick={submit} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
+        <button className="primary" onClick={submit} disabled={busy}>
+          {busy ? (file ? '📤 Uploading photo...' : t.saving) : t.save_btn}
+        </button>
       </section>
     </main>
   )
@@ -2665,24 +2660,20 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     if (!avatarFile || !session) return profile?.avatar_url || null
     const ext  = avatarFile.name.split('.').pop()
     const path = `${session.user.id}/avatar.${ext}`
-    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('upload_timeout')), 15000))
-    const { error } = await Promise.race([
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Photo upload timed out. Please try a smaller image or check your connection.')), 30000))
+    const result = await Promise.race([
       supabase.storage.from('avatars').upload(path, avatarFile, { upsert:true }),
       timeout
     ])
-    if (error) throw error
+    if (result.error) throw result.error
     return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl
   }
 
   async function save() {
     if (!session) return
     setBusy(true)
-    let avatar_url = profile?.avatar_url || null
-    try { avatar_url = await uploadAvatar() } catch(e) {
-      console.warn('Avatar upload failed:', e.message)
-      notify('Photo could not be uploaded, saving without it.')
-    }
     try {
+      const avatar_url = await uploadAvatar()
       const updates = { id:session.user.id, ...form, updated_at:new Date().toISOString() }
       if (avatar_url) updates.avatar_url = avatar_url
       // 楽観的更新 → 即座にJobs画面へ
