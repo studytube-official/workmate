@@ -1231,40 +1231,41 @@ function App() {
 
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
-    // PKCE: URLに ?code= がある場合は明示的にコード交換してセッションを取得
-    const urlParams = new URLSearchParams(window.location.search)
-    const code = urlParams.get('code')
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
-        if (error) {
-          console.error('Code exchange error:', error)
-        } else if (data?.session) {
-          setSession(data.session)
-          const prof = await loadUserData(data.session.user.id)
-          // 初回ログイン（role未設定）はロール選択へ、それ以外はホームへ
-          setPage(!prof?.role ? 'role_select' : 'home')
-        }
-        window.history.replaceState({}, document.title, window.location.pathname)
-      })
-      return
-    }
-
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      if (data.session) loadUserData(data.session.user.id)
-    })
+    // onAuthStateChange は常に先に登録する（モバイルOAuth対応）
     const { data:{ subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
       setSession(s)
       if (s) {
-        const prof = await loadUserData(s.user.id)
-        if (event === 'SIGNED_IN') {
-          // 初回ログインはロール選択へ、復帰ユーザーはホームへ
-          setPage(!prof?.role ? 'role_select' : 'home')
+        try {
+          const prof = await loadUserData(s.user.id)
+          if (event === 'SIGNED_IN') {
+            setPage(!prof?.role ? 'role_select' : 'home')
+          }
+        } catch(e) {
+          console.error('loadUserData error:', e)
+          if (event === 'SIGNED_IN') setPage('home')
         }
       } else {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
       }
     })
+
+    // PKCE: URLに ?code= がある場合はコード交換（onAuthStateChange が遷移を処理）
+    const code = new URLSearchParams(window.location.search).get('code')
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code)
+        .then(({ error }) => {
+          if (error) console.error('Code exchange error:', error)
+        })
+        .finally(() => {
+          window.history.replaceState({}, document.title, window.location.pathname)
+        })
+    } else {
+      // 既存セッションの復元（ページリロード時）
+      supabase.auth.getSession().then(({ data }) => {
+        if (data.session) loadUserData(data.session.user.id).catch(console.error)
+      })
+    }
+
     return () => subscription.unsubscribe()
   }, [])
 
