@@ -1468,7 +1468,15 @@ function App() {
   }
 
   async function signOut() {
-    await supabase.auth.signOut(); setPage('home'); notify(t.toast_logout)
+    try { await supabase.auth.signOut() } catch(e) { console.error('signOut error:', e) }
+    // Supabase が失敗してもローカル状態を強制クリア
+    setSession(null)
+    setProfile(null)
+    setSavedJobIds([])
+    setApplications([])
+    setPostedJobs([])
+    setPage('home')
+    notify(t.toast_logout)
   }
 
   const avatarLetter = profile?.display_name?.[0]?.toUpperCase()
@@ -2557,7 +2565,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       <section className="hero" style={{ flexDirection:'column', alignItems:'flex-start', gap:12 }}>
         <div style={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center' }}>
           <div><h1>{form.display_name || t.tab_profile}</h1><p className="muted">{session.user.email}</p></div>
-          <button onClick={signOut} style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'10px 16px' }}>{t.logout}</button>
+          <button onClick={signOut} style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'10px 16px', position:'relative', zIndex:1 }}>{t.logout}</button>
         </div>
       </section>
 
