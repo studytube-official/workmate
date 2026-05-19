@@ -1276,33 +1276,39 @@ function App() {
     })
 
     const { data:{ subscription } } = supabase.auth.onAuthStateChange((event, s) => {
-      setSession(s)
+      // INITIAL_SESSION は getSession() で処理済みなので無視
+      // これによりトークンリフレッシュ前の一時的なnullでログアウトしなくなる
+      if (event === 'INITIAL_SESSION') return
+
       if (s) {
+        setSession(s)
         if (event === 'PASSWORD_RECOVERY') {
           setPage('set_password')
           loadUserData(s.user.id).catch(console.error)
         } else if (event === 'SIGNED_IN') {
-          // localStorageのキャッシュで即座にページ遷移
           const cachedRole = localStorage.getItem(`wm_role_${s.user.id}`)
           setPage(cachedRole ? 'home' : 'role_select')
-          // バックグラウンドでDB同期
           loadUserData(s.user.id)
             .then(prof => {
               if (prof?.role) {
                 localStorage.setItem(`wm_role_${s.user.id}`, prof.role)
-                if (!cachedRole) setPage('home') // roleがあるのにrole_selectにいた場合
-              } else if (!prof?.role) {
+                if (!cachedRole) setPage('home')
+              } else {
                 localStorage.removeItem(`wm_role_${s.user.id}`)
                 setPage('role_select')
               }
             })
             .catch(console.error)
         } else {
+          // TOKEN_REFRESHED など
           loadUserData(s.user.id).catch(console.error)
         }
-      } else {
+      } else if (event === 'SIGNED_OUT') {
+        // 明示的なログアウト時のみステートをクリア
+        setSession(null)
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
       }
+      // その他のeventでnullが来ても無視（一時的なリフレッシュ失敗など）
     })
 
     return () => subscription.unsubscribe()
