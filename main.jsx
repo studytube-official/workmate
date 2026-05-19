@@ -1231,6 +1231,11 @@ function App() {
 
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
+    // OAuthエラーやcodeパラメータをURLからクリア
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+
     // 既存セッションの復元（ページリロード時）
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
@@ -1644,7 +1649,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           <p style={{ fontSize:32, marginBottom:8 }}>🔑</p>
           <h2>{t.login_cta_title}</h2>
           <p className="muted">{t.login_cta_desc}</p>
-          <button className="primary" onClick={() => setPage('login')}>{t.login_google}</button>
+          <button className="primary" onClick={() => setPage('login')}>{t.signup_tab} / {t.login_tab}</button>
         </section>
       )}
       <Section title={t.section_nearby}>
