@@ -1526,36 +1526,51 @@ function Login({ signInGoogle, setPage, notify }) {
   const [password, setPassword] = useState('')
   const [busy,     setBusy]     = useState(false)
   const [done,     setDone]     = useState(false)
+  const [errMsg,   setErrMsg]   = useState('')
+
+  function showErr(msg) { setErrMsg(msg); notify(msg) }
 
   async function handleSignup() {
-    if (!name.trim() || !email.trim() || !password) { notify(t.err_required); return }
-    if (password.length < 6) { notify(t.err_password_short); return }
+    setErrMsg('')
+    if (!name.trim() || !email.trim() || !password) { showErr(t.err_required); return }
+    if (password.length < 6) { showErr(t.err_password_short); return }
     setBusy(true)
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { full_name: name } }
-    })
-    setBusy(false)
-    if (error) { notify(error.message); return }
-    setDone(true)
+    try {
+      const { error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: name } }
+      })
+      if (error) { showErr(error.message); return }
+      setDone(true)
+    } catch(e) {
+      showErr('Connection error. Please try again.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   async function handleLogin() {
-    if (!email.trim() || !password) { notify(t.err_required); return }
+    setErrMsg('')
+    if (!email.trim() || !password) { showErr(t.err_required); return }
     setBusy(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const loginPromise = supabase.auth.signInWithPassword({ email, password })
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Connection timed out. Please try again.')), 15000)
+      )
+      const { error } = await Promise.race([loginPromise, timeout])
       if (error) {
-        // メール未確認の場合は再送信を促す
         if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
-          notify('Please check your email and click the confirmation link first.')
+          showErr('Please check your email and click the confirmation link first.')
+        } else if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
+          showErr('Incorrect email or password. Please try again.')
         } else {
-          notify(error.message)
+          showErr(error.message)
         }
       }
       // 成功時は onAuthStateChange が page を切り替える
     } catch(e) {
-      notify('Connection error. Please try again.')
+      showErr(e.message || 'Connection error. Please try again.')
     } finally {
       setBusy(false)
     }
@@ -1582,7 +1597,7 @@ function Login({ signInGoogle, setPage, notify }) {
         {/* タブ */}
         <div style={{ display:'flex', background:'var(--bg2)', borderRadius:'var(--radius)', padding:4, marginBottom:22, border:'1px solid var(--border)' }}>
           {[['signup', t.signup_tab], ['login', t.login_tab]].map(([key, label]) => (
-            <button key={key} onClick={() => setTab(key)} style={{
+            <button key={key} onClick={() => { setTab(key); setErrMsg('') }} style={{
               flex:1, borderRadius:10, border:'none', padding:'10px 0', fontWeight:700, fontSize:14,
               background: tab===key ? 'var(--bg4)' : 'transparent',
               color: tab===key ? 'var(--text)' : 'var(--muted2)',
@@ -1599,11 +1614,16 @@ function Login({ signInGoogle, setPage, notify }) {
             </label>
           )}
           <label>{t.f_email}
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" />
           </label>
           <label>{t.f_password}
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t.password_ph} />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t.password_ph} autoComplete="current-password" />
           </label>
+          {errMsg && (
+            <div style={{ background:'rgba(184,48,48,0.08)', border:'1px solid rgba(184,48,48,0.25)', borderRadius:10, padding:'10px 14px', color:'#b83030', fontSize:14, lineHeight:1.5 }}>
+              {errMsg}
+            </div>
+          )}
           <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16, marginTop:4 }}
             onClick={tab==='signup' ? handleSignup : handleLogin} disabled={busy}>
             {busy ? '...' : tab==='signup' ? t.signup_btn : t.login_btn}
