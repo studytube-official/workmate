@@ -1973,13 +1973,18 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
     setBusy(true)
     try {
       const image_url = await uploadImage()
-      const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
-      if (error) throw error
-      notify(t.job_saved); setJob(emptyJob); setFile(null)
-      loadJobs()   // バックグラウンドで再取得（待たずに画面遷移）
-      setPage('jobs')
-    } catch(e) { notify(e.message) }
-    finally { setBusy(false) }
+      // 先に画面遷移・UI更新
+      notify(t.job_saved)
+      setJob(emptyJob); setFile(null); setBusy(false)
+      setPage('profile')
+      // バックグラウンドでDB保存
+      supabase.from('jobs')
+        .insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
+        .then(({ error }) => {
+          if (error) notify('Post failed: ' + error.message)
+          else loadJobs()
+        })
+    } catch(e) { notify(e.message); setBusy(false) }
   }
 
   return (
@@ -2031,11 +2036,15 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
         if (upErr) throw upErr
         image_url = supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
       }
-      const { error } = await supabase.from('jobs').update({ ...form, image_url }).eq('id', job.id)
-      if (error) throw error
-      notify(t.job_saved); await loadJobs(); await loadUserData(); onClose()
-    } catch(e) { notify(e.message) }
-    finally { setBusy(false) }
+      // 先に閉じる
+      notify(t.job_saved); setBusy(false); onClose()
+      // バックグラウンドで保存
+      supabase.from('jobs').update({ ...form, image_url }).eq('id', job.id)
+        .then(({ error }) => {
+          if (error) notify('Update failed: ' + error.message)
+          else { loadJobs(); loadUserData() }
+        })
+    } catch(e) { notify(e.message); setBusy(false) }
   }
 
   return (
