@@ -2660,15 +2660,16 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       const avatar_url = await uploadAvatar()
       const updates = { id:session.user.id, ...form, updated_at:new Date().toISOString() }
       if (avatar_url) updates.avatar_url = avatar_url
-      // 先にUIを楽観的更新
+      // 楽観的更新 → 即座にJobs画面へ
       setProfile(p => ({ ...(p || {}), ...updates }))
       setAvatarFile(null)
       notify(t.toast_profile)
       setBusy(false)
+      setPage('jobs')
       // バックグラウンドでDB保存
       supabase.from('profiles').upsert(updates).select().single()
         .then(({ data, error }) => {
-          if (error) { console.error('profile save error:', error); notify('Save failed: ' + error.message) }
+          if (error) console.error('profile save error:', error)
           else if (data) setProfile(data)
         })
     } catch(e) {
