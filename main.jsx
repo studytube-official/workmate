@@ -1256,12 +1256,15 @@ function App() {
       if (s) {
         try {
           const prof = await loadUserData(s.user.id)
-          if (event === 'SIGNED_IN') {
+          if (event === 'PASSWORD_RECOVERY') {
+            setPage('set_password')
+          } else if (event === 'SIGNED_IN') {
             setPage(!prof?.role ? 'role_select' : 'home')
           }
         } catch(e) {
           console.error('loadUserData error:', e)
-          if (event === 'SIGNED_IN') setPage('home')
+          if (event === 'PASSWORD_RECOVERY') setPage('set_password')
+          else if (event === 'SIGNED_IN') setPage('home')
         }
       } else {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
@@ -1495,6 +1498,7 @@ function App() {
       {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
       {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} signOut={signOut} />}
+      {page === 'set_password' && <SetPassword notify={notify} setPage={setPage} profile={profile} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
@@ -2422,6 +2426,62 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
           <button className="lightbox-close" onClick={() => setLightbox(null)}>×</button>
         </div>
       )}
+    </main>
+  )
+}
+
+// ═════════════════════════════════════════════
+//  SetPassword ─ パスワードリセット後の新パスワード設定
+// ═════════════════════════════════════════════
+function SetPassword({ notify, setPage, profile }) {
+  const { t } = useT()
+  const [password, setPassword] = useState('')
+  const [confirm,  setConfirm]  = useState('')
+  const [busy,     setBusy]     = useState(false)
+  const [errMsg,   setErrMsg]   = useState('')
+
+  async function handleSet() {
+    setErrMsg('')
+    if (password.length < 6) { setErrMsg(t.err_password_short); return }
+    if (password !== confirm) { setErrMsg('Passwords do not match.'); return }
+    setBusy(true)
+    try {
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) throw error
+      notify('Password updated! You are now logged in.')
+      setPage(!profile?.role ? 'role_select' : 'home')
+    } catch(e) {
+      setErrMsg(e.message || 'Failed to update password.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', padding:'0 24px' }}>
+      <div style={{ width:'100%', maxWidth:380 }}>
+        <div style={{ textAlign:'center', marginBottom:28 }}>
+          <div style={{ fontSize:48, marginBottom:8 }}>🔑</div>
+          <h1 style={{ margin:'0 0 6px' }}>Set New Password</h1>
+          <p className="muted" style={{ margin:0 }}>Choose a password for your account</p>
+        </div>
+        <div className="form">
+          <label>New Password
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t.password_ph} autoComplete="new-password" />
+          </label>
+          <label>Confirm Password
+            <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder={t.password_ph} autoComplete="new-password" />
+          </label>
+          {errMsg && (
+            <div style={{ background:'rgba(184,48,48,0.08)', border:'1px solid rgba(184,48,48,0.25)', borderRadius:10, padding:'10px 14px', color:'#b83030', fontSize:14 }}>
+              {errMsg}
+            </div>
+          )}
+          <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16 }} onClick={handleSet} disabled={busy}>
+            {busy ? t.saving : 'Set Password'}
+          </button>
+        </div>
+      </div>
     </main>
   )
 }
