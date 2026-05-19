@@ -95,6 +95,7 @@ const T = {
     role_student:'Looking for work', role_student_desc:'Find jobs, apply, and chat with employers',
     role_employer:'Hiring staff', role_employer_desc:'Post job listings and find the right staff',
     not_set:'Not set', parts:'', edit_title:'Edit Job',
+    staff_employers_only:'Employers Only', staff_post_required:'Post a job listing to access this page.',
   },
   ja: {
     nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
@@ -181,6 +182,7 @@ const T = {
     role_student:'仕事を探している', role_student_desc:'求人を探して応募・チャットができます',
     role_employer:'スタッフを採用したい', role_employer_desc:'求人を投稿してスタッフを探せます',
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
+    staff_employers_only:'雇用主専用ページです', staff_post_required:'求人を1件以上投稿すると閲覧できます。',
   },
   ko: {
     nav_home:'홈', nav_jobs:'구인', nav_staff:'직원', nav_dm:'메시지', nav_profile:'프로필',
@@ -267,6 +269,7 @@ const T = {
     role_student:'일자리를 찾고 있어요', role_student_desc:'구인 검색, 지원, 사업주와 채팅',
     role_employer:'직원을 채용하고 싶어요', role_employer_desc:'구인을 등록하고 적합한 직원을 찾으세요',
     not_set:'미설정', parts:'건', edit_title:'구인 수정',
+    staff_employers_only:'사업주 전용 페이지', staff_post_required:'구인을 1개 이상 등록하면 이용할 수 있습니다.',
   },
   zh: {
     nav_home:'首页', nav_jobs:'招聘', nav_staff:'员工', nav_dm:'消息', nav_profile:'我的',
@@ -353,6 +356,7 @@ const T = {
     role_student:'我在找工作', role_student_desc:'搜索职位、投递简历、与雇主聊天',
     role_employer:'我要招聘员工', role_employer_desc:'发布招聘信息，找到合适的员工',
     not_set:'未设置', parts:'条', edit_title:'编辑招聘',
+    staff_employers_only:'仅限雇主', staff_post_required:'发布至少一条招聘即可访问此页面。',
   },
   es: {
     nav_home:'Inicio', nav_jobs:'Empleos', nav_staff:'Personal', nav_dm:'Mensajes', nav_profile:'Perfil',
@@ -439,6 +443,7 @@ const T = {
     role_student:'Busco trabajo', role_student_desc:'Busca empleos, postúlate y chatea con empleadores',
     role_employer:'Quiero contratar personal', role_employer_desc:'Publica ofertas y encuentra al personal ideal',
     not_set:'No especificado', parts:'', edit_title:'Editar empleo',
+    staff_employers_only:'Solo empleadores', staff_post_required:'Publica una oferta de trabajo para acceder a esta página.',
   },
   fr: {
     nav_home:'Accueil', nav_jobs:'Emplois', nav_staff:'Équipe', nav_dm:'Messages', nav_profile:'Profil',
@@ -525,6 +530,7 @@ const T = {
     role_student:'Je cherche un emploi', role_student_desc:'Trouvez des emplois, postulez et discutez avec les employeurs',
     role_employer:'Je recrute du personnel', role_employer_desc:'Publiez des offres et trouvez le personnel idéal',
     not_set:'Non renseigné', parts:'', edit_title:"Modifier l'offre",
+    staff_employers_only:'Réservé aux employeurs', staff_post_required:"Publiez une offre d'emploi pour accéder à cette page.",
   },
   pt: {
     nav_home:'Início', nav_jobs:'Vagas', nav_staff:'Equipe', nav_dm:'Mensagens', nav_profile:'Perfil',
@@ -611,6 +617,7 @@ const T = {
     role_student:'Estou procurando emprego', role_student_desc:'Encontre vagas, candidate-se e converse com empregadores',
     role_employer:'Quero contratar funcionários', role_employer_desc:'Publique vagas e encontre os funcionários certos',
     not_set:'Não definido', parts:'', edit_title:'Editar Vaga',
+    staff_employers_only:'Apenas empregadores', staff_post_required:'Publique uma vaga para acessar esta página.',
   },
   vi: {
     nav_home:'Trang chủ', nav_jobs:'Việc làm', nav_staff:'Nhân viên', nav_dm:'Tin nhắn', nav_profile:'Hồ sơ',
@@ -697,6 +704,7 @@ const T = {
     role_student:'Tôi đang tìm việc', role_student_desc:'Tìm việc, ứng tuyển và chat với nhà tuyển dụng',
     role_employer:'Tôi muốn tuyển dụng nhân viên', role_employer_desc:'Đăng tin tuyển dụng và tìm nhân viên phù hợp',
     not_set:'Chưa đặt', parts:'', edit_title:'Sửa tin tuyển',
+    staff_employers_only:'Chỉ dành cho nhà tuyển dụng', staff_post_required:'Đăng ít nhất một tin tuyển dụng để truy cập trang này.',
   },
   id: {
     nav_home:'Beranda', nav_jobs:'Lowongan', nav_staff:'Staf', nav_dm:'Pesan', nav_profile:'Profil',
@@ -783,6 +791,7 @@ const T = {
     role_student:'Saya mencari pekerjaan', role_student_desc:'Cari lowongan, lamar, dan chat dengan pemberi kerja',
     role_employer:'Saya ingin merekrut staf', role_employer_desc:'Pasang lowongan dan temukan staf yang tepat',
     not_set:'Belum diatur', parts:'', edit_title:'Edit Lowongan',
+    staff_employers_only:'Khusus Pengusaha', staff_post_required:'Pasang lowongan untuk mengakses halaman ini.',
   },
 }
 
@@ -1905,7 +1914,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
       <p style={{ fontSize:48 }}>🔒</p>
       <h2>{t.post_login_title}</h2>
       <p className="muted" style={{ marginBottom:20 }}>{t.post_login_desc}</p>
-      <button className="primary" onClick={signInGoogle}>{t.login_google}</button>
+      <button className="primary" onClick={signInGoogle}>{t.signup_tab} / {t.login_tab}</button>
       <br />
       <button style={{ marginTop:12, background:'transparent', border:'none', color:'var(--muted2)' }} onClick={() => setPage('jobs')}>← {t.nav_jobs}</button>
     </main>
@@ -2110,7 +2119,7 @@ function AvailabilityPicker({ value, onChange }) {
 //  Staff
 // ═════════════════════════════════════════════
 function Staff({ setPage, session, startStaffDM, isEmployer }) {
-  const { t, lang } = useT()
+  const { t } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
   const [engFilter, setEngFilter] = useState('')   // '' | 'basic' | 'intermediate'
@@ -2120,10 +2129,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
     <main>
       <div className="empty" style={{ marginTop:40 }}>
         <div style={{ fontSize:48, marginBottom:12 }}>🔒</div>
-        <b style={{ fontSize:18 }}>{lang === 'ja' ? '雇用主専用ページです' : 'Employers Only'}</b>
-        <p style={{ marginTop:8 }}>{lang === 'ja'
-          ? '求人を1件以上投稿すると閲覧できます。'
-          : 'Post a job listing to access this page.'}</p>
+        <b style={{ fontSize:18 }}>{t.staff_employers_only}</b>
+        <p style={{ marginTop:8 }}>{t.staff_post_required}</p>
         <button className="primary" style={{ marginTop:16 }} onClick={() => setPage('post')}>{t.quick_post}</button>
       </div>
     </main>
@@ -2191,7 +2198,7 @@ function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) 
     <main style={{ textAlign:'center', paddingTop:40 }}>
       <p style={{ fontSize:40 }}>💬</p>
       <h2>{t.dm_login_title}</h2>
-      <button className="primary" style={{ marginTop:16 }} onClick={signInGoogle}>{t.login_google}</button>
+      <button className="primary" style={{ marginTop:16 }} onClick={signInGoogle}>{t.signup_tab} / {t.login_tab}</button>
     </main>
   )
   return (
@@ -2515,8 +2522,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       const { data, error } = await supabase.from('profiles').upsert(updates).select().single()
       if (error) throw error
       setProfile(data); setAvatarFile(null); notify(t.toast_profile)
-    } catch(e) { notify(e.message) }
-    setBusy(false)
+    } catch(e) { notify(e.message || 'Save failed') }
+    finally { setBusy(false) }
   }
 
   const appliedJobs = jobs.filter(j => applications.some(a => a.job_id === j.id))
