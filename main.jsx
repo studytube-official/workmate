@@ -33,7 +33,7 @@ const T = {
     view_map:'📍 View on Google Maps', dm_btn:'💬 Message',
     badge_active:'Hiring', badge_closed:'Closed',
     post_title:'Post a Job', post_login_title:'Login required to post',
-    post_login_desc:'Sign in with Google to post job listings.',
+    post_login_desc:'Sign in to post job listings.',
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
     f_salary:'Pay Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
     f_categories:'Job Type (up to 5)',
@@ -120,7 +120,7 @@ const T = {
     view_map:'📍 Google Mapsで見る', dm_btn:'💬 DMする',
     badge_active:'募集中', badge_closed:'募集終了',
     post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
-    post_login_desc:'Googleアカウントでログインしてください。',
+    post_login_desc:'ログインして求人を投稿してください。',
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
     f_salary:'給与', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
     f_categories:'職種（最大5つ選択）',
@@ -1231,7 +1231,12 @@ function App() {
 
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
-    // onAuthStateChange は常に先に登録する（モバイルOAuth対応）
+    // 既存セッションの復元（ページリロード時）
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      if (data.session) loadUserData(data.session.user.id).catch(console.error)
+    })
+
     const { data:{ subscription } } = supabase.auth.onAuthStateChange(async (event, s) => {
       setSession(s)
       if (s) {
@@ -1248,23 +1253,6 @@ function App() {
         setProfile(null); setSavedJobIds([]); setApplications([]); setPostedJobs([])
       }
     })
-
-    // PKCE: URLに ?code= がある場合はコード交換（onAuthStateChange が遷移を処理）
-    const code = new URLSearchParams(window.location.search).get('code')
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code)
-        .then(({ error }) => {
-          if (error) console.error('Code exchange error:', error)
-        })
-        .finally(() => {
-          window.history.replaceState({}, document.title, window.location.pathname)
-        })
-    } else {
-      // 既存セッションの復元（ページリロード時）
-      supabase.auth.getSession().then(({ data }) => {
-        if (data.session) loadUserData(data.session.user.id).catch(console.error)
-      })
-    }
 
     return () => subscription.unsubscribe()
   }, [])
@@ -1460,13 +1448,7 @@ function App() {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc || 'Sydney')}`, '_blank')
   }
 
-  async function signInGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider:'google',
-      options:{ redirectTo: window.location.origin }
-    })
-    if (error) notify(error.message)
-  }
+  function signInGoogle() { setPage('login') }
 
   async function signOut() {
     try { await supabase.auth.signOut() } catch(e) { console.error('signOut error:', e) }
@@ -1614,17 +1596,7 @@ function Login({ signInGoogle, setPage, notify }) {
           </button>
         </div>
 
-        <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0', color:'var(--muted)' }}>
-          <div style={{ flex:1, height:1, background:'var(--border)' }} />
-          <span style={{ fontSize:13 }}>{t.or_google}</span>
-          <div style={{ flex:1, height:1, background:'var(--border)' }} />
-        </div>
-
-        <button onClick={signInGoogle} style={{ width:'100%', padding:'13px', display:'flex', alignItems:'center', justifyContent:'center', gap:10, fontSize:15 }}>
-          <GoogleIcon /> {t.login_google}
-        </button>
-
-        <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:12, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
+        <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:16, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
           {t.guest}
         </button>
       </div>
