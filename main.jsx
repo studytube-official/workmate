@@ -1546,10 +1546,22 @@ function Login({ signInGoogle, setPage, notify }) {
   async function handleLogin() {
     if (!email.trim() || !password) { notify(t.err_required); return }
     setBusy(true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setBusy(false)
-    if (error) { notify(error.message) }
-    // 成功時は onAuthStateChange が page を切り替える
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        // メール未確認の場合は再送信を促す
+        if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
+          notify('Please check your email and click the confirmation link first.')
+        } else {
+          notify(error.message)
+        }
+      }
+      // 成功時は onAuthStateChange が page を切り替える
+    } catch(e) {
+      notify('Connection error. Please try again.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   if (done) return (
