@@ -1258,11 +1258,21 @@ function App() {
           setPage('set_password')
           loadUserData(s.user.id).catch(console.error)
         } else if (event === 'SIGNED_IN') {
-          // ページ遷移を先に行い、データ読み込みはバックグラウンドで
-          setPage('home')
+          // localStorageのキャッシュで即座にページ遷移
+          const cachedRole = localStorage.getItem(`wm_role_${s.user.id}`)
+          setPage(cachedRole ? 'home' : 'role_select')
+          // バックグラウンドでDB同期
           loadUserData(s.user.id)
-            .then(prof => { if (!prof?.role) setPage('role_select') })
-            .catch(e => console.error('loadUserData error:', e))
+            .then(prof => {
+              if (prof?.role) {
+                localStorage.setItem(`wm_role_${s.user.id}`, prof.role)
+                if (!cachedRole) setPage('home') // roleがあるのにrole_selectにいた場合
+              } else if (!prof?.role) {
+                localStorage.removeItem(`wm_role_${s.user.id}`)
+                setPage('role_select')
+              }
+            })
+            .catch(console.error)
         } else {
           loadUserData(s.user.id).catch(console.error)
         }
@@ -2517,7 +2527,8 @@ function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
 
   async function choose(role) {
     if (!session) return
-    // 先にページ遷移してからバックグラウンドで保存
+    // キャッシュ保存 → 即座にページ遷移
+    localStorage.setItem(`wm_role_${session.user.id}`, role)
     setProfile(p => ({ ...(p || {}), id: session.user.id, role }))
     setPage(role === 'employer' ? 'post' : 'profile')
     supabase.from('profiles')
