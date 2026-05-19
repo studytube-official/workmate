@@ -89,6 +89,8 @@ const T = {
     toast_new_app:'📨 New application received!',
     toast_closed:'This job is no longer accepting applications',
     eng_basic:'Basic English OK', eng_none:'No English needed', eng_inter:'Intermediate+',
+    plvl_basic:'Basic', plvl_pre:'Pre-intermediate', plvl_inter:'Intermediate', plvl_upper:'Upper-intermediate', plvl_adv:'Advanced',
+    staff_eng_min:'Min. English', desc_ph:'Job description, hours, requirements...',
     not_set:'Not set', parts:'', edit_title:'Edit Job',
   },
   ja: {
@@ -170,6 +172,8 @@ const T = {
     toast_new_app:'📨 新しい応募が届きました！',
     toast_closed:'この求人は募集終了です',
     eng_basic:'英語初級OK', eng_none:'英語ほぼ不要', eng_inter:'Intermediate以上',
+    plvl_basic:'初級', plvl_pre:'初中級', plvl_inter:'中級', plvl_upper:'中上級', plvl_adv:'上級',
+    staff_eng_min:'英語レベル（最低）', desc_ph:'仕事内容、勤務時間、条件など...',
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
   },
   ko: {
@@ -251,6 +255,8 @@ const T = {
     toast_new_app:'📨 새 지원이 도착했습니다!',
     toast_closed:'이 구인은 마감되었습니다',
     eng_basic:'기초 영어 OK', eng_none:'영어 불필요', eng_inter:'중급 이상',
+    plvl_basic:'기초', plvl_pre:'초중급', plvl_inter:'중급', plvl_upper:'중상급', plvl_adv:'고급',
+    staff_eng_min:'최소 영어 수준', desc_ph:'업무 내용, 근무 시간, 조건 등...',
     not_set:'미설정', parts:'건', edit_title:'구인 수정',
   },
   zh: {
@@ -332,6 +338,8 @@ const T = {
     toast_new_app:'📨 收到新申请！',
     toast_closed:'该职位已停止接受申请',
     eng_basic:'基础英语OK', eng_none:'无需英语', eng_inter:'中级以上',
+    plvl_basic:'基础', plvl_pre:'初中级', plvl_inter:'中级', plvl_upper:'中高级', plvl_adv:'高级',
+    staff_eng_min:'最低英语水平', desc_ph:'工作内容、工作时间、要求等...',
     not_set:'未设置', parts:'条', edit_title:'编辑招聘',
   },
   es: {
@@ -413,6 +421,8 @@ const T = {
     toast_new_app:'📨 ¡Nueva postulación recibida!',
     toast_closed:'Este empleo ya no acepta postulaciones',
     eng_basic:'Inglés básico OK', eng_none:'Sin inglés necesario', eng_inter:'Intermedio+',
+    plvl_basic:'Básico', plvl_pre:'Preintermedio', plvl_inter:'Intermedio', plvl_upper:'Intermedio alto', plvl_adv:'Avanzado',
+    staff_eng_min:'Inglés mín.', desc_ph:'Descripción, horarios, requisitos...',
     not_set:'No especificado', parts:'', edit_title:'Editar empleo',
   },
   fr: {
@@ -494,6 +504,8 @@ const T = {
     toast_new_app:'📨 Nouvelle candidature reçue !',
     toast_closed:"Cette offre n'accepte plus de candidatures",
     eng_basic:'Anglais de base OK', eng_none:"Pas d'anglais requis", eng_inter:'Intermédiaire+',
+    plvl_basic:'Débutant', plvl_pre:'Pré-intermédiaire', plvl_inter:'Intermédiaire', plvl_upper:'Intermédiaire avancé', plvl_adv:'Avancé',
+    staff_eng_min:'Anglais min.', desc_ph:'Description, horaires, conditions...',
     not_set:'Non renseigné', parts:'', edit_title:"Modifier l'offre",
   },
   pt: {
@@ -575,6 +587,8 @@ const T = {
     toast_new_app:'📨 Nova candidatura recebida!',
     toast_closed:'Esta vaga não aceita mais candidaturas',
     eng_basic:'Inglês básico OK', eng_none:'Sem inglês necessário', eng_inter:'Intermediário+',
+    plvl_basic:'Básico', plvl_pre:'Pré-intermediário', plvl_inter:'Intermediário', plvl_upper:'Intermediário avançado', plvl_adv:'Avançado',
+    staff_eng_min:'Inglês mín.', desc_ph:'Descrição, horários, requisitos...',
     not_set:'Não definido', parts:'', edit_title:'Editar Vaga',
   },
   vi: {
@@ -656,6 +670,8 @@ const T = {
     toast_new_app:'📨 Có đơn ứng tuyển mới!',
     toast_closed:'Tin tuyển dụng này đã đóng',
     eng_basic:'Tiếng Anh cơ bản OK', eng_none:'Không cần tiếng Anh', eng_inter:'Trung cấp trở lên',
+    plvl_basic:'Cơ bản', plvl_pre:'Sơ trung cấp', plvl_inter:'Trung cấp', plvl_upper:'Trung cao cấp', plvl_adv:'Nâng cao',
+    staff_eng_min:'Tiếng Anh tối thiểu', desc_ph:'Mô tả công việc, giờ làm, yêu cầu...',
     not_set:'Chưa đặt', parts:'', edit_title:'Sửa tin tuyển',
   },
   id: {
@@ -737,6 +753,8 @@ const T = {
     toast_new_app:'📨 Lamaran baru diterima!',
     toast_closed:'Lowongan ini sudah tidak menerima lamaran',
     eng_basic:'Bahasa Inggris dasar OK', eng_none:'Tanpa bahasa Inggris', eng_inter:'Menengah ke atas',
+    plvl_basic:'Dasar', plvl_pre:'Pra-menengah', plvl_inter:'Menengah', plvl_upper:'Menengah atas', plvl_adv:'Mahir',
+    staff_eng_min:'B. Inggris min.', desc_ph:'Deskripsi pekerjaan, jam kerja, syarat...',
     not_set:'Belum diatur', parts:'', edit_title:'Edit Lowongan',
   },
 }
@@ -755,6 +773,40 @@ const LANGS = [
 
 const LangCtx = createContext({ lang:'en', setLang:()=>{}, t:T.en })
 const useT = () => useContext(LangCtx)
+
+// ─── 英語レベル ランク定義 ────────────────────
+// 求人の必須レベルキー: 'none' | 'basic' | 'intermediate'
+// プロフィールの自己申告キー: 'Basic' | 'Pre-intermediate' | 'Intermediate' | 'Upper-intermediate' | 'Advanced'
+const PROFILE_ENG_RANK = {
+  'Basic': 1, 'Pre-intermediate': 2, 'Intermediate': 3, 'Upper-intermediate': 4, 'Advanced': 5,
+}
+const JOB_ENG_MIN_RANK = { 'none': 0, 'basic': 1, 'intermediate': 3 }
+
+// 旧DBの英語テキスト値を統一キーに変換（後方互換）
+function normalizeJobEng(val) {
+  if (!val) return 'basic'
+  if (val === 'basic' || val === 'Basic English OK') return 'basic'
+  if (val === 'none'  || val === 'No English needed') return 'none'
+  if (val === 'intermediate' || val === 'Intermediate+') return 'intermediate'
+  return 'basic'
+}
+
+// 求人の英語要件キー → 表示テキスト
+function jobEngLabel(key, t) {
+  const k = normalizeJobEng(key)
+  if (k === 'none') return t.eng_none
+  if (k === 'intermediate') return t.eng_inter
+  return t.eng_basic
+}
+
+// プロフィールの英語レベルキー → 表示テキスト
+function profileEngLabel(key, t) {
+  const map = {
+    'Basic': t.plvl_basic, 'Pre-intermediate': t.plvl_pre,
+    'Intermediate': t.plvl_inter, 'Upper-intermediate': t.plvl_upper, 'Advanced': t.plvl_adv,
+  }
+  return map[key] || key || ''
+}
 
 // ─── シドニー主要エリア座標テーブル ────────────
 const SYDNEY_COORDS = {
@@ -1261,10 +1313,10 @@ function App() {
 
   const filteredJobs = useMemo(() => jobs.filter(j => {
     if (j.is_active === false) return false
-    const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description].join(' ').toLowerCase()
+    const tx = [j.title, j.company, j.location, j.salary, j.description].join(' ').toLowerCase()
     return (!search || tx.includes(search.toLowerCase()))
-        && (!area    || j.location      === area)
-        && (!english || j.english_level === english)
+        && (!area    || j.location === area)
+        && (!english || normalizeJobEng(j.english_level) === english)
   }), [jobs, search, area, english])
 
   // ── アクション ─────────────────────────────
@@ -1612,9 +1664,9 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
           </select>
           <select value={english} onChange={e => setEnglish(e.target.value)}>
             <option value="">{t.eng_cond}</option>
-            <option>{t.eng_basic}</option>
-            <option>{t.eng_none}</option>
-            <option>{t.eng_inter}</option>
+            <option value="none">{t.eng_none}</option>
+            <option value="basic">{t.eng_basic}</option>
+            <option value="intermediate">{t.eng_inter}</option>
           </select>
         </div>
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
@@ -1646,7 +1698,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
         {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{c}</span>)}
-        <span>{job.english_level || t.no_eng}</span>
+        <span>{jobEngLabel(job.english_level, t) || t.no_eng}</span>
         {job.is_active === false && <span style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:700 }}>{t.badge_closed}</span>}
       </div>
       <div className="actions" onClick={e => e.stopPropagation()}>
@@ -1692,11 +1744,11 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
           </span>
         </div>
         <p className="muted">{job.title} / {job.location} / {job.salary}</p>
-        <div className="tags"><span>{job.english_level}</span><span>{job.location}</span></div>
+        <div className="tags"><span>{jobEngLabel(job.english_level, t)}</span><span>{job.location}</span></div>
         <p style={{ lineHeight:1.8, marginTop:12 }}>{job.description}</p>
         <div className="row"><b>{t.f_location}</b><span>{job.location}</span></div>
         <div className="row"><b>{t.f_salary}</b><span>{job.salary}</span></div>
-        <div className="row"><b>{t.f_eng}</b><span>{job.english_level}</span></div>
+        <div className="row"><b>{t.f_eng}</b><span>{jobEngLabel(job.english_level, t)}</span></div>
         <button onClick={() => openMap(job.location)} style={{ marginTop:12 }}>{t.view_map}</button>
 
         {showApply && (
@@ -1814,7 +1866,7 @@ function MapPreview({ query, hint }) {
   )
 }
 
-const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'Basic English OK', description:'', image_url:'', categories:'' }
+const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
 
 function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
   const { t } = useT()
@@ -1852,7 +1904,8 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
       const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
       if (error) throw error
       notify(t.job_saved); setJob(emptyJob); setFile(null)
-      await loadJobs(); setPage('jobs')
+      loadJobs()   // バックグラウンドで再取得（待たずに画面遷移）
+      setPage('jobs')
     } catch(e) { notify(e.message) }
     finally { setBusy(false) }
   }
@@ -1871,10 +1924,12 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
         </label>
         <label>{t.f_eng}
           <select value={job.english_level} onChange={e => update('english_level', e.target.value)}>
-            <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
+            <option value="none">{t.eng_none}</option>
+            <option value="basic">{t.eng_basic}</option>
+            <option value="intermediate">{t.eng_inter}</option>
           </select>
         </label>
-        <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder="仕事内容、勤務時間、条件など..." /></label>
+        <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={t.desc_ph} /></label>
         <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
         <button className="primary" onClick={submit} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
       </section>
@@ -1887,7 +1942,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
 // ═════════════════════════════════════════════
 function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData }) {
   const { t } = useT()
-  const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:job.english_level||'Basic English OK', description:job.description||'' })
+  const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:normalizeJobEng(job.english_level), description:job.description||'' })
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
@@ -1926,7 +1981,9 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
           <label>{t.f_salary}<SalaryInput value={form.salary} onChange={v => upd('salary', v)} /></label>
           <label>{t.f_eng}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
-              <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
+              <option value="none">{t.eng_none}</option>
+              <option value="basic">{t.eng_basic}</option>
+              <option value="intermediate">{t.eng_inter}</option>
             </select>
           </label>
           <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
@@ -2030,6 +2087,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
+  const [engFilter, setEngFilter] = useState('')   // '' | 'basic' | 'intermediate'
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -2052,25 +2110,40 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
   }, [])
 
+  // ランクベースフィルター: 指定レベル以上のスタッフのみ表示
+  const minRank = JOB_ENG_MIN_RANK[engFilter] ?? -1
+  const filteredStaff = engFilter
+    ? staffList.filter(s => (PROFILE_ENG_RANK[s.english_level] || 0) >= minRank)
+    : staffList
+
   return (
     <main>
       <h1>{t.find_staff}</h1>
-      <p className="muted" style={{ marginBottom:16 }}>{t.staff_desc}</p>
+      <p className="muted" style={{ marginBottom:12 }}>{t.staff_desc}</p>
+      {/* 英語レベルフィルター */}
+      <div style={{ marginBottom:16 }}>
+        <select value={engFilter} onChange={e => setEngFilter(e.target.value)}
+          style={{ minWidth:200 }}>
+          <option value="">{t.staff_eng_min} — {t.eng_cond}</option>
+          <option value="basic">{t.plvl_basic} +</option>
+          <option value="intermediate">{t.plvl_inter} +</option>
+        </select>
+      </div>
       {loading && <SkeletonGrid />}
-      {!loading && !staffList.length && <div className="empty">{t.no_staff}</div>}
+      {!loading && !filteredStaff.length && <div className="empty">{t.no_staff}</div>}
       <div className="grid">
-        {staffList.map(s => (
+        {filteredStaff.map(s => (
           <article className="job" key={s.id} style={{ cursor:'default' }}>
             <div className="photo">
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
-            {s.english_level && <p className="muted">🗣 {s.english_level}</p>}
+            {s.english_level && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
             {s.availability   && <p className="muted">📅 {s.availability}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
-              {s.english_level && <span>{s.english_level}</span>}
+              {s.english_level && <span>{profileEngLabel(s.english_level, t)}</span>}
               {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{c}</span>)}
             </div>
             <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
@@ -2431,8 +2504,11 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
           <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder={t.name_ph} /></label>
           <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
-              <option>Basic</option><option>Pre-intermediate</option><option>Intermediate</option>
-              <option>Upper-intermediate</option><option>Advanced</option>
+              <option value="Basic">{t.plvl_basic}</option>
+              <option value="Pre-intermediate">{t.plvl_pre}</option>
+              <option value="Intermediate">{t.plvl_inter}</option>
+              <option value="Upper-intermediate">{t.plvl_upper}</option>
+              <option value="Advanced">{t.plvl_adv}</option>
             </select>
           </label>
           <label>{t.f_avail}
