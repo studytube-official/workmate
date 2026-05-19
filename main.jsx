@@ -1258,15 +1258,21 @@ function App() {
 
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
-    // OAuthエラーやcodeパラメータをURLからクリア
-    if (window.location.search) {
+    // URLのauth token（?code= や #access_token=）をリロード前にクリア
+    // これがないとリロード時に期限切れトークンを再処理してログアウトされる
+    if (window.location.search || window.location.hash) {
       window.history.replaceState({}, document.title, window.location.pathname)
     }
 
     // 既存セッションの復元（ページリロード時）
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
-      if (data.session) loadUserData(data.session.user.id).catch(console.error)
+      if (data.session) {
+        // localStorageキャッシュで即座にページ復元
+        const cachedRole = localStorage.getItem(`wm_role_${data.session.user.id}`)
+        if (cachedRole) setPage('home')
+        loadUserData(data.session.user.id).catch(console.error)
+      }
     })
 
     const { data:{ subscription } } = supabase.auth.onAuthStateChange((event, s) => {
@@ -1527,7 +1533,7 @@ function App() {
 
       {page === 'home'        && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
       {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
-      {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
+      {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
       {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
@@ -1968,7 +1974,7 @@ function MapPreview({ query, hint }) {
 
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
 
-function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
+function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJobs }) {
   const { t } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
@@ -2001,16 +2007,19 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
     setBusy(true)
     try {
       const image_url = await uploadImage()
-      // 先に画面遷移・UI更新
+      // 楽観的に即座にUIへ追加してページ遷移
+      const optimistic = { ...job, image_url, posted_by:session.user.id, is_active:true, id:`tmp_${Date.now()}`, applications:[] }
+      setPostedJobs(prev => [optimistic, ...prev])
       notify(t.job_saved)
       setJob(emptyJob); setFile(null); setBusy(false)
       setPage('profile')
-      // バックグラウンドでDB保存
+      // バックグラウンドでDB保存、完了後にリアルIDで置換
       supabase.from('jobs')
         .insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
-        .then(({ error }) => {
-          if (error) notify('Post failed: ' + error.message)
-          else loadJobs()
+        .select().single()
+        .then(({ data, error }) => {
+          if (error) { notify('Post failed: ' + error.message); setPostedJobs(prev => prev.filter(j => j.id !== optimistic.id)) }
+          else { loadJobs(); setPostedJobs(prev => prev.map(j => j.id === optimistic.id ? { ...data, applications:[] } : j)) }
         })
     } catch(e) { notify(e.message); setBusy(false) }
   }
