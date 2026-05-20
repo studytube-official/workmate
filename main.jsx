@@ -1355,20 +1355,30 @@ function App() {
       if (savedRes.data)  setSavedJobIds(savedRes.data.map(r => r.job_id))
       if (appRes.data)    setApplications(appRes.data)
       if (convRes.data) {
-        setConversations(convRes.data)
-        fetchUnread(uid, convRes.data.map(c => c.id))
+        // tmp_（楽観的）エントリを保持しながらマージ
+        setConversations(prev => {
+          const tmps = prev.filter(c => String(c.id).startsWith('tmp_'))
+          const merged = [...tmps, ...convRes.data.filter(c => !tmps.some(t => t.job_id === c.job_id && t.participant_a === c.participant_a))]
+          return merged
+        })
+        const realIds = convRes.data.map(c => c.id)
+        fetchUnread(uid, realIds)
       }
-      if (postedRes.data) setPostedJobs(postedRes.data)
+      if (postedRes.data) setPostedJobs(prev => {
+        const tmps = prev.filter(j => String(j.id).startsWith('tmp_'))
+        return [...tmps, ...postedRes.data]
+      })
     }).catch(console.error)
 
     return profRes.data  // ログイン後の遷移判定に使う
   }
 
   async function fetchUnread(uid, convIds) {
-    if (!convIds.length) { setUnreadCount(0); return }
+    const realIds = (convIds || []).filter(id => !String(id).startsWith('tmp_'))
+    if (!realIds.length) { setUnreadCount(0); return }
     const { count } = await supabase.from('messages')
       .select('*', { count:'exact', head:true })
-      .eq('read', false).neq('sender_id', uid).in('conversation_id', convIds)
+      .eq('read', false).neq('sender_id', uid).in('conversation_id', realIds)
     setUnreadCount(count || 0)
   }
 
@@ -1390,9 +1400,22 @@ function App() {
   useEffect(() => {
     if (!session) return
     const uid = session.user.id
+    function refreshConvs() {
+      supabase.from('conversations').select('*')
+        .or(`participant_a.eq.${uid},participant_b.eq.${uid}`)
+        .order('last_message_at', { ascending:false })
+        .then(({ data }) => {
+          if (!data) return
+          setConversations(prev => {
+            const tmps = prev.filter(c => String(c.id).startsWith('tmp_'))
+            return [...tmps, ...data.filter(c => !tmps.some(t => t.job_id === c.job_id && t.participant_a === c.participant_a))]
+          })
+          fetchUnread(uid, data.map(c => c.id))
+        })
+    }
     const ch = supabase.channel('conv-rt')
-      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_a=eq.${uid}` }, () => loadUserData(uid))
-      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_b=eq.${uid}` }, () => loadUserData(uid))
+      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_a=eq.${uid}` }, refreshConvs)
+      .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_b=eq.${uid}` }, refreshConvs)
       .subscribe()
     return () => supabase.removeChannel(ch)
   }, [session])
@@ -1402,9 +1425,19 @@ function App() {
     if (!session || !postedJobs.length) return
     const ch = supabase.channel('new-apps-rt')
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'applications' }, payload => {
-        if (postedJobs.some(j => j.id === payload.new.job_id)) {
+        const realPostedIds = postedJobs.filter(j => !String(j.id).startsWith('tmp_')).map(j => j.id)
+        if (realPostedIds.includes(payload.new.job_id)) {
           notify(t.toast_new_app)
-          loadUserData(session.user.id)
+          // 応募者リストだけ更新（重い loadUserData は避ける）
+          supabase.from('jobs')
+            .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
+            .eq('posted_by', session.user.id).order('id', { ascending:false })
+            .then(({ data }) => {
+              if (data) setPostedJobs(prev => {
+                const tmps = prev.filter(j => String(j.id).startsWith('tmp_'))
+                return [...tmps, ...data]
+              })
+            })
         }
       })
       .subscribe()
