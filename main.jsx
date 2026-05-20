@@ -2084,43 +2084,26 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
   async function submit() {
     if (!job.title || !job.company) { notify(t.required_err); return }
     setBusy(true)
-    // クロージャ問題防止のためスナップショット
     const jobData = { ...job }
     const uid = session.user.id
     try {
       const image_url = await uploadImage()
-      const tmpId = `tmp_${Date.now()}`
-      const optimistic = { ...jobData, image_url, posted_by:uid, is_active:true, id:tmpId, applications:[] }
-      setPostedJobs(prev => [optimistic, ...prev])
-      notify(t.job_saved)
-      setJob(emptyJob); setFile(null); setPreview(null); setBusy(false)
-      setPage('profile')
-      // バックグラウンドでDB保存
-      supabase.from('jobs')
+      const insertPromise = supabase.from('jobs')
         .insert([{ ...jobData, image_url, posted_by:uid, is_active:true }])
         .select().single()
-        .then(({ data, error }) => {
-          if (error) {
-            notify('Post failed: ' + error.message)
-            setPostedJobs(prev => prev.filter(j => j.id !== tmpId))
-          } else {
-            loadJobs()
-            // INSERT成功後はDBから最新を取得してstateを確実に更新
-            supabase.from('jobs')
-              .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
-              .eq('posted_by', uid)
-              .order('id', { ascending:false })
-              .then(({ data:fresh }) => {
-                if (fresh) setPostedJobs(fresh)
-                else if (data) setPostedJobs(prev =>
-                  prev.some(j => j.id === tmpId)
-                    ? prev.map(j => j.id === tmpId ? { ...data, applications:[] } : j)
-                    : [{ ...data, applications:[] }, ...prev.filter(j => j.id !== data.id)]
-                )
-              })
-          }
-        })
-    } catch(e) { notify(e.message || 'Upload failed'); setBusy(false) }
+      const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Connection timeout. Please try again.')), 15000))
+      const { data, error } = await Promise.race([insertPromise, timeout])
+      if (error) throw new Error(error.message)
+      setPostedJobs(prev => [{ ...data, applications:[] }, ...prev])
+      loadJobs()
+      notify(t.job_saved)
+      setJob(emptyJob); setFile(null); setPreview(null)
+      setPage('profile')
+    } catch(e) {
+      notify(e.message || 'Post failed')
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
