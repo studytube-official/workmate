@@ -1254,6 +1254,7 @@ function App() {
   const changeLang = l => { setLang(l); localStorage.setItem('wm_lang', l) }
 
   const [page, setPage]               = useState('home')
+  const [profileTab, setProfileTab]   = useState('profile')
   const [session, setSession]         = useState(null)
   const [profile, setProfile]         = useState(null)
   const [jobs, setJobs]               = useState([])
@@ -1606,12 +1607,12 @@ function App() {
 
       {page === 'home'        && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
       {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
-      {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} />}
+      {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} setProfileTab={setProfileTab} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
       {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
       {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
-      {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} setPostedJobs={setPostedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
+      {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} setPostedJobs={setPostedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} initialTab={profileTab} setProfileTab={setProfileTab} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
       {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} signOut={signOut} />}
       {page === 'set_password' && <SetPassword notify={notify} setPage={setPage} profile={profile} />}
@@ -2047,7 +2048,7 @@ function MapPreview({ query, hint }) {
 
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
 
-function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJobs }) {
+function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJobs, setProfileTab }) {
   const { t } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
@@ -2098,6 +2099,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
       loadJobs()
       notify(t.job_saved)
       setJob(emptyJob); setFile(null); setPreview(null)
+      setProfileTab('posted')
       setPage('profile')
     } catch(e) {
       notify(e.message || 'Post failed')
@@ -2791,12 +2793,12 @@ function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
 // ═════════════════════════════════════════════
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs, setPostedJobs,
-                   updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
+                   updateAppStatus, toggleJobStatus, deleteJob, setEditingJob, initialTab, setProfileTab }) {
   const { t, lang } = useT()
   const isEmployer = profile?.role === 'employer'
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
-  const [tab,  setTab]        = useState('profile')
+  const [tab,  setTab]        = useState(initialTab || 'profile')
   const [avatarFile, setAvatarFile]     = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [expandedJob, setExpandedJob]   = useState(null)
@@ -2811,8 +2813,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
         visa_expiry:     profile.visa_expiry     || '',
         job_categories:  profile.job_categories  || '',
       })
-      // 雇用主はpostedタブをデフォルトに
-      if (profile.role === 'employer') setTab('posted')
+      // 雇用主はpostedタブをデフォルトに（initialTabが指定されていない場合）
+      if (profile.role === 'employer' && !initialTab) setTab('posted')
     }
   }, [profile])
 
@@ -2918,7 +2920,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
 
       <div style={{ display:'flex', gap:4, margin:'16px 0 0', borderBottom:'1px solid var(--border)', overflowX:'auto' }}>
         {TABS.map(([key, label]) => (
-          <button key={key} onClick={() => setTab(key)} style={{
+          <button key={key} onClick={() => { setTab(key); setProfileTab?.(key) }} style={{
             background:'transparent', border:'none', borderRadius:0, whiteSpace:'nowrap',
             borderBottom: tab===key ? '2px solid var(--accent)' : '2px solid transparent',
             color: tab===key ? 'var(--text)' : 'var(--muted2)',
