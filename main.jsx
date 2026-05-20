@@ -1562,7 +1562,7 @@ function App() {
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
       {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
       {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
-      {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
+      {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} setPostedJobs={setPostedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
       {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} signOut={signOut} />}
       {page === 'set_password' && <SetPassword notify={notify} setPage={setPage} profile={profile} />}
@@ -2673,7 +2673,7 @@ function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
 //  Profile
 // ═════════════════════════════════════════════
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
-                   applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
+                   applications, jobs, isSaved, openJob, savedJobIds, postedJobs, setPostedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
   const { t, lang } = useT()
   const isEmployer = profile?.role === 'employer'
@@ -2698,6 +2698,16 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       if (profile.role === 'employer') setTab('posted')
     }
   }, [profile])
+
+  // My Listings タブを開いたとき、DBから直接再取得（stateが空の場合も対応）
+  useEffect(() => {
+    if (tab !== 'posted' || !session) return
+    supabase.from('jobs')
+      .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
+      .eq('posted_by', session.user.id)
+      .order('id', { ascending: false })
+      .then(({ data }) => { if (data) setPostedJobs(data) })
+  }, [tab, session])
 
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
   function handleAvatarChange(e) {
