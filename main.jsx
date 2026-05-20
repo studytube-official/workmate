@@ -2051,21 +2051,41 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
   async function submit() {
     if (!job.title || !job.company) { notify(t.required_err); return }
     setBusy(true)
+    // クロージャ問題防止のためスナップショット
+    const jobData = { ...job }
+    const uid = session.user.id
     try {
       const image_url = await uploadImage()
-      // 楽観的に即座にUIへ追加してページ遷移
-      const optimistic = { ...job, image_url, posted_by:session.user.id, is_active:true, id:`tmp_${Date.now()}`, applications:[] }
+      const tmpId = `tmp_${Date.now()}`
+      const optimistic = { ...jobData, image_url, posted_by:uid, is_active:true, id:tmpId, applications:[] }
       setPostedJobs(prev => [optimistic, ...prev])
       notify(t.job_saved)
       setJob(emptyJob); setFile(null); setPreview(null); setBusy(false)
       setPage('profile')
-      // バックグラウンドでDB保存、完了後にリアルIDで置換
+      // バックグラウンドでDB保存
       supabase.from('jobs')
-        .insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
+        .insert([{ ...jobData, image_url, posted_by:uid, is_active:true }])
         .select().single()
         .then(({ data, error }) => {
-          if (error) { notify('Post failed: ' + error.message); setPostedJobs(prev => prev.filter(j => j.id !== optimistic.id)) }
-          else { loadJobs(); setPostedJobs(prev => prev.map(j => j.id === optimistic.id ? { ...data, applications:[] } : j)) }
+          if (error) {
+            notify('Post failed: ' + error.message)
+            setPostedJobs(prev => prev.filter(j => j.id !== tmpId))
+          } else {
+            loadJobs()
+            // INSERT成功後はDBから最新を取得してstateを確実に更新
+            supabase.from('jobs')
+              .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
+              .eq('posted_by', uid)
+              .order('id', { ascending:false })
+              .then(({ data:fresh }) => {
+                if (fresh) setPostedJobs(fresh)
+                else if (data) setPostedJobs(prev =>
+                  prev.some(j => j.id === tmpId)
+                    ? prev.map(j => j.id === tmpId ? { ...data, applications:[] } : j)
+                    : [{ ...data, applications:[] }, ...prev.filter(j => j.id !== data.id)]
+                )
+              })
+          }
         })
     } catch(e) { notify(e.message || 'Upload failed'); setBusy(false) }
   }
@@ -2780,14 +2800,20 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     }
   }, [profile])
 
-  // My Listings タブを開いたとき、DBから直接再取得（stateが空の場合も対応）
+  // My Listings タブを開いたとき、DBから直接再取得
+  // tmp_xxx（楽観的エントリ）は保持しながらマージ
   useEffect(() => {
     if (tab !== 'posted' || !session) return
     supabase.from('jobs')
       .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
       .eq('posted_by', session.user.id)
       .order('id', { ascending: false })
-      .then(({ data }) => { if (data) setPostedJobs(data) })
+      .then(({ data }) => {
+        if (data) setPostedJobs(prev => {
+          const tmps = prev.filter(j => String(j.id).startsWith('tmp_'))
+          return [...tmps, ...data]
+        })
+      })
   }, [tab, session])
 
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
