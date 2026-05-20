@@ -1422,15 +1422,15 @@ function App() {
   // ── アクション ─────────────────────────────
   function openJob(job) { setSelectedJob(job); setPage('job') }
 
-  async function toggleSave(jobId) {
+  function toggleSave(jobId) {
     if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
     if (savedJobIds.includes(jobId)) {
-      await supabase.from('saved_jobs').delete().eq('user_id', uid).eq('job_id', jobId)
       setSavedJobIds(p => p.filter(x => x !== jobId))
+      supabase.from('saved_jobs').delete().eq('user_id', uid).eq('job_id', jobId).catch(console.error)
     } else {
-      await supabase.from('saved_jobs').insert({ user_id:uid, job_id:jobId })
       setSavedJobIds(p => [...p, jobId])
+      supabase.from('saved_jobs').insert({ user_id:uid, job_id:jobId }).catch(console.error)
     }
   }
   const isSaved = jobId => savedJobIds.includes(jobId)
@@ -1440,92 +1440,108 @@ function App() {
     if (job.is_active === false) { notify(t.toast_closed); return false }
     const uid = session.user.id
     if (applications.some(a => a.job_id === job.id)) { notify(t.toast_applied_already); return false }
-    const { error } = await supabase.from('applications').insert({ user_id:uid, job_id:job.id, message:msg, status:'pending' })
-    if (error) { notify(error.message); return false }
-    setApplications(p => [...p, { user_id:uid, job_id:job.id, status:'pending' }])
+    // 楽観的に即座に反映
+    const optimistic = { user_id:uid, job_id:job.id, status:'pending', id:`tmp_${Date.now()}` }
+    setApplications(p => [...p, optimistic])
     notify(t.toast_applied_ok)
+    supabase.from('applications').insert({ user_id:uid, job_id:job.id, message:msg, status:'pending' })
+      .select().single()
+      .then(({ data, error }) => {
+        if (error) { setApplications(p => p.filter(a => a.id !== optimistic.id)); notify(error.message) }
+        else if (data) setApplications(p => p.map(a => a.id === optimistic.id ? data : a))
+      })
     return true
   }
   const hasApplied = jobId => applications.some(a => a.job_id === jobId)
 
+  // ── 会話作成ヘルパー（楽観的） ─────────────
+  function openOrCreateConv(payload, existingConv) {
+    if (existingConv) { setActiveConvId(existingConv.id); setPage('chat'); return }
+    const tmpId = `tmp_${Date.now()}`
+    const tmpConv = { id:tmpId, last_message:'', last_message_at:new Date().toISOString(), ...payload }
+    setConversations(p => [tmpConv, ...p])
+    setActiveConvId(tmpId)
+    setPage('chat')
+    supabase.from('conversations').insert(payload).select().single()
+      .then(({ data, error }) => {
+        if (error) {
+          setConversations(p => p.filter(c => c.id !== tmpId))
+          notify(error.message)
+        } else if (data) {
+          setConversations(p => p.map(c => c.id === tmpId ? data : c))
+          setActiveConvId(data.id)
+        }
+      })
+  }
+
   // ── 求人 DM ────────────────────────────────
-  async function startDM(job) {
+  function startDM(job) {
     if (!session) { notify(t.toast_login); return }
     if (job.is_active === false) { notify(t.toast_closed); return }
     const uid = session.user.id
     const empUid = job.posted_by
-    if (!empUid)       { notify(t.toast_no_poster); return }
-    if (empUid === uid){ notify(t.toast_self_dm);  return }
-    let ex = conversations.find(c => c.job_id === job.id)
-    if (!ex) {
-      const { data, error } = await supabase.from('conversations').insert({
-        job_id:job.id, participant_a:uid, participant_b:empUid,
-        company_name:job.company, job_title:job.title,
-        last_message:'', last_message_at:new Date().toISOString()
-      }).select().single()
-      if (error) { notify(error.message); return }
-      ex = data; setConversations(p => [data, ...p])
-    }
-    setActiveConvId(ex.id); setPage('chat')
+    if (!empUid)        { notify(t.toast_no_poster); return }
+    if (empUid === uid) { notify(t.toast_self_dm);  return }
+    const ex = conversations.find(c => c.job_id === job.id)
+    openOrCreateConv({
+      job_id:job.id, participant_a:uid, participant_b:empUid,
+      company_name:job.company, job_title:job.title,
+    }, ex)
   }
 
   // ── スタッフ DM ───────────────────────────
-  async function startStaffDM(targetUid, displayName) {
+  function startStaffDM(targetUid, displayName) {
     if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
     if (targetUid === uid) { notify(t.toast_self_dm2); return }
-    let ex = conversations.find(c =>
+    const ex = conversations.find(c =>
       !c.job_id && (
         (c.participant_a === uid && c.participant_b === targetUid) ||
         (c.participant_a === targetUid && c.participant_b === uid)
       )
     )
-    if (!ex) {
-      const { data, error } = await supabase.from('conversations').insert({
-        participant_a:uid, participant_b:targetUid,
-        company_name:displayName, job_title:'Staff',
-        last_message:'', last_message_at:new Date().toISOString()
-      }).select().single()
-      if (error) { notify(error.message); return }
-      ex = data; setConversations(p => [data, ...p])
-    }
-    setActiveConvId(ex.id); setPage('chat')
+    openOrCreateConv({
+      participant_a:uid, participant_b:targetUid,
+      company_name:displayName, job_title:'Staff',
+    }, ex)
   }
 
   // ── 採用・不採用更新 ──────────────────────
-  async function updateAppStatus(appId, status) {
-    const { error } = await supabase.from('applications').update({ status }).eq('id', appId)
-    if (error) { notify(error.message); return }
-    if (session) loadUserData(session.user.id)
+  function updateAppStatus(appId, status) {
     notify(status === 'accepted' ? t.hire : status === 'rejected' ? t.reject : t.status_updated)
+    setPostedJobs(prev => prev.map(job => ({
+      ...job,
+      applications: (job.applications || []).map(a => a.id === appId ? { ...a, status } : a)
+    })))
+    supabase.from('applications').update({ status }).eq('id', appId)
+      .then(({ error }) => { if (error) notify(error.message) })
   }
 
   // ── 求人ステータス切替 ────────────────────
-  async function toggleJobStatus(jobId, isActive) {
-    const { error } = await supabase.from('jobs').update({ is_active:!isActive }).eq('id', jobId)
-    if (error) { notify(error.message); return }
-    if (session) loadUserData(session.user.id)
-    await loadJobs()
+  function toggleJobStatus(jobId, isActive) {
+    setPostedJobs(prev => prev.map(j => j.id === jobId ? { ...j, is_active:!isActive } : j))
+    setJobs(prev => prev.map(j => j.id === jobId ? { ...j, is_active:!isActive } : j))
     notify(t.status_updated)
+    supabase.from('jobs').update({ is_active:!isActive }).eq('id', jobId)
+      .then(({ error }) => { if (error) { notify(error.message); loadJobs() } else loadJobs() })
   }
 
   // ── 求人削除 ──────────────────────────────
-  async function deleteJob(jobId) {
+  function deleteJob(jobId) {
     if (!window.confirm(t.confirm_del)) return
-    const { error } = await supabase.from('jobs').delete().eq('id', jobId)
-    if (error) { notify(error.message); return }
-    if (session) loadUserData(session.user.id)
-    await loadJobs()
+    setPostedJobs(prev => prev.filter(j => j.id !== jobId))
+    setJobs(prev => prev.filter(j => j.id !== jobId))
     notify(t.job_deleted)
+    supabase.from('jobs').delete().eq('id', jobId)
+      .then(({ error }) => { if (error) notify(error.message) })
   }
 
   // ── 既読処理 ──────────────────────────────
-  async function markConvRead(convId) {
+  function markConvRead(convId) {
     if (!session) return
-    await supabase.from('messages').update({ read:true })
+    supabase.from('messages').update({ read:true })
       .eq('conversation_id', convId).eq('read', false).neq('sender_id', session.user.id)
-    const convIds = conversations.map(c => c.id)
-    fetchUnread(session.user.id, convIds)
+      .then(() => fetchUnread(session.user.id, conversations.map(c => c.id)))
   }
 
   function openMap(loc) {
@@ -2439,27 +2455,42 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
   }
 
   async function send() {
-    if ((!text.trim() && !attachFile) || busy || !session) return
+    const isTemp = String(convId).startsWith('tmp_')
+    if ((!text.trim() && !attachFile) || busy || !session || isTemp) return
     setBusy(true)
     const msg = text.trim(); setText('')
+    // 楽観的に即座に表示
+    const tmpId = `tmp_msg_${Date.now()}`
+    const optimistic = {
+      id: tmpId, conversation_id: convId, sender_id: session.user.id,
+      text: msg || null, created_at: new Date().toISOString(),
+    }
+    setMessages(p => [...p, optimistic])
     try {
       let fileData = {}
       if (attachFile) {
-        fileData = await uploadAttach(attachFile)
+        const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('File upload timed out')), 30000))
+        fileData = await Promise.race([uploadAttach(attachFile), timeout])
         removeAttach()
+        setMessages(p => p.map(m => m.id === tmpId ? { ...m, ...fileData } : m))
       }
-      const { error } = await supabase.from('messages').insert({
+      const { data, error } = await supabase.from('messages').insert({
         conversation_id: convId,
         sender_id:       session.user.id,
         text:            msg || null,
         ...fileData,
-      })
+      }).select().single()
       if (error) throw error
+      if (data) setMessages(p => p.map(m => m.id === tmpId ? data : m))
       const preview = msg || fileData.file_name || 'File'
       const now = new Date().toISOString()
-      await supabase.from('conversations').update({ last_message:preview, last_message_at:now }).eq('id', convId)
+      // conversation更新はバックグラウンド（awaitしない）
+      supabase.from('conversations').update({ last_message:preview, last_message_at:now }).eq('id', convId)
       setConversations(p => p.map(c => c.id===convId ? { ...c, last_message:preview, last_message_at:now } : c))
-    } catch(e) { notify(e.message); setText(msg) }
+    } catch(e) {
+      setMessages(p => p.filter(m => m.id !== tmpId))
+      notify(e.message); setText(msg)
+    }
     setBusy(false)
   }
 
@@ -2533,7 +2564,7 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
             onChange={handleFileSelect} />
           <button className="attach-btn" onClick={() => fileInputRef.current?.click()} title={t.attach_file}>📎</button>
           <input value={text} onChange={e => setText(e.target.value)} onKeyDown={handleKey} placeholder={t.type_msg} />
-          <button className="primary" onClick={send} disabled={busy||(!text.trim()&&!attachFile)}>
+          <button className="primary" onClick={send} disabled={busy||(!text.trim()&&!attachFile)||String(convId).startsWith('tmp_')}>
             {busy ? '···' : t.send}
           </button>
         </div>
