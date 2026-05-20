@@ -2088,8 +2088,10 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
     const uid = session.user.id
     try {
       const image_url = await uploadImage()
+      // eslint-disable-next-line no-unused-vars
+      const { categories, ...jobDataWithoutCats } = jobData
       const insertPromise = supabase.from('jobs')
-        .insert([{ ...jobData, image_url, posted_by:uid, is_active:true }])
+        .insert([{ ...jobDataWithoutCats, image_url, posted_by:uid, is_active:true }])
         .select().single()
       const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Connection timeout. Please try again.')), 15000))
       const { data, error } = await Promise.race([insertPromise, timeout])
