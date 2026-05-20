@@ -97,6 +97,8 @@ const T = {
     not_set:'Not set', parts:'', edit_title:'Edit Job',
     staff_employers_only:'Employers Only', staff_post_required:'Post a job listing to access this page.',
     cat_selected:'selected',
+    f_work_period:'Work Availability', work_period_filter:'Min. availability',
+    wp_1m:'Under 3 months', wp_3m:'3–6 months', wp_6m:'6–12 months', wp_1y:'1+ year', wp_no_limit:'No limit (PR/Citizen)',
   },
   ja: {
     nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
@@ -185,6 +187,8 @@ const T = {
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
     staff_employers_only:'雇用主専用ページです', staff_post_required:'求人を1件以上投稿すると閲覧できます。',
     cat_selected:'件選択中',
+    f_work_period:'働ける期間', work_period_filter:'最低勤務期間',
+    wp_1m:'3ヶ月未満', wp_3m:'3〜6ヶ月', wp_6m:'6〜12ヶ月', wp_1y:'1年以上', wp_no_limit:'制限なし（PR・市民権）',
   },
   ko: {
     nav_home:'홈', nav_jobs:'구인', nav_staff:'직원', nav_dm:'메시지', nav_profile:'프로필',
@@ -273,6 +277,8 @@ const T = {
     not_set:'미설정', parts:'건', edit_title:'구인 수정',
     staff_employers_only:'사업주 전용 페이지', staff_post_required:'구인을 1개 이상 등록하면 이용할 수 있습니다.',
     cat_selected:'개 선택됨',
+    f_work_period:'근무 가능 기간', work_period_filter:'최소 근무 기간',
+    wp_1m:'3개월 미만', wp_3m:'3~6개월', wp_6m:'6~12개월', wp_1y:'1년 이상', wp_no_limit:'제한 없음 (PR/시민권)',
   },
   zh: {
     nav_home:'首页', nav_jobs:'招聘', nav_staff:'员工', nav_dm:'消息', nav_profile:'我的',
@@ -361,6 +367,8 @@ const T = {
     not_set:'未设置', parts:'条', edit_title:'编辑招聘',
     staff_employers_only:'仅限雇主', staff_post_required:'发布至少一条招聘即可访问此页面。',
     cat_selected:'项已选',
+    f_work_period:'可工作期限', work_period_filter:'最短可工作期',
+    wp_1m:'3个月以内', wp_3m:'3~6个月', wp_6m:'6~12个月', wp_1y:'1年以上', wp_no_limit:'无限制（PR/公民）',
   },
   es: {
     nav_home:'Inicio', nav_jobs:'Empleos', nav_staff:'Personal', nav_dm:'Mensajes', nav_profile:'Perfil',
@@ -449,6 +457,8 @@ const T = {
     not_set:'No especificado', parts:'', edit_title:'Editar empleo',
     staff_employers_only:'Solo empleadores', staff_post_required:'Publica una oferta de trabajo para acceder a esta página.',
     cat_selected:'seleccionados',
+    f_work_period:'Disponibilidad laboral', work_period_filter:'Disponibilidad mín.',
+    wp_1m:'Menos de 3 meses', wp_3m:'3–6 meses', wp_6m:'6–12 meses', wp_1y:'1 año o más', wp_no_limit:'Sin límite (PR/Ciudadano)',
   },
   fr: {
     nav_home:'Accueil', nav_jobs:'Emplois', nav_staff:'Équipe', nav_dm:'Messages', nav_profile:'Profil',
@@ -537,6 +547,8 @@ const T = {
     not_set:'Non renseigné', parts:'', edit_title:"Modifier l'offre",
     staff_employers_only:'Réservé aux employeurs', staff_post_required:"Publiez une offre d'emploi pour accéder à cette page.",
     cat_selected:'sélectionnés',
+    f_work_period:'Durée de disponibilité', work_period_filter:'Disponibilité min.',
+    wp_1m:'Moins de 3 mois', wp_3m:'3–6 mois', wp_6m:'6–12 mois', wp_1y:'1 an ou plus', wp_no_limit:'Sans limite (PR/Citoyen)',
   },
   pt: {
     nav_home:'Início', nav_jobs:'Vagas', nav_staff:'Equipe', nav_dm:'Mensagens', nav_profile:'Perfil',
@@ -625,6 +637,8 @@ const T = {
     not_set:'Não definido', parts:'', edit_title:'Editar Vaga',
     staff_employers_only:'Apenas empregadores', staff_post_required:'Publique uma vaga para acessar esta página.',
     cat_selected:'selecionados',
+    f_work_period:'Período disponível', work_period_filter:'Disponibilidade mín.',
+    wp_1m:'Menos de 3 meses', wp_3m:'3–6 meses', wp_6m:'6–12 meses', wp_1y:'1 ano ou mais', wp_no_limit:'Sem limite (PR/Cidadão)',
   },
   vi: {
     nav_home:'Trang chủ', nav_jobs:'Việc làm', nav_staff:'Nhân viên', nav_dm:'Tin nhắn', nav_profile:'Hồ sơ',
@@ -713,6 +727,8 @@ const T = {
     not_set:'Chưa đặt', parts:'', edit_title:'Sửa tin tuyển',
     staff_employers_only:'Chỉ dành cho nhà tuyển dụng', staff_post_required:'Đăng ít nhất một tin tuyển dụng để truy cập trang này.',
     cat_selected:'đã chọn',
+    f_work_period:'Thời gian có thể làm', work_period_filter:'Tối thiểu',
+    wp_1m:'Dưới 3 tháng', wp_3m:'3–6 tháng', wp_6m:'6–12 tháng', wp_1y:'1 năm trở lên', wp_no_limit:'Không giới hạn (PR/Công dân)',
   },
   id: {
     nav_home:'Beranda', nav_jobs:'Lowongan', nav_staff:'Staf', nav_dm:'Pesan', nav_profile:'Profil',
@@ -801,6 +817,8 @@ const T = {
     not_set:'Belum diatur', parts:'', edit_title:'Edit Lowongan',
     staff_employers_only:'Khusus Pengusaha', staff_post_required:'Pasang lowongan untuk mengakses halaman ini.',
     cat_selected:'dipilih',
+    f_work_period:'Periode kerja', work_period_filter:'Ketersediaan min.',
+    wp_1m:'Kurang dari 3 bulan', wp_3m:'3–6 bulan', wp_6m:'6–12 bulan', wp_1y:'1 tahun atau lebih', wp_no_limit:'Tanpa batas (PR/WN)',
   },
 }
 
@@ -2126,6 +2144,17 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
 }
 
 // ═════════════════════════════════════════════
+//  Work Period helpers
+// ═════════════════════════════════════════════
+const WORK_PERIOD_KEYS = ['1m','3m','6m','1y','no_limit']
+const WORK_PERIOD_RANK = { '1m':1, '3m':2, '6m':3, '1y':4, 'no_limit':5 }
+function workPeriodLabel(key, t) {
+  if (!key) return ''
+  const map = { '1m':t.wp_1m, '3m':t.wp_3m, '6m':t.wp_6m, '1y':t.wp_1y, 'no_limit':t.wp_no_limit }
+  return map[key] || key
+}
+
+// ═════════════════════════════════════════════
 //  AvailabilityPicker
 // ═════════════════════════════════════════════
 const DAYS_JA = ['月','火','水','木','金','土','日']
@@ -2230,7 +2259,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
-  const [engFilter, setEngFilter] = useState('')   // '' | 'basic' | 'intermediate'
+  const [engFilter,    setEngFilter]    = useState('')   // '' | 'basic' | 'intermediate'
+  const [periodFilter, setPeriodFilter] = useState('')   // '' | '1m' | '3m' | '6m' | '1y' | 'no_limit'
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -2251,23 +2281,29 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
   }, [])
 
-  // ランクベースフィルター: 指定レベル以上のスタッフのみ表示
-  const minRank = JOB_ENG_MIN_RANK[engFilter] ?? -1
-  const filteredStaff = engFilter
-    ? staffList.filter(s => (PROFILE_ENG_RANK[s.english_level] || 0) >= minRank)
-    : staffList
+  // フィルター（英語レベル＋勤務期間）
+  const minEngRank    = JOB_ENG_MIN_RANK[engFilter] ?? -1
+  const minPeriodRank = WORK_PERIOD_RANK[periodFilter] ?? 0
+  const filteredStaff = staffList.filter(s => {
+    if (engFilter    && (PROFILE_ENG_RANK[s.english_level] || 0) < minEngRank)    return false
+    if (periodFilter && (WORK_PERIOD_RANK[s.visa_expiry]   || 0) < minPeriodRank) return false
+    return true
+  })
 
   return (
     <main>
       <h1>{t.find_staff}</h1>
       <p className="muted" style={{ marginBottom:12 }}>{t.staff_desc}</p>
-      {/* 英語レベルフィルター */}
-      <div style={{ marginBottom:16 }}>
-        <select value={engFilter} onChange={e => setEngFilter(e.target.value)}
-          style={{ minWidth:200 }}>
+      {/* フィルター */}
+      <div style={{ marginBottom:16, display:'flex', gap:8, flexWrap:'wrap' }}>
+        <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:180 }}>
           <option value="">{t.staff_eng_min} — {t.eng_cond}</option>
           <option value="basic">{t.plvl_basic} +</option>
           <option value="intermediate">{t.plvl_inter} +</option>
+        </select>
+        <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:180 }}>
+          <option value="">{t.work_period_filter} — {t.f_work_period}</option>
+          {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)} +</option>)}
         </select>
       </div>
       {loading && <SkeletonGrid />}
@@ -2281,7 +2317,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
             <h2>{s.display_name || 'Anonymous'}</h2>
             {s.english_level && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
             {s.availability   && <p className="muted">📅 {displayAvailability(s.availability, lang)}</p>}
-            {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
+            {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>🗓 {workPeriodLabel(s.visa_expiry, t)}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
               {s.english_level && <span>{profileEngLabel(s.english_level, t)}</span>}
@@ -2800,7 +2836,12 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
           <label>{t.f_job_categories}
             <CategoryPicker value={form.job_categories} onChange={v => upd('job_categories', v)} max={5} />
           </label>
-          <label>{t.f_visa}<input type="text" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} placeholder="YYYY-MM-DD" maxLength={10} /></label>
+          <label>{t.f_work_period}
+            <select value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)}>
+              <option value="">—</option>
+              {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)}</option>)}
+            </select>
+          </label>
           <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </section>
@@ -2912,7 +2953,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                                 </p>
                               )}
                               {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:10 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
-                              {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>{t.visa_lbl} {p.visa_expiry}</p>}
+                              {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>🗓 {workPeriodLabel(p.visa_expiry, t)}</p>}
                               <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                                 <button style={{ background:'rgba(61,107,74,0.12)', color:'#3d6b4a', border:'1px solid rgba(61,107,74,0.25)', fontSize:13, padding:'8px 16px' }}
                                   onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
