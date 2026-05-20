@@ -2018,7 +2018,9 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
   const { t } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState(null)
   const [busy, setBusy] = useState(false)
+  const fileRef = useRef(null)
 
   if (!session) return (
     <main style={{ textAlign:'center', paddingTop:60 }}>
@@ -2055,7 +2057,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
       const optimistic = { ...job, image_url, posted_by:session.user.id, is_active:true, id:`tmp_${Date.now()}`, applications:[] }
       setPostedJobs(prev => [optimistic, ...prev])
       notify(t.job_saved)
-      setJob(emptyJob); setFile(null); setBusy(false)
+      setJob(emptyJob); setFile(null); setPreview(null); setBusy(false)
       setPage('profile')
       // バックグラウンドでDB保存、完了後にリアルIDで置換
       supabase.from('jobs')
@@ -2088,7 +2090,29 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
           </select>
         </label>
         <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={t.desc_ph} /></label>
-        <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+        <label>{t.f_img}
+          <input type="file" accept="image/*" ref={fileRef} style={{ display:'none' }}
+            onChange={e => {
+              const f = e.target.files?.[0] || null
+              setFile(f)
+              setPreview(f ? URL.createObjectURL(f) : null)
+            }} />
+          <div className="photo-upload-zone" onClick={() => fileRef.current?.click()}>
+            {preview ? (
+              <div className="photo-upload-preview">
+                <img src={preview} alt="preview" />
+                <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null) }}>×</button>
+                <button className="photo-upload-change" onClick={e => { e.stopPropagation(); fileRef.current?.click() }}>📷 Change</button>
+              </div>
+            ) : (
+              <div className="photo-upload-placeholder">
+                <span className="icon">📷</span>
+                <span className="label">{t.f_img}</span>
+                <span className="sub">Tap to take photo or choose from gallery</span>
+              </div>
+            )}
+          </div>
+        </label>
         <button className="primary" onClick={submit} disabled={busy}>
           {busy ? (file ? '📤 Uploading photo...' : t.saving) : t.save_btn}
         </button>
@@ -2104,7 +2128,9 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
   const { t } = useT()
   const [form, setForm] = useState({ title:job.title||'', company:job.company||'', location:job.location||'', salary:job.salary||'', english_level:normalizeJobEng(job.english_level), description:job.description||'' })
   const [file, setFile] = useState(null)
+  const [preview, setPreview] = useState(job.image_url || null)
   const [busy, setBusy] = useState(false)
+  const fileRef = useRef(null)
   function upd(k, v) { setForm(p => ({ ...p, [k]:v })) }
 
   async function save() {
@@ -2115,13 +2141,15 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
       if (file) {
         const ext  = file.name.split('.').pop()
         const path = `jobs/${Date.now()}.${ext}`
-        const { error:upErr } = await supabase.storage.from('job-images').upload(path, file)
-        if (upErr) throw upErr
+        const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Photo upload timed out.')), 30000))
+        const result = await Promise.race([
+          supabase.storage.from('job-images').upload(path, file),
+          timeout
+        ])
+        if (result.error) throw result.error
         image_url = supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
       }
-      // 先に閉じる
       notify(t.job_saved); setBusy(false); onClose()
-      // バックグラウンドで保存
       supabase.from('jobs').update({ ...form, image_url }).eq('id', job.id)
         .then(({ error }) => {
           if (error) notify('Update failed: ' + error.message)
@@ -2151,7 +2179,29 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
             </select>
           </label>
           <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
-          <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+          <label>{t.f_img}
+            <input type="file" accept="image/*" ref={fileRef} style={{ display:'none' }}
+              onChange={e => {
+                const f = e.target.files?.[0] || null
+                setFile(f)
+                setPreview(f ? URL.createObjectURL(f) : (job.image_url || null))
+              }} />
+            <div className="photo-upload-zone" onClick={() => fileRef.current?.click()}>
+              {preview ? (
+                <div className="photo-upload-preview">
+                  <img src={preview} alt="preview" />
+                  <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null) }}>×</button>
+                  <button className="photo-upload-change" onClick={e => { e.stopPropagation(); fileRef.current?.click() }}>📷 Change</button>
+                </div>
+              ) : (
+                <div className="photo-upload-placeholder">
+                  <span className="icon">📷</span>
+                  <span className="label">{t.f_img}</span>
+                  <span className="sub">Tap to take photo or choose from gallery</span>
+                </div>
+              )}
+            </div>
+          </label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </div>
       </div>
