@@ -2492,7 +2492,11 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
     loadMessages()
     const ch = supabase.channel('chat-'+convId)
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:`conversation_id=eq.${convId}` },
-        payload => setMessages(p => [...p, payload.new]))
+        payload => setMessages(p => {
+          if (p.some(m => m.id === payload.new.id)) return p
+          const withoutTmp = p.filter(m => !(String(m.id).startsWith('tmp_msg_') && m.text === payload.new.text && m.sender_id === payload.new.sender_id))
+          return [...withoutTmp, payload.new]
+        }))
       .subscribe()
     return () => supabase.removeChannel(ch)
   }, [convId])
