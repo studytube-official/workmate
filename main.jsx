@@ -2146,10 +2146,23 @@ function parseAvailability(str) {
   return { days:[], start:'09:00', end:'18:00' }
 }
 
-// { days, start, end } → "月・水・金 09:00〜18:00"
+// { days, start, end } → "月・水・金 09:00〜18:00" (internal storage always JA)
 function formatAvailability({ days, start, end }) {
   if (!days.length) return ''
   return `${days.join('・')} ${start}〜${end}`
+}
+
+// "月・水 09:00〜18:00" → display in current lang (e.g. "Mon・Wed 09:00〜18:00")
+function displayAvailability(str, lang) {
+  if (!str) return str
+  if (lang === 'ja') return str
+  const { days, start, end } = parseAvailability(str)
+  if (!days.length) return str
+  const converted = days.map(ja => {
+    const idx = DAYS_JA.indexOf(ja)
+    return idx >= 0 ? DAYS_EN[idx] : ja
+  })
+  return `${converted.join('・')} ${start}〜${end}`
 }
 
 function AvailabilityPicker({ value, onChange }) {
@@ -2204,7 +2217,7 @@ function AvailabilityPicker({ value, onChange }) {
         </select>
       </div>
       {value && (
-        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>📅 {value}</p>
+        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>📅 {displayAvailability(value, lang)}</p>
       )}
     </div>
   )
@@ -2214,7 +2227,7 @@ function AvailabilityPicker({ value, onChange }) {
 //  Staff
 // ═════════════════════════════════════════════
 function Staff({ setPage, session, startStaffDM, isEmployer }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
   const [engFilter, setEngFilter] = useState('')   // '' | 'basic' | 'intermediate'
@@ -2267,7 +2280,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
             {s.english_level && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
-            {s.availability   && <p className="muted">📅 {s.availability}</p>}
+            {s.availability   && <p className="muted">📅 {displayAvailability(s.availability, lang)}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
@@ -2626,7 +2639,7 @@ function RoleSelect({ session, setProfile, notify, setPage, signOut }) {
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const isEmployer = profile?.role === 'employer'
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
@@ -2886,7 +2899,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                                 <div style={{ flex:1, minWidth:0 }}>
                                   <b>{p.display_name || 'Anonymous'}</b>
                                   <p className="muted" style={{ fontSize:12, margin:0 }}>
-                                    {p.english_level||t.not_set} ／ {p.availability||t.not_set}
+                                    {p.english_level||t.not_set} ／ {displayAvailability(p.availability, lang)||t.not_set}
                                   </p>
                                 </div>
                                 <span style={statusStyle(app.status)}>
