@@ -2800,7 +2800,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
           <label>{t.f_job_categories}
             <CategoryPicker value={form.job_categories} onChange={v => upd('job_categories', v)} max={5} />
           </label>
-          <label>{t.f_visa}<input type="date" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} /></label>
+          <label>{t.f_visa}<input type="text" value={form.visa_expiry} onChange={e => upd('visa_expiry', e.target.value)} placeholder="YYYY-MM-DD" maxLength={10} /></label>
           <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </section>
