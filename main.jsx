@@ -1269,6 +1269,7 @@ function App() {
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [unreadPerConv, setUnreadPerConv] = useState({})
   const [editingJob, setEditingJob]   = useState(null)
 
   const notify = useCallback((msg, ms=3000) => {
@@ -1376,11 +1377,18 @@ function App() {
 
   async function fetchUnread(uid, convIds) {
     const realIds = (convIds || []).filter(id => !String(id).startsWith('tmp_'))
-    if (!realIds.length) { setUnreadCount(0); return }
-    const { count } = await supabase.from('messages')
-      .select('*', { count:'exact', head:true })
+    if (!realIds.length) { setUnreadCount(0); setUnreadPerConv({}); return }
+    const { data } = await supabase.from('messages')
+      .select('conversation_id')
       .eq('read', false).neq('sender_id', uid).in('conversation_id', realIds)
-    setUnreadCount(count || 0)
+    const perConv = {}
+    let total = 0
+    ;(data || []).forEach(m => {
+      perConv[m.conversation_id] = (perConv[m.conversation_id] || 0) + 1
+      total++
+    })
+    setUnreadCount(total)
+    setUnreadPerConv(perConv)
   }
 
   // ── 求人リアルタイム ───────────────────────
@@ -1610,7 +1618,7 @@ function App() {
       {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} setProfileTab={setProfileTab} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
-      {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
+      {page === 'dm'          && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} unreadPerConv={unreadPerConv} />}
       {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
       {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} setPostedJobs={setPostedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} initialTab={profileTab} setProfileTab={setProfileTab} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
@@ -2440,7 +2448,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
 // ═════════════════════════════════════════════
 //  DM
 // ═════════════════════════════════════════════
-function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) {
+function DM({ conversations, setActiveConvId, setPage, session, signInGoogle, unreadPerConv }) {
   const { t, lang } = useT()
   if (!session) return (
     <main style={{ textAlign:'center', paddingTop:40 }}>
@@ -2455,18 +2463,24 @@ function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) 
       {!conversations.length && (
         <div className="empty">{t.no_dm}<br /><small>{t.no_dm_hint}</small></div>
       )}
-      {conversations.map(c => (
-        <div className="dm" key={c.id} onClick={() => { setActiveConvId(c.id); setPage('chat') }}>
-          <div className="avatar">{c.job_title==='Staff'?'👤':'🏪'}</div>
-          <div style={{ flex:1, minWidth:0 }}>
-            <b>{c.company_name || 'Unknown'}</b>
-            <p className="muted" style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-              {c.last_message || c.job_title || t.first_msg}
-            </p>
+      {conversations.map(c => {
+        const badge = unreadPerConv?.[c.id] || 0
+        return (
+          <div className="dm" key={c.id} onClick={() => { setActiveConvId(c.id); setPage('chat') }}>
+            <div className="avatar">{c.job_title==='Staff'?'👤':'🏪'}</div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <b style={badge > 0 ? { color:'var(--accent)' } : {}}>{c.company_name || 'Unknown'}</b>
+              <p className="muted" style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', fontWeight: badge > 0 ? 600 : 400 }}>
+                {c.last_message || c.job_title || t.first_msg}
+              </p>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:4 }}>
+              <small className="muted">{c.last_message_at ? fmt(c.last_message_at, lang) : ''}</small>
+              {badge > 0 && <span className="badge" style={{ position:'static' }}>{badge > 9 ? '9+' : badge}</span>}
+            </div>
           </div>
-          <small className="muted">{c.last_message_at ? fmt(c.last_message_at, lang) : ''}</small>
-        </div>
-      ))}
+        )
+      })}
     </main>
   )
 }
