@@ -2844,7 +2844,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       .select('*, applications(id, user_id, status, message, created_at, profiles(*))')
       .eq('posted_by', session.user.id)
       .order('id', { ascending: false })
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) { console.error('postedJobs fetch error:', error); notify(error.message); return }
         if (data) setPostedJobs(prev => {
           const tmps = prev.filter(j => String(j.id).startsWith('tmp_'))
           return [...tmps, ...data]
