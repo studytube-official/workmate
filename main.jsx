@@ -214,6 +214,7 @@ const T = {
     apply_msg:'메시지 (선택)', apply_ph:'자기소개나 희망 근무 시간을 적어주세요...',
     send_apply:'지원서 제출', cancel:'취소',
     f_resume:'이력서 (PDF / Word)', resume_attached:'이력서 첨부됨', view_resume:'📄 이력서 보기', no_resume:'이력서 없음',
+    f_resume:'이력서 (PDF / Word)', resume_attached:'이력서 첨부됨', view_resume:'📄 이력서 보기', no_resume:'이력서 없음',
     view_map:'📍 Google Maps에서 보기', dm_btn:'💬 메시지',
     badge_active:'채용 중', badge_closed:'마감',
     post_title:'구인 등록', post_login_title:'로그인 후 등록 가능',
@@ -304,6 +305,7 @@ const T = {
     apply:'立即申请', applied_done:'✓ 已申请', applying:'申请中...',
     apply_msg:'留言（可选）', apply_ph:'介绍自己或说明期望班次...',
     send_apply:'提交申请', cancel:'取消',
+    f_resume:'简历 (PDF / Word)', resume_attached:'已附简历', view_resume:'📄 查看简历', no_resume:'无简历',
     f_resume:'简历 (PDF / Word)', resume_attached:'已附上简历', view_resume:'📄 查看简历', no_resume:'无简历',
     view_map:'📍 在Google地图查看', dm_btn:'💬 发消息',
     badge_active:'招聘中', badge_closed:'已截止',
@@ -395,6 +397,7 @@ const T = {
     apply:'Postularme', applied_done:'✓ Postulado', applying:'Enviando...',
     apply_msg:'Mensaje (opcional)', apply_ph:'Preséntate o menciona tu disponibilidad...',
     send_apply:'Enviar Postulación', cancel:'Cancelar',
+    f_resume:'Currículum (PDF / Word)', resume_attached:'CV adjunto', view_resume:'📄 Ver CV', no_resume:'Sin CV',
     f_resume:'CV (PDF / Word)', resume_attached:'CV adjunto', view_resume:'📄 Ver CV', no_resume:'Sin CV',
     view_map:'📍 Ver en Google Maps', dm_btn:'💬 Mensaje',
     badge_active:'Contratando', badge_closed:'Cerrado',
@@ -487,6 +490,7 @@ const T = {
     apply_msg:'Message (optionnel)', apply_ph:'Présentez-vous ou mentionnez vos disponibilités...',
     send_apply:'Envoyer la candidature', cancel:'Annuler',
     f_resume:'CV (PDF / Word)', resume_attached:'CV joint', view_resume:'📄 Voir le CV', no_resume:'Pas de CV',
+    f_resume:'CV (PDF / Word)', resume_attached:'CV joint', view_resume:'📄 Voir le CV', no_resume:'Pas de CV',
     view_map:'📍 Voir sur Google Maps', dm_btn:'💬 Message',
     badge_active:'Recrutement', badge_closed:'Fermé',
     post_title:'Publier une offre', post_login_title:'Connexion requise',
@@ -578,6 +582,7 @@ const T = {
     apply_msg:'Mensagem (opcional)', apply_ph:'Apresente-se ou mencione sua disponibilidade...',
     send_apply:'Enviar Candidatura', cancel:'Cancelar',
     f_resume:'Currículo (PDF / Word)', resume_attached:'Currículo anexado', view_resume:'📄 Ver Currículo', no_resume:'Sem currículo',
+    f_resume:'Currículo (PDF / Word)', resume_attached:'Currículo anexado', view_resume:'📄 Ver Currículo', no_resume:'Sem currículo',
     view_map:'📍 Ver no Google Maps', dm_btn:'💬 Mensagem',
     badge_active:'Contratando', badge_closed:'Encerrado',
     post_title:'Publicar Vaga', post_login_title:'Login necessário para publicar',
@@ -668,6 +673,7 @@ const T = {
     apply:'Ứng tuyển', applied_done:'✓ Đã ứng tuyển', applying:'Đang gửi...',
     apply_msg:'Lời nhắn (tùy chọn)', apply_ph:'Giới thiệu bản thân hoặc ca làm mong muốn...',
     send_apply:'Gửi đơn ứng tuyển', cancel:'Hủy',
+    f_resume:'CV (PDF / Word)', resume_attached:'Đã đính kèm CV', view_resume:'📄 Xem CV', no_resume:'Không có CV',
     f_resume:'Hồ sơ (PDF / Word)', resume_attached:'Đã đính kèm hồ sơ', view_resume:'📄 Xem hồ sơ', no_resume:'Không có hồ sơ',
     view_map:'📍 Xem trên Google Maps', dm_btn:'💬 Nhắn tin',
     badge_active:'Đang tuyển', badge_closed:'Đã đóng',
@@ -759,6 +765,7 @@ const T = {
     apply:'Lamar Sekarang', applied_done:'✓ Sudah Melamar', applying:'Melamar...',
     apply_msg:'Pesan (opsional)', apply_ph:'Perkenalkan diri atau sebutkan ketersediaan shift Anda...',
     send_apply:'Kirim Lamaran', cancel:'Batal',
+    f_resume:'CV (PDF / Word)', resume_attached:'CV terlampir', view_resume:'📄 Lihat CV', no_resume:'Tidak ada CV',
     f_resume:'Resume (PDF / Word)', resume_attached:'Resume terlampir', view_resume:'📄 Lihat Resume', no_resume:'Tidak ada resume',
     view_map:'📍 Lihat di Google Maps', dm_btn:'💬 Pesan',
     badge_active:'Membuka Lowongan', badge_closed:'Ditutup',
@@ -1151,6 +1158,15 @@ const JOB_CATEGORIES = [
 // カンマ区切り文字列 ↔ 配列
 const parseCats  = s => s ? s.split(',').map(x => x.trim()).filter(Boolean) : []
 const formatCats = a => a.join(',')
+
+// ja→en 変換マップ（JOB_CATEGORIESから生成）
+const CAT_JA_TO_EN = {}
+JOB_CATEGORIES.forEach(g => g.items.forEach(item => { CAT_JA_TO_EN[item.ja] = item.en }))
+// 言語に応じてカテゴリ名を表示（ja以外はenに変換）
+function displayCat(jaName, lang) {
+  if (lang === 'ja') return jaName
+  return CAT_JA_TO_EN[jaName] || jaName
+}
 
 // CategoryPicker コンポーネント
 function CategoryPicker({ value, onChange, max = 5 }) {
@@ -1896,7 +1912,7 @@ function JobGrid({ jobs, openJob, isSaved, toggleSave }) {
 }
 
 function JobCard({ job, openJob, isSaved, toggleSave }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   return (
     <article className="job" onClick={() => openJob(job)}>
       <div className="photo">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
@@ -1904,7 +1920,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
       <p className="muted">{job.title}</p>
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
-        {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{c}</span>)}
+        {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
         <span>{jobEngLabel(job.english_level, t) || t.no_eng}</span>
         {job.is_active === false && <span style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:700 }}>{t.badge_closed}</span>}
       </div>
@@ -2471,7 +2487,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
               {s.english_level && <span>{profileEngLabel(s.english_level, t)}</span>}
-              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{c}</span>)}
+              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
             </div>
             <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
               {t.contact}
