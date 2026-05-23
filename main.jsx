@@ -1938,7 +1938,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
 //  JobDetail
 // ═════════════════════════════════════════════
 function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, hasApplied, openMap, session }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [showApply,   setShowApply]   = useState(false)
   const [applyMsg,    setApplyMsg]    = useState('')
   const [resumeFile,  setResumeFile]  = useState(null)
@@ -1968,12 +1968,20 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
             {isClosed ? t.badge_closed : t.badge_active}
           </span>
         </div>
-        <p className="muted">{job.title} / {job.location} / {job.salary}</p>
-        <div className="tags"><span>{jobEngLabel(job.english_level, t)}</span><span>{job.location}</span></div>
-        <p style={{ lineHeight:1.8, marginTop:12 }}>{job.description}</p>
-        <div className="row"><b>{t.f_location}</b><span>{job.location}</span></div>
-        <div className="row"><b>{t.f_salary}</b><span>{job.salary}</span></div>
-        <div className="row"><b>{t.f_eng}</b><span>{jobEngLabel(job.english_level, t)}</span></div>
+        <p className="muted" style={{ fontSize:16, fontWeight:600, margin:'4px 0' }}>{job.title}</p>
+        {parseCats(job.categories).length > 0 && (
+          <div className="tags" style={{ marginTop:8 }}>
+            {parseCats(job.categories).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
+          </div>
+        )}
+        {job.description && <p style={{ lineHeight:1.8, marginTop:12, color:'var(--fg)' }}>{job.description}</p>}
+        <div style={{ borderTop:'1px solid var(--border)', marginTop:16, paddingTop:16, display:'flex', flexDirection:'column', gap:10 }}>
+          <div className="row"><b>{t.f_location}</b><span>{job.location}</span></div>
+          <div className="row"><b>{t.f_salary}</b><span>{job.salary}</span></div>
+          <div className="row"><b>{t.f_eng}</b><span>{jobEngLabel(job.english_level, t)}</span></div>
+          {job.visa_expiry && <div className="row"><b>{t.f_work_period}</b><span>{workPeriodLabel(job.visa_expiry, t)}</span></div>}
+          {job.availability && <div className="row"><b>Availability</b><span>{displayAvailability(job.availability, lang)}</span></div>}
+        </div>
         <button onClick={() => openMap(job.location)} style={{ marginTop:12 }}>{t.view_map}</button>
 
         {showApply && (
