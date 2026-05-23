@@ -30,6 +30,7 @@ const T = {
     apply:'Apply Now', applied_done:'✓ Applied', applying:'Applying...',
     apply_msg:'Message (optional)', apply_ph:'Introduce yourself or mention preferred shifts...',
     send_apply:'Submit Application', cancel:'Cancel',
+    f_resume:'Resume (PDF / Word)', resume_attached:'Resume attached', view_resume:'📄 View Resume', no_resume:'No resume',
     view_map:'📍 View on Google Maps', dm_btn:'💬 Message',
     badge_active:'Hiring', badge_closed:'Closed',
     post_title:'Post a Job', post_login_title:'Login required to post',
@@ -121,6 +122,7 @@ const T = {
     apply:'応募する', applied_done:'✓ 応募済み', applying:'応募中...',
     apply_msg:'応募メッセージ（任意）', apply_ph:'自己紹介や希望シフトなど...',
     send_apply:'送信して応募', cancel:'キャンセル',
+    f_resume:'レジュメ（PDF / Word）', resume_attached:'レジュメ添付済み', view_resume:'📄 レジュメを見る', no_resume:'レジュメなし',
     view_map:'📍 Google Mapsで見る', dm_btn:'💬 DMする',
     badge_active:'募集中', badge_closed:'募集終了',
     post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
@@ -211,6 +213,7 @@ const T = {
     apply:'지원하기', applied_done:'✓ 지원완료', applying:'지원 중...',
     apply_msg:'메시지 (선택)', apply_ph:'자기소개나 희망 근무 시간을 적어주세요...',
     send_apply:'지원서 제출', cancel:'취소',
+    f_resume:'이력서 (PDF / Word)', resume_attached:'이력서 첨부됨', view_resume:'📄 이력서 보기', no_resume:'이력서 없음',
     view_map:'📍 Google Maps에서 보기', dm_btn:'💬 메시지',
     badge_active:'채용 중', badge_closed:'마감',
     post_title:'구인 등록', post_login_title:'로그인 후 등록 가능',
@@ -301,6 +304,7 @@ const T = {
     apply:'立即申请', applied_done:'✓ 已申请', applying:'申请中...',
     apply_msg:'留言（可选）', apply_ph:'介绍自己或说明期望班次...',
     send_apply:'提交申请', cancel:'取消',
+    f_resume:'简历 (PDF / Word)', resume_attached:'已附上简历', view_resume:'📄 查看简历', no_resume:'无简历',
     view_map:'📍 在Google地图查看', dm_btn:'💬 发消息',
     badge_active:'招聘中', badge_closed:'已截止',
     post_title:'发布招聘', post_login_title:'发布招聘需要登录',
@@ -391,6 +395,7 @@ const T = {
     apply:'Postularme', applied_done:'✓ Postulado', applying:'Enviando...',
     apply_msg:'Mensaje (opcional)', apply_ph:'Preséntate o menciona tu disponibilidad...',
     send_apply:'Enviar Postulación', cancel:'Cancelar',
+    f_resume:'CV (PDF / Word)', resume_attached:'CV adjunto', view_resume:'📄 Ver CV', no_resume:'Sin CV',
     view_map:'📍 Ver en Google Maps', dm_btn:'💬 Mensaje',
     badge_active:'Contratando', badge_closed:'Cerrado',
     post_title:'Publicar Empleo', post_login_title:'Inicia sesión para publicar',
@@ -481,6 +486,7 @@ const T = {
     apply:'Postuler', applied_done:'✓ Candidature envoyée', applying:'Envoi...',
     apply_msg:'Message (optionnel)', apply_ph:'Présentez-vous ou mentionnez vos disponibilités...',
     send_apply:'Envoyer la candidature', cancel:'Annuler',
+    f_resume:'CV (PDF / Word)', resume_attached:'CV joint', view_resume:'📄 Voir le CV', no_resume:'Pas de CV',
     view_map:'📍 Voir sur Google Maps', dm_btn:'💬 Message',
     badge_active:'Recrutement', badge_closed:'Fermé',
     post_title:'Publier une offre', post_login_title:'Connexion requise',
@@ -571,6 +577,7 @@ const T = {
     apply:'Candidatar-me', applied_done:'✓ Candidatado', applying:'Enviando...',
     apply_msg:'Mensagem (opcional)', apply_ph:'Apresente-se ou mencione sua disponibilidade...',
     send_apply:'Enviar Candidatura', cancel:'Cancelar',
+    f_resume:'Currículo (PDF / Word)', resume_attached:'Currículo anexado', view_resume:'📄 Ver Currículo', no_resume:'Sem currículo',
     view_map:'📍 Ver no Google Maps', dm_btn:'💬 Mensagem',
     badge_active:'Contratando', badge_closed:'Encerrado',
     post_title:'Publicar Vaga', post_login_title:'Login necessário para publicar',
@@ -661,6 +668,7 @@ const T = {
     apply:'Ứng tuyển', applied_done:'✓ Đã ứng tuyển', applying:'Đang gửi...',
     apply_msg:'Lời nhắn (tùy chọn)', apply_ph:'Giới thiệu bản thân hoặc ca làm mong muốn...',
     send_apply:'Gửi đơn ứng tuyển', cancel:'Hủy',
+    f_resume:'Hồ sơ (PDF / Word)', resume_attached:'Đã đính kèm hồ sơ', view_resume:'📄 Xem hồ sơ', no_resume:'Không có hồ sơ',
     view_map:'📍 Xem trên Google Maps', dm_btn:'💬 Nhắn tin',
     badge_active:'Đang tuyển', badge_closed:'Đã đóng',
     post_title:'Đăng tuyển dụng', post_login_title:'Cần đăng nhập để đăng tin',
@@ -751,6 +759,7 @@ const T = {
     apply:'Lamar Sekarang', applied_done:'✓ Sudah Melamar', applying:'Melamar...',
     apply_msg:'Pesan (opsional)', apply_ph:'Perkenalkan diri atau sebutkan ketersediaan shift Anda...',
     send_apply:'Kirim Lamaran', cancel:'Batal',
+    f_resume:'Resume (PDF / Word)', resume_attached:'Resume terlampir', view_resume:'📄 Lihat Resume', no_resume:'Tidak ada resume',
     view_map:'📍 Lihat di Google Maps', dm_btn:'💬 Pesan',
     badge_active:'Membuka Lowongan', badge_closed:'Ditutup',
     post_title:'Pasang Lowongan', post_login_title:'Login diperlukan untuk memasang',
@@ -1477,16 +1486,26 @@ function App() {
   }
   const isSaved = jobId => savedJobIds.includes(jobId)
 
-  async function applyToJob(job, msg) {
+  async function applyToJob(job, msg, resumeFile) {
     if (!session) { notify(t.toast_login); return false }
     if (job.is_active === false) { notify(t.toast_closed); return false }
     const uid = session.user.id
     if (applications.some(a => a.job_id === job.id)) { notify(t.toast_applied_already); return false }
+    // レジュメアップロード
+    let resume_url = null, resume_name = null
+    if (resumeFile) {
+      const ext = resumeFile.name.split('.').pop()
+      const path = `${uid}/${job.id}-${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage.from('resumes').upload(path, resumeFile)
+      if (upErr) { notify('Resume upload failed: ' + upErr.message); return false }
+      resume_url = supabase.storage.from('resumes').getPublicUrl(path).data.publicUrl
+      resume_name = resumeFile.name
+    }
     // 楽観的に即座に反映
-    const optimistic = { user_id:uid, job_id:job.id, status:'pending', id:`tmp_${Date.now()}` }
+    const optimistic = { user_id:uid, job_id:job.id, status:'pending', id:`tmp_${Date.now()}`, resume_url, resume_name }
     setApplications(p => [...p, optimistic])
     notify(t.toast_applied_ok)
-    supabase.from('applications').insert({ user_id:uid, job_id:job.id, message:msg, status:'pending' })
+    supabase.from('applications').insert({ user_id:uid, job_id:job.id, message:msg, status:'pending', resume_url, resume_name })
       .select().single()
       .then(({ data, error }) => {
         if (error) { setApplications(p => p.filter(a => a.id !== optimistic.id)); notify(error.message) }
@@ -1904,15 +1923,17 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
 // ═════════════════════════════════════════════
 function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, hasApplied, openMap, session }) {
   const { t } = useT()
-  const [showApply, setShowApply] = useState(false)
-  const [applyMsg,  setApplyMsg]  = useState('')
-  const [busy,      setBusy]      = useState(false)
+  const [showApply,   setShowApply]   = useState(false)
+  const [applyMsg,    setApplyMsg]    = useState('')
+  const [resumeFile,  setResumeFile]  = useState(null)
+  const [busy,        setBusy]        = useState(false)
+  const resumeRef = useRef(null)
 
   async function handleApply() {
     setBusy(true)
-    const ok = await applyToJob(job, applyMsg)
+    const ok = await applyToJob(job, applyMsg, resumeFile)
     setBusy(false)
-    if (ok) setShowApply(false)
+    if (ok) { setShowApply(false); setResumeFile(null) }
   }
 
   const isClosed = job.is_active === false
@@ -1943,9 +1964,26 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
           <div className="card" style={{ marginTop:16 }}>
             <h3>{t.apply_msg}</h3>
             <textarea value={applyMsg} onChange={e => setApplyMsg(e.target.value)} placeholder={t.apply_ph} rows={4} />
-            <div className="actions">
+            {/* レジュメアップロード */}
+            <label style={{ display:'block', marginTop:12, fontWeight:600, fontSize:14 }}>{t.f_resume}</label>
+            <input ref={resumeRef} type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              style={{ display:'none' }} onChange={e => setResumeFile(e.target.files?.[0] || null)} />
+            {resumeFile ? (
+              <div style={{ display:'flex', alignItems:'center', gap:8, background:'var(--bg2)', border:'1px solid var(--border2)', borderRadius:12, padding:'10px 14px', marginTop:6 }}>
+                <span style={{ fontSize:20 }}>📄</span>
+                <span style={{ flex:1, fontSize:14, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{resumeFile.name}</span>
+                <button onClick={() => { setResumeFile(null); resumeRef.current.value = '' }}
+                  style={{ background:'none', border:'none', color:'var(--muted)', fontSize:18, padding:'0 4px', cursor:'pointer' }}>×</button>
+              </div>
+            ) : (
+              <button onClick={() => resumeRef.current?.click()}
+                style={{ marginTop:6, background:'var(--bg2)', border:'1px dashed var(--border2)', borderRadius:12, padding:'10px 20px', width:'100%', color:'var(--muted)', fontSize:14 }}>
+                + {t.f_resume}
+              </button>
+            )}
+            <div className="actions" style={{ marginTop:12 }}>
               <button className="primary" onClick={handleApply} disabled={busy}>{busy ? t.applying : t.send_apply}</button>
-              <button onClick={() => setShowApply(false)}>{t.cancel}</button>
+              <button onClick={() => { setShowApply(false); setResumeFile(null) }}>{t.cancel}</button>
             </div>
           </div>
         )}
@@ -3108,6 +3146,15 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                               )}
                               {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:10 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
                               {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>🗓 {workPeriodLabel(p.visa_expiry, t)}</p>}
+                              {/* レジュメ */}
+                              {app.resume_url ? (
+                                <a href={app.resume_url} target="_blank" rel="noopener noreferrer"
+                                  style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(155,79,26,0.08)', border:'1px solid rgba(155,79,26,0.2)', borderRadius:10, padding:'8px 14px', fontSize:13, color:'var(--accent)', textDecoration:'none', marginBottom:10 }}>
+                                  📄 {app.resume_name || t.view_resume}
+                                </a>
+                              ) : (
+                                <p className="muted" style={{ fontSize:12, marginBottom:8 }}>📄 {t.no_resume}</p>
+                              )}
                               <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
                                 <button style={{ background:'rgba(61,107,74,0.12)', color:'#3d6b4a', border:'1px solid rgba(61,107,74,0.25)', fontSize:13, padding:'8px 16px' }}
                                   onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
