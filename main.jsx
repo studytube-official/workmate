@@ -2974,7 +2974,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     </main>
   )
 
-  const allReceivedApps = postedJobs.flatMap(j => (j.applications||[]).map(a => ({ ...a, job:j })))
+  const allReceivedApps = postedJobs.flatMap(j => (j.applications||[]).map(a => ({ ...a, job:j }))).filter(a => a.status !== 'rejected')
   const receivedCount = allReceivedApps.length
 
   const hasListings = postedJobs.length > 0 || isEmployer
@@ -3142,10 +3142,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                       <p className="muted" style={{ fontSize:12, marginBottom:8 }}>📄 {t.no_resume}</p>
                     )}
                     <div style={{ display:'flex', gap:8 }}>
-                      <button style={{ background:'rgba(61,107,74,0.12)', color:'#3d6b4a', border:'1px solid rgba(61,107,74,0.25)', fontSize:13, padding:'8px 16px' }}
-                        onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
                       <button style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', fontSize:13, padding:'8px 16px' }}
-                        onClick={() => updateAppStatus(app.id, 'rejected')} disabled={app.status==='rejected'}>{t.reject}</button>
+                        onClick={() => updateAppStatus(app.id, 'rejected')}>{t.reject}</button>
                     </div>
                   </div>
                 )
