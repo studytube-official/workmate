@@ -3177,17 +3177,15 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                       </div>
                       <p className="muted" style={{ fontSize:14 }}>{j.location} / {j.salary}</p>
                     </div>
-                    <span style={{ background:'rgba(155,79,26,0.1)', color:'#9b4f1a', border:'1px solid rgba(155,79,26,0.2)', padding:'5px 12px', borderRadius:999, fontSize:13, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
-                      {t.apps_count} {appCount}{t.parts}
-                    </span>
+                    {appCount > 0 && (
+                      <span style={{ background:'rgba(155,79,26,0.1)', color:'#9b4f1a', border:'1px solid rgba(155,79,26,0.2)', padding:'5px 12px', borderRadius:999, fontSize:13, fontWeight:700, whiteSpace:'nowrap', flexShrink:0 }}>
+                        {t.apps_count} {appCount}{t.parts}
+                      </span>
+                    )}
                   </div>
 
                   {/* 操作ボタン */}
                   <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginTop:12 }}>
-                    <button style={{ fontSize:13, padding:'8px 14px' }}
-                      onClick={() => setExpandedJob(expandedJob===j.id ? null : j.id)}>
-                      {expandedJob===j.id ? t.close_apps : `${t.view_apps} (${appCount})`}
-                    </button>
                     <button style={{ fontSize:13, padding:'8px 14px' }} onClick={() => setEditingJob(j)}>{t.edit_job}</button>
                     <button style={{ fontSize:13, padding:'8px 14px',
                       background:isClosed?'rgba(61,107,74,0.12)':'rgba(155,79,26,0.1)',
@@ -3199,59 +3197,6 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                     <button style={{ fontSize:13, padding:'8px 14px', background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)' }}
                       onClick={() => deleteJob(j.id)}>{t.delete_job}</button>
                   </div>
-
-                  {/* 応募者一覧 */}
-                  {expandedJob === j.id && (
-                    <div style={{ marginTop:12 }}>
-                      {!appCount ? <p className="muted" style={{ padding:'12px 0' }}>{t.no_apps}</p>
-                        : (j.applications||[]).map(app => {
-                          const p = app.profiles || {}
-                          return (
-                            <div key={app.id} style={{ background:'var(--bg2)', border:'1px solid var(--border2)', borderRadius:16, padding:14, marginBottom:10 }}>
-                              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
-                                <div className="avatar" style={{ width:42, height:42, fontSize:16 }}>
-                                  {p.avatar_url
-                                    ? <img src={p.avatar_url} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="" />
-                                    : (p.display_name?.[0]?.toUpperCase() || '?')}
-                                </div>
-                                <div style={{ flex:1, minWidth:0 }}>
-                                  <b>{p.display_name || 'Anonymous'}</b>
-                                  <p className="muted" style={{ fontSize:12, margin:0 }}>
-                                    {p.english_level||t.not_set} ／ {displayAvailability(p.availability, lang)||t.not_set}
-                                  </p>
-                                </div>
-                                <span style={statusStyle(app.status)}>
-                                  {app.status==='accepted'?t.st_accepted:app.status==='rejected'?t.st_rejected:t.st_pending}
-                                </span>
-                              </div>
-                              {app.message && (
-                                <p style={{ fontSize:14, color:'var(--muted2)', background:'var(--bg3)', border:'1px solid var(--border)', borderRadius:10, padding:'8px 12px', margin:'8px 0' }}>
-                                  "{app.message}"
-                                </p>
-                              )}
-                              {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:10 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
-                              {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>🗓 {workPeriodLabel(p.visa_expiry, t)}</p>}
-                              {/* レジュメ */}
-                              {app.resume_url ? (
-                                <a href={app.resume_url} target="_blank" rel="noopener noreferrer"
-                                  style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(155,79,26,0.08)', border:'1px solid rgba(155,79,26,0.2)', borderRadius:10, padding:'8px 14px', fontSize:13, color:'var(--accent)', textDecoration:'none', marginBottom:10 }}>
-                                  📄 {app.resume_name || t.view_resume}
-                                </a>
-                              ) : (
-                                <p className="muted" style={{ fontSize:12, marginBottom:8 }}>📄 {t.no_resume}</p>
-                              )}
-                              <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-                                <button style={{ background:'rgba(61,107,74,0.12)', color:'#3d6b4a', border:'1px solid rgba(61,107,74,0.25)', fontSize:13, padding:'8px 16px' }}
-                                  onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
-                                <button style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', fontSize:13, padding:'8px 16px' }}
-                                  onClick={() => updateAppStatus(app.id, 'rejected')} disabled={app.status==='rejected'}>{t.reject}</button>
-                              </div>
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
-                  )}
                 </div>
               )
             })
