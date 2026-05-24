@@ -51,7 +51,7 @@ const T = {
     attach_file:'Attach file', file_too_large:'File is too large (max 10MB)',
     download:'Download', uploading:'Uploading...',
     logout:'Logout',
-    tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings',
+    tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings', tab_received:'Applications',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
     photo_tip:'Adding a photo helps employers recognise you and boosts your chances!',
     photo_privacy:'🔒 Your profile and photo are only visible to employers — not to other users.',
@@ -143,7 +143,7 @@ const T = {
     attach_file:'ファイルを添付', file_too_large:'ファイルが大きすぎます（最大10MB）',
     download:'ダウンロード', uploading:'送信中...',
     logout:'ログアウト',
-    tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人',
+    tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人', tab_received:'届いた応募',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
     photo_tip:'写真を追加すると採用率がアップします！',
     photo_privacy:'🔒 プロフィールと写真は求人を投稿した店側のみに表示されます。他のユーザーには見えません。',
@@ -235,7 +235,7 @@ const T = {
     attach_file:'파일 첨부', file_too_large:'파일이 너무 큽니다 (최대 10MB)',
     download:'다운로드', uploading:'전송 중...',
     logout:'로그아웃',
-    tab_profile:'프로필', tab_applied:'지원 내역', tab_saved:'저장됨', tab_posted:'내 구인',
+    tab_profile:'프로필', tab_applied:'지원 내역', tab_saved:'저장됨', tab_posted:'내 구인', tab_received:'받은 지원',
     change_photo:'📷 사진 변경', photo_pending:'저장 후 반영됩니다',
     photo_tip:'사진을 추가하면 채용 확률이 높아집니다!',
     photo_privacy:'🔒 프로필과 사진은 구인을 등록한 사업주에게만 공개됩니다. 다른 사용자에게는 보이지 않습니다.',
@@ -327,7 +327,7 @@ const T = {
     attach_file:'附加文件', file_too_large:'文件太大（最大10MB）',
     download:'下载', uploading:'发送中...',
     logout:'退出登录',
-    tab_profile:'个人资料', tab_applied:'申请记录', tab_saved:'已收藏', tab_posted:'我发布的',
+    tab_profile:'个人资料', tab_applied:'申请记录', tab_saved:'已收藏', tab_posted:'我发布的', tab_received:'收到的申请',
     change_photo:'📷 更换头像', photo_pending:'保存后生效',
     photo_tip:'添加照片能让雇主更了解你，提高录用机会！',
     photo_privacy:'🔒 你的资料和照片仅对发布招聘的雇主可见，其他用户无法查看。',
@@ -419,7 +419,7 @@ const T = {
     attach_file:'Adjuntar archivo', file_too_large:'Archivo demasiado grande (máx. 10MB)',
     download:'Descargar', uploading:'Enviando...',
     logout:'Cerrar sesión',
-    tab_profile:'Perfil', tab_applied:'Postulaciones', tab_saved:'Guardados', tab_posted:'Mis Anuncios',
+    tab_profile:'Perfil', tab_applied:'Postulaciones', tab_saved:'Guardados', tab_posted:'Mis Anuncios', tab_received:'Solicitudes',
     change_photo:'📷 Cambiar foto', photo_pending:'Guarda para aplicar cambios',
     photo_tip:'¡Agregar una foto aumenta tus chances de ser contratado!',
     photo_privacy:'🔒 Tu perfil y foto solo son visibles para los empleadores, no para otros usuarios.',
@@ -511,7 +511,7 @@ const T = {
     attach_file:'Joindre un fichier', file_too_large:'Fichier trop volumineux (max 10 Mo)',
     download:'Télécharger', uploading:'Envoi...',
     logout:'Déconnexion',
-    tab_profile:'Profil', tab_applied:'Candidatures', tab_saved:'Sauvegardés', tab_posted:'Mes offres',
+    tab_profile:'Profil', tab_applied:'Candidatures', tab_saved:'Sauvegardés', tab_posted:'Mes offres', tab_received:'Candidatures reçues',
     change_photo:'📷 Changer la photo', photo_pending:'Sauvegardez pour appliquer les changements',
     photo_tip:"Ajouter une photo augmente vos chances d'être recruté !",
     photo_privacy:'🔒 Votre profil et votre photo ne sont visibles que par les employeurs, pas par les autres utilisateurs.',
@@ -603,7 +603,7 @@ const T = {
     attach_file:'Anexar arquivo', file_too_large:'Arquivo muito grande (máx. 10MB)',
     download:'Baixar', uploading:'Enviando...',
     logout:'Sair',
-    tab_profile:'Perfil', tab_applied:'Candidaturas', tab_saved:'Salvos', tab_posted:'Minhas Vagas',
+    tab_profile:'Perfil', tab_applied:'Candidaturas', tab_saved:'Salvos', tab_posted:'Minhas Vagas', tab_received:'Candidaturas Recebidas',
     change_photo:'📷 Mudar Foto', photo_pending:'Salve para aplicar as mudanças',
     photo_tip:'Adicionar uma foto aumenta suas chances de ser contratado!',
     photo_privacy:'🔒 Seu perfil e foto são visíveis apenas para empregadores, não para outros usuários.',
@@ -695,7 +695,7 @@ const T = {
     attach_file:'Đính kèm tệp', file_too_large:'Tệp quá lớn (tối đa 10MB)',
     download:'Tải xuống', uploading:'Đang gửi...',
     logout:'Đăng xuất',
-    tab_profile:'Hồ sơ', tab_applied:'Đơn ứng tuyển', tab_saved:'Đã lưu', tab_posted:'Tin đã đăng',
+    tab_profile:'Hồ sơ', tab_applied:'Đơn ứng tuyển', tab_saved:'Đã lưu', tab_posted:'Tin đã đăng', tab_received:'Đơn nhận được',
     change_photo:'📷 Đổi ảnh', photo_pending:'Lưu để áp dụng thay đổi',
     photo_tip:'Thêm ảnh giúp tăng cơ hội được tuyển dụng!',
     photo_privacy:'🔒 Hồ sơ và ảnh của bạn chỉ hiển thị với nhà tuyển dụng, không hiển thị với người dùng khác.',
@@ -787,7 +787,7 @@ const T = {
     attach_file:'Lampirkan file', file_too_large:'File terlalu besar (maks. 10MB)',
     download:'Unduh', uploading:'Mengirim...',
     logout:'Keluar',
-    tab_profile:'Profil', tab_applied:'Lamaran', tab_saved:'Tersimpan', tab_posted:'Lowongan Saya',
+    tab_profile:'Profil', tab_applied:'Lamaran', tab_saved:'Tersimpan', tab_posted:'Lowongan Saya', tab_received:'Lamaran Masuk',
     change_photo:'📷 Ganti Foto', photo_pending:'Simpan untuk menerapkan perubahan',
     photo_tip:'Menambahkan foto meningkatkan peluang Anda diterima kerja!',
     photo_privacy:'🔒 Profil dan foto Anda hanya terlihat oleh pengusaha, bukan pengguna lain.',
@@ -2893,8 +2893,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
         visa_expiry:     profile.visa_expiry     || '',
         job_categories:  profile.job_categories  || '',
       })
-      // 雇用主はpostedタブをデフォルトに（initialTabが指定されていない場合）
-      if (profile.role === 'employer' && !initialTab) setTab('posted')
+      // 雇用主はreceivedタブをデフォルトに（initialTabが指定されていない場合）
+      if (profile.role === 'employer' && !initialTab) setTab('received')
     }
   }, [profile])
 
@@ -2974,8 +2974,14 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
     </main>
   )
 
+  const allReceivedApps = postedJobs.flatMap(j => (j.applications||[]).map(a => ({ ...a, job:j })))
+  const receivedCount = allReceivedApps.length
+
   const TABS = isEmployer
-    ? [['posted', t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')]]
+    ? [
+        ['received', t.tab_received + (receivedCount ? ` (${receivedCount})` : '')],
+        ['posted',   t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
+      ]
     : [
         ['profile', t.tab_profile],
         ['applied', t.tab_applied],
@@ -3090,6 +3096,60 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
         <div style={{ marginTop:16 }}>
           {!savedJobs.length ? <div className="empty">{t.no_saved_jobs}</div>
             : <JobGrid jobs={savedJobs} openJob={openJob} isSaved={() => true} toggleSave={() => {}} />}
+        </div>
+      )}
+
+      {/* ── 受け取った応募一覧 ── */}
+      {tab === 'received' && (
+        <div style={{ marginTop:16 }}>
+          {!allReceivedApps.length
+            ? <div className="empty">{t.no_apps}</div>
+            : allReceivedApps.map(app => {
+                const p = app.profiles || {}
+                return (
+                  <div key={app.id} className="card" style={{ marginBottom:12 }}>
+                    <p className="muted" style={{ fontSize:12, marginBottom:8 }}>📌 {app.job?.company} — {app.job?.title}</p>
+                    <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
+                      <div className="avatar" style={{ width:42, height:42, fontSize:16 }}>
+                        {p.avatar_url
+                          ? <img src={p.avatar_url} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="" />
+                          : (p.display_name?.[0]?.toUpperCase() || '?')}
+                      </div>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <b>{p.display_name || 'Anonymous'}</b>
+                        <p className="muted" style={{ fontSize:12, margin:0 }}>
+                          {p.english_level||t.not_set} ／ {displayAvailability(p.availability, lang)||t.not_set}
+                        </p>
+                      </div>
+                      <span style={statusStyle(app.status)}>
+                        {app.status==='accepted'?t.st_accepted:app.status==='rejected'?t.st_rejected:t.st_pending}
+                      </span>
+                    </div>
+                    {app.message && (
+                      <p style={{ fontSize:14, color:'var(--muted2)', background:'var(--bg3)', border:'1px solid var(--border)', borderRadius:10, padding:'8px 12px', margin:'8px 0' }}>
+                        "{app.message}"
+                      </p>
+                    )}
+                    {p.bio && <p className="muted" style={{ fontSize:13, marginBottom:8 }}>{p.bio.slice(0,120)}{p.bio.length>120?'…':''}</p>}
+                    {p.visa_expiry && <p className="muted" style={{ fontSize:12, marginBottom:8 }}>🗓 {workPeriodLabel(p.visa_expiry, t)}</p>}
+                    {app.resume_url ? (
+                      <a href={app.resume_url} target="_blank" rel="noopener noreferrer"
+                        style={{ display:'inline-flex', alignItems:'center', gap:6, background:'rgba(155,79,26,0.08)', border:'1px solid rgba(155,79,26,0.2)', borderRadius:10, padding:'8px 14px', fontSize:13, color:'var(--accent)', textDecoration:'none', marginBottom:10 }}>
+                        📄 {app.resume_name || t.view_resume}
+                      </a>
+                    ) : (
+                      <p className="muted" style={{ fontSize:12, marginBottom:8 }}>📄 {t.no_resume}</p>
+                    )}
+                    <div style={{ display:'flex', gap:8 }}>
+                      <button style={{ background:'rgba(61,107,74,0.12)', color:'#3d6b4a', border:'1px solid rgba(61,107,74,0.25)', fontSize:13, padding:'8px 16px' }}
+                        onClick={() => updateAppStatus(app.id, 'accepted')} disabled={app.status==='accepted'}>{t.hire}</button>
+                      <button style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', fontSize:13, padding:'8px 16px' }}
+                        onClick={() => updateAppStatus(app.id, 'rejected')} disabled={app.status==='rejected'}>{t.reject}</button>
+                    </div>
+                  </div>
+                )
+              })
+          }
         </div>
       )}
 
