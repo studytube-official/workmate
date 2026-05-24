@@ -2893,8 +2893,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
         visa_expiry:     profile.visa_expiry     || '',
         job_categories:  profile.job_categories  || '',
       })
-      // 雇用主はreceivedタブをデフォルトに（initialTabが指定されていない場合）
-      if (profile.role === 'employer' && !initialTab) setTab('received')
+      // 求人を持つユーザーはreceivedタブをデフォルトに（initialTabが指定されていない場合）
+      if (!initialTab && (profile.role === 'employer')) setTab('received')
     }
   }, [profile])
 
@@ -2977,17 +2977,14 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   const allReceivedApps = postedJobs.flatMap(j => (j.applications||[]).map(a => ({ ...a, job:j })))
   const receivedCount = allReceivedApps.length
 
-  const TABS = isEmployer
-    ? [
-        ['received', t.tab_received + (receivedCount ? ` (${receivedCount})` : '')],
-        ['posted',   t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
-      ]
-    : [
-        ['profile', t.tab_profile],
-        ['applied', t.tab_applied],
-        ['saved',   t.tab_saved],
-        ['posted',  t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
-      ]
+  const hasListings = postedJobs.length > 0 || isEmployer
+  const TABS = [
+    ['profile',  t.tab_profile],
+    ['applied',  t.tab_applied],
+    ['saved',    t.tab_saved],
+    ...(hasListings ? [['received', t.tab_received + (receivedCount ? ` (${receivedCount})` : '')]] : []),
+    ['posted',   t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
+  ]
 
   const statusStyle = st => ({
     padding:'5px 12px', borderRadius:999, fontSize:12, fontWeight:700,
