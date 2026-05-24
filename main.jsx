@@ -3046,6 +3046,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
 
       {/* ── プロフィール編集 ── */}
       {tab === 'profile' && (
+        <>
         <section className="card form" style={{ marginTop:16 }}>
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10 }}>
             <div className="avatar" style={{ width:96, height:96, fontSize:36, cursor:'pointer' }}
@@ -3110,6 +3111,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
             : <button className="primary" style={{ marginTop:8 }} onClick={submitFeedback} disabled={fbBusy || !fbText.trim()}>{fbBusy ? '...' : t.feedback_send}</button>
           }
         </section>
+        </>
       )}
 
       {/* ── 応募履歴 ── */}
