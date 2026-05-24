@@ -52,7 +52,7 @@ const T = {
     download:'Download', uploading:'Uploading...',
     logout:'Logout',
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings', tab_received:'Applications',
-    feedback_title:'Send Feedback', feedback_ph:'Share your requests, ideas, or anything you'd like to improve...', feedback_send:'Send', feedback_sent:'Thank you for your feedback! 🙏',
+    feedback_title:'Send Feedback', feedback_ph:'Share your requests, ideas, or anything you would like to improve...', feedback_send:'Send', feedback_sent:'Thank you for your feedback! 🙏',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
     photo_tip:'Adding a photo helps employers recognise you and boosts your chances!',
     photo_privacy:'🔒 Your profile and photo are only visible to employers — not to other users.',
