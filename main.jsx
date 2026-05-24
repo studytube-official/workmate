@@ -2978,13 +2978,17 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
   const receivedCount = allReceivedApps.length
 
   const hasListings = postedJobs.length > 0 || isEmployer
-  const TABS = [
-    ['profile',  t.tab_profile],
-    ['applied',  t.tab_applied],
-    ['saved',    t.tab_saved],
-    ...(hasListings ? [['received', t.tab_received + (receivedCount ? ` (${receivedCount})` : '')]] : []),
-    ['posted',   t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
-  ]
+  const TABS = hasListings
+    ? [
+        ['profile',  t.tab_profile],
+        ['received', t.tab_received + (receivedCount ? ` (${receivedCount})` : '')],
+        ['posted',   t.tab_posted + (postedJobs.length ? ` (${postedJobs.length})` : '')],
+      ]
+    : [
+        ['profile',  t.tab_profile],
+        ['applied',  t.tab_applied],
+        ['saved',    t.tab_saved],
+      ]
 
   const statusStyle = st => ({
     padding:'5px 12px', borderRadius:999, fontSize:12, fontWeight:700,
