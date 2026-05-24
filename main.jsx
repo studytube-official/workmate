@@ -1289,6 +1289,25 @@ function App() {
 
   const [page, setPage]               = useState('home')
   const [profileTab, setProfileTab]   = useState('profile')
+  const [fbOpen, setFbOpen]           = useState(false)
+  const [fbText2, setFbText2]         = useState('')
+  const [fbBusy2, setFbBusy2]         = useState(false)
+  const [fbSent2, setFbSent2]         = useState(false)
+
+  async function submitFeedback2() {
+    if (!fbText2.trim()) return
+    setFbBusy2(true)
+    const { error } = await supabase.from('feedback').insert([{
+      user_id: session?.user?.id || null,
+      display_name: profile?.display_name || null,
+      message: fbText2.trim(),
+    }])
+    setFbBusy2(false)
+    if (error) { notify(error.message); return }
+    setFbText2('')
+    setFbSent2(true)
+    setTimeout(() => { setFbSent2(false); setFbOpen(false) }, 2500)
+  }
   const [session, setSession]         = useState(null)
   const [profile, setProfile]         = useState(null)
   const [jobs, setJobs]               = useState([])
@@ -1670,6 +1689,43 @@ function App() {
       {page === 'set_password' && <SetPassword notify={notify} setPage={setPage} profile={profile} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
+
+      {/* ── フローティングフィードバックボタン（Profile以外） ── */}
+      {page !== 'profile' && (
+        <>
+          <button onClick={() => setFbOpen(o => !o)} style={{
+            position:'fixed', right:18, bottom:88, width:44, height:44, borderRadius:'50%',
+            background:'var(--accent)', color:'#fff', fontSize:20, border:'none',
+            boxShadow:'0 4px 14px rgba(155,79,26,0.35)', zIndex:200, padding:0,
+            display:'flex', alignItems:'center', justifyContent:'center',
+          }}>✏️</button>
+
+          {fbOpen && (
+            <div style={{
+              position:'fixed', right:16, bottom:142, width:300, background:'var(--bg3)',
+              border:'1px solid var(--border)', borderRadius:18, padding:18,
+              boxShadow:'0 8px 32px rgba(0,0,0,0.15)', zIndex:201,
+            }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+                <b style={{ fontSize:14 }}>💬 {t.feedback_title}</b>
+                <button onClick={() => setFbOpen(false)} style={{ background:'none', border:'none', fontSize:18, padding:'0 4px', color:'var(--muted2)' }}>×</button>
+              </div>
+              {fbSent2
+                ? <p style={{ color:'var(--accent)', fontWeight:600, textAlign:'center', padding:'12px 0' }}>{t.feedback_sent}</p>
+                : <>
+                    <textarea value={fbText2} onChange={e => setFbText2(e.target.value)}
+                      placeholder={t.feedback_ph}
+                      style={{ width:'100%', minHeight:90, resize:'vertical', boxSizing:'border-box', fontSize:13 }} />
+                    <button className="primary" style={{ width:'100%', marginTop:8 }}
+                      onClick={submitFeedback2} disabled={fbBusy2 || !fbText2.trim()}>
+                      {fbBusy2 ? '...' : t.feedback_send}
+                    </button>
+                  </>
+              }
+            </div>
+          )}
+        </>
+      )}
 
       <nav className="bottom">
         <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
