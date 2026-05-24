@@ -53,6 +53,8 @@ const T = {
     logout:'Logout',
     tab_profile:'Profile', tab_applied:'Applied', tab_saved:'Saved', tab_posted:'My Listings', tab_received:'Applications',
     feedback_title:'Send Feedback', feedback_ph:'Share your requests, ideas, or anything you would like to improve...', feedback_send:'Send', feedback_sent:'Thank you for your feedback! 🙏',
+    delete_account:'Delete Account', delete_confirm:'Are you sure? All your data will be permanently deleted. This cannot be undone.', account_deleted:'Your account has been deleted.',
+    report_job:'Report this listing', report_sent:'Report submitted. Thank you.', privacy_link:'Privacy Policy',
     change_photo:'📷 Change Photo', photo_pending:'Save to apply changes',
     photo_tip:'Adding a photo helps employers recognise you and boosts your chances!',
     photo_privacy:'🔒 Your profile and photo are only visible to employers — not to other users.',
@@ -146,6 +148,8 @@ const T = {
     logout:'ログアウト',
     tab_profile:'プロフィール', tab_applied:'応募履歴', tab_saved:'保存済み', tab_posted:'投稿した求人', tab_received:'届いた応募',
     feedback_title:'ご意見・ご要望', feedback_ph:'改善してほしい点やリクエストを自由に書いてください...', feedback_send:'送信', feedback_sent:'ご意見ありがとうございます！🙏',
+    delete_account:'アカウントを削除', delete_confirm:'本当に削除しますか？すべてのデータが完全に削除されます。この操作は元に戻せません。', account_deleted:'アカウントを削除しました。',
+    report_job:'この求人を通報する', report_sent:'通報を受け付けました。ありがとうございます。', privacy_link:'プライバシーポリシー',
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
     photo_tip:'写真を追加すると採用率がアップします！',
     photo_privacy:'🔒 プロフィールと写真は求人を投稿した店側のみに表示されます。他のユーザーには見えません。',
@@ -239,6 +243,8 @@ const T = {
     logout:'로그아웃',
     tab_profile:'프로필', tab_applied:'지원 내역', tab_saved:'저장됨', tab_posted:'내 구인', tab_received:'받은 지원',
     feedback_title:'의견 보내기', feedback_ph:'개선 사항이나 요청 사항을 자유롭게 적어주세요...', feedback_send:'보내기', feedback_sent:'소중한 의견 감사합니다！🙏',
+    delete_account:'계정 삭제', delete_confirm:'정말 삭제하시겠습니까? 모든 데이터가 영구적으로 삭제됩니다. 되돌릴 수 없습니다.', account_deleted:'계정이 삭제되었습니다.',
+    report_job:'이 공고 신고', report_sent:'신고가 접수되었습니다. 감사합니다.', privacy_link:'개인정보 처리방침',
     change_photo:'📷 사진 변경', photo_pending:'저장 후 반영됩니다',
     photo_tip:'사진을 추가하면 채용 확률이 높아집니다!',
     photo_privacy:'🔒 프로필과 사진은 구인을 등록한 사업주에게만 공개됩니다. 다른 사용자에게는 보이지 않습니다.',
@@ -332,6 +338,8 @@ const T = {
     logout:'退出登录',
     tab_profile:'个人资料', tab_applied:'申请记录', tab_saved:'已收藏', tab_posted:'我发布的', tab_received:'收到的申请',
     feedback_title:'发送反馈', feedback_ph:'请随意写下您的改进建议或需求...', feedback_send:'发送', feedback_sent:'感谢您的反馈！🙏',
+    delete_account:'删除账号', delete_confirm:'确定要删除吗？所有数据将被永久删除，无法恢复。', account_deleted:'您的账号已删除。',
+    report_job:'举报此招聘', report_sent:'举报已提交，感谢您。', privacy_link:'隐私政策',
     change_photo:'📷 更换头像', photo_pending:'保存后生效',
     photo_tip:'添加照片能让雇主更了解你，提高录用机会！',
     photo_privacy:'🔒 你的资料和照片仅对发布招聘的雇主可见，其他用户无法查看。',
@@ -425,6 +433,8 @@ const T = {
     logout:'Cerrar sesión',
     tab_profile:'Perfil', tab_applied:'Postulaciones', tab_saved:'Guardados', tab_posted:'Mis Anuncios', tab_received:'Solicitudes',
     feedback_title:'Enviar Comentarios', feedback_ph:'Escribe tus sugerencias o solicitudes libremente...', feedback_send:'Enviar', feedback_sent:'¡Gracias por tus comentarios! 🙏',
+    delete_account:'Eliminar cuenta', delete_confirm:'¿Estás seguro? Todos tus datos serán eliminados permanentemente. Esta acción no se puede deshacer.', account_deleted:'Tu cuenta ha sido eliminada.',
+    report_job:'Reportar este anuncio', report_sent:'Reporte enviado. Gracias.', privacy_link:'Política de Privacidad',
     change_photo:'📷 Cambiar foto', photo_pending:'Guarda para aplicar cambios',
     photo_tip:'¡Agregar una foto aumenta tus chances de ser contratado!',
     photo_privacy:'🔒 Tu perfil y foto solo son visibles para los empleadores, no para otros usuarios.',
@@ -518,6 +528,8 @@ const T = {
     logout:'Déconnexion',
     tab_profile:'Profil', tab_applied:'Candidatures', tab_saved:'Sauvegardés', tab_posted:'Mes offres', tab_received:'Candidatures reçues',
     feedback_title:'Envoyer un avis', feedback_ph:'Écrivez librement vos suggestions ou demandes...', feedback_send:'Envoyer', feedback_sent:'Merci pour votre avis ! 🙏',
+    delete_account:'Supprimer le compte', delete_confirm:'Êtes-vous sûr ? Toutes vos données seront supprimées définitivement. Cette action est irréversible.', account_deleted:'Votre compte a été supprimé.',
+    report_job:'Signaler cette offre', report_sent:'Signalement envoyé. Merci.', privacy_link:'Politique de confidentialité',
     change_photo:'📷 Changer la photo', photo_pending:'Sauvegardez pour appliquer les changements',
     photo_tip:"Ajouter une photo augmente vos chances d'être recruté !",
     photo_privacy:'🔒 Votre profil et votre photo ne sont visibles que par les employeurs, pas par les autres utilisateurs.',
@@ -611,6 +623,8 @@ const T = {
     logout:'Sair',
     tab_profile:'Perfil', tab_applied:'Candidaturas', tab_saved:'Salvos', tab_posted:'Minhas Vagas', tab_received:'Candidaturas Recebidas',
     feedback_title:'Enviar Feedback', feedback_ph:'Escreva livremente suas sugestões ou pedidos...', feedback_send:'Enviar', feedback_sent:'Obrigado pelo seu feedback! 🙏',
+    delete_account:'Excluir conta', delete_confirm:'Tem certeza? Todos os seus dados serão excluídos permanentemente. Esta ação não pode ser desfeita.', account_deleted:'Sua conta foi excluída.',
+    report_job:'Reportar esta vaga', report_sent:'Denúncia enviada. Obrigado.', privacy_link:'Política de Privacidade',
     change_photo:'📷 Mudar Foto', photo_pending:'Salve para aplicar as mudanças',
     photo_tip:'Adicionar uma foto aumenta suas chances de ser contratado!',
     photo_privacy:'🔒 Seu perfil e foto são visíveis apenas para empregadores, não para outros usuários.',
@@ -704,6 +718,8 @@ const T = {
     logout:'Đăng xuất',
     tab_profile:'Hồ sơ', tab_applied:'Đơn ứng tuyển', tab_saved:'Đã lưu', tab_posted:'Tin đã đăng', tab_received:'Đơn nhận được',
     feedback_title:'Gửi phản hồi', feedback_ph:'Hãy tự do viết các đề xuất hoặc yêu cầu của bạn...', feedback_send:'Gửi', feedback_sent:'Cảm ơn phản hồi của bạn! 🙏',
+    delete_account:'Xóa tài khoản', delete_confirm:'Bạn có chắc không? Tất cả dữ liệu sẽ bị xóa vĩnh viễn. Không thể hoàn tác.', account_deleted:'Tài khoản của bạn đã được xóa.',
+    report_job:'Báo cáo tin này', report_sent:'Báo cáo đã gửi. Cảm ơn bạn.', privacy_link:'Chính sách Bảo mật',
     change_photo:'📷 Đổi ảnh', photo_pending:'Lưu để áp dụng thay đổi',
     photo_tip:'Thêm ảnh giúp tăng cơ hội được tuyển dụng!',
     photo_privacy:'🔒 Hồ sơ và ảnh của bạn chỉ hiển thị với nhà tuyển dụng, không hiển thị với người dùng khác.',
@@ -797,6 +813,8 @@ const T = {
     logout:'Keluar',
     tab_profile:'Profil', tab_applied:'Lamaran', tab_saved:'Tersimpan', tab_posted:'Lowongan Saya', tab_received:'Lamaran Masuk',
     feedback_title:'Kirim Masukan', feedback_ph:'Tulis saran atau permintaan Anda dengan bebas...', feedback_send:'Kirim', feedback_sent:'Terima kasih atas masukan Anda! 🙏',
+    delete_account:'Hapus Akun', delete_confirm:'Yakin ingin menghapus? Semua data akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.', account_deleted:'Akun Anda telah dihapus.',
+    report_job:'Laporkan lowongan ini', report_sent:'Laporan terkirim. Terima kasih.', privacy_link:'Kebijakan Privasi',
     change_photo:'📷 Ganti Foto', photo_pending:'Simpan untuk menerapkan perubahan',
     photo_tip:'Menambahkan foto meningkatkan peluang Anda diterima kerja!',
     photo_privacy:'🔒 Profil dan foto Anda hanya terlihat oleh pengusaha, bukan pengguna lain.',
@@ -1685,6 +1703,7 @@ function App() {
       {page === 'chat'        && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
       {page === 'profile'     && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} setPostedJobs={setPostedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} initialTab={profileTab} setProfileTab={setProfileTab} />}
       {page === 'login'       && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
+      {page === 'privacy'     && <PrivacyPolicy setPage={setPage} />}
       {page === 'role_select' && <RoleSelect session={session} setProfile={setProfile} notify={notify} setPage={setPage} signOut={signOut} />}
       {page === 'set_password' && <SetPassword notify={notify} setPage={setPage} profile={profile} />}
 
@@ -1738,9 +1757,81 @@ function App() {
           💬<br/><small>{t.nav_dm}</small>
           {unreadCount > 0 && <span className="badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
         </button>
-        <button className={page==='profile'?'active':''} onClick={() => setPage('profile')}>👤<br/><small>{t.nav_profile}</small></button>
+        <button className={page==='profile'?'active':''} onClick={() => setPage('profile')} style={{ position:'relative' }}>
+          👤<br/><small>{t.nav_profile}</small>
+          {(() => {
+            const pending = postedJobs.flatMap(j => j.applications||[]).filter(a => a.status === 'pending').length
+            return pending > 0 && page !== 'profile'
+              ? <span className="badge" style={{ top:2, right:2 }}>{pending > 9 ? '9+' : pending}</span>
+              : null
+          })()}
+        </button>
       </nav>
     </LangCtx.Provider>
+  )
+}
+
+// ═════════════════════════════════════════════
+//  PrivacyPolicy
+// ═════════════════════════════════════════════
+function PrivacyPolicy({ setPage }) {
+  const { t } = useT()
+  return (
+    <main style={{ maxWidth:640, margin:'0 auto', padding:'24px 20px 80px' }}>
+      <button onClick={() => setPage('home')} style={{ background:'none', border:'none', color:'var(--muted2)', fontSize:14, padding:0, cursor:'pointer', marginBottom:16 }}>← Back</button>
+      <h1 style={{ fontSize:22, marginBottom:4 }}>Privacy Policy</h1>
+      <p className="muted" style={{ fontSize:13, marginBottom:24 }}>Last updated: May 2026</p>
+
+      <div style={{ display:'flex', flexDirection:'column', gap:20, fontSize:14, lineHeight:1.8, color:'var(--text)' }}>
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>1. What We Collect</h2>
+          <p>When you use WorkMate, we collect:</p>
+          <ul style={{ paddingLeft:20, margin:'6px 0' }}>
+            <li>Email address and display name (account registration)</li>
+            <li>Profile photo, bio, work availability, English level, visa information</li>
+            <li>Résumé / CV files you upload when applying for jobs</li>
+            <li>Messages sent via the in-app DM system</li>
+            <li>Job listings you post</li>
+            <li>Feedback messages you submit</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>2. Why We Collect It</h2>
+          <p>All data is collected solely to operate WorkMate — matching job seekers with employers in Australia. We do <strong>not</strong> sell or share your data with third parties for marketing purposes.</p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>3. Third-Party Services</h2>
+          <p>WorkMate is built on:</p>
+          <ul style={{ paddingLeft:20, margin:'6px 0' }}>
+            <li><strong>Supabase</strong> — database & file storage (servers in Australia/US)</li>
+            <li><strong>Vercel</strong> — web hosting (US-based CDN)</li>
+          </ul>
+          <p>Both services have their own privacy policies and process data on our behalf only.</p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>4. Your Rights</h2>
+          <p>Under the Australian Privacy Act 1988 and applicable laws, you have the right to:</p>
+          <ul style={{ paddingLeft:20, margin:'6px 0' }}>
+            <li>Access the personal information we hold about you</li>
+            <li>Request correction of inaccurate data</li>
+            <li>Delete your account and all associated data (available in Profile settings)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>5. Data Retention</h2>
+          <p>Your data is retained while your account is active. When you delete your account, all personal data is permanently removed from our systems within 30 days.</p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize:16, marginBottom:6 }}>6. Contact</h2>
+          <p>For privacy-related inquiries, please contact us through the feedback form in the app.</p>
+        </section>
+      </div>
+    </main>
   )
 }
 
@@ -1866,6 +1957,11 @@ function Login({ signInGoogle, setPage, notify }) {
         <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:16, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
           {t.guest}
         </button>
+        <p style={{ textAlign:'center', marginTop:16, fontSize:12, color:'var(--muted2)' }}>
+          <button onClick={() => setPage('privacy')} style={{ background:'none', border:'none', color:'var(--muted2)', fontSize:12, textDecoration:'underline', cursor:'pointer', padding:0 }}>
+            {t.privacy_link}
+          </button>
+        </p>
       </div>
     </main>
   )
@@ -2008,7 +2104,14 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
   const [applyMsg,    setApplyMsg]    = useState('')
   const [resumeFile,  setResumeFile]  = useState(null)
   const [busy,        setBusy]        = useState(false)
+  const [reported,    setReported]    = useState(false)
   const resumeRef = useRef(null)
+
+  async function handleReport() {
+    if (!session) return
+    await supabase.from('reports').insert([{ reporter_id: session.user.id, job_id: job.id, reason: 'flagged' }])
+    setReported(true)
+  }
 
   async function handleApply() {
     setBusy(true)
@@ -2091,6 +2194,17 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
           {!isClosed && <button onClick={() => startDM(job)}>{t.dm_btn}</button>}
         </div>
       </section>
+
+      {session && (
+        <div style={{ textAlign:'center', padding:'8px 0 4px' }}>
+          {reported
+            ? <p className="muted" style={{ fontSize:12 }}>✓ {t.report_sent}</p>
+            : <button onClick={handleReport} style={{ background:'none', border:'none', color:'var(--muted2)', fontSize:12, textDecoration:'underline', cursor:'pointer', padding:0 }}>
+                {t.report_job}
+              </button>
+          }
+        </div>
+      )}
     </main>
   )
 }
@@ -3166,6 +3280,24 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
             ? <p style={{ color:'var(--accent)', fontWeight:600, marginTop:8 }}>{t.feedback_sent}</p>
             : <button className="primary" style={{ marginTop:8 }} onClick={submitFeedback} disabled={fbBusy || !fbText.trim()}>{fbBusy ? '...' : t.feedback_send}</button>
           }
+        </section>
+
+        {/* ── 危険ゾーン ── */}
+        <section style={{ marginTop:24, paddingTop:20, borderTop:'1px solid var(--border)' }}>
+          <button onClick={async () => {
+            if (!window.confirm(t.delete_confirm)) return
+            const { error } = await supabase.rpc('delete_user')
+            if (error) { notify(error.message); return }
+            notify(t.account_deleted)
+            signOut()
+          }} style={{ background:'rgba(184,48,48,0.08)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', fontSize:13, padding:'10px 20px' }}>
+            🗑 {t.delete_account}
+          </button>
+          <p style={{ marginTop:12, fontSize:12, color:'var(--muted2)', textAlign:'center' }}>
+            <button onClick={() => setPage('privacy')} style={{ background:'none', border:'none', color:'var(--muted2)', fontSize:12, textDecoration:'underline', cursor:'pointer', padding:0 }}>
+              {t.privacy_link}
+            </button>
+          </p>
         </section>
         </>
       )}
