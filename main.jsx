@@ -2142,8 +2142,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
   return (
     <article className="job" onClick={() => openJob(job)}>
       <div className="photo">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
-      <h2>{job.company || 'No company'}</h2>
-      {job.biz_type && <p className="muted" style={{ fontSize:12 }}>{job.biz_type}</p>}
+      <h2>{job.company || 'No company'}{job.biz_type ? <span style={{ fontWeight:400, color:'var(--muted2)', fontSize:14 }}> · {job.biz_type}</span> : ''}</h2>
       <p className="muted">{job.title}</p>
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
@@ -2194,7 +2193,7 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
       <section className="detail card">
         <div className="photo big">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
         <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
-          <h1 style={{ margin:0 }}>{job.company}</h1>
+          <h1 style={{ margin:0 }}>{job.company}{job.biz_type ? <span style={{ fontWeight:400, color:'var(--muted2)', fontSize:18 }}> · {job.biz_type}</span> : ''}</h1>
           <span style={{ padding:'5px 14px', borderRadius:999, fontSize:13, fontWeight:700,
             background: isClosed ? 'rgba(184,48,48,0.1)' : 'rgba(61,107,74,0.12)',
             color:      isClosed ? '#b83030' : '#3d6b4a',
@@ -2361,12 +2360,6 @@ function MapPreview({ query, hint }) {
   )
 }
 
-const BIZ_TYPES = [
-  'Japanese Restaurant','Asian Restaurant','Western Restaurant','Cafe / Coffee Shop',
-  'Bakery','Bar / Pub','Izakaya','Ramen Shop','Sushi Restaurant','Korean BBQ',
-  'Farm / Agriculture','Supermarket / Grocery','Retail / Shop','Hotel','Hostel',
-  'Cleaning','Construction','Office / Admin','Other',
-]
 
 const emptyJob = { title:'', company:'', biz_type:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
 
@@ -2435,12 +2428,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
       <h1>{t.post_title}</h1>
       <section className="card form">
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
-        <label>{t.f_biz_type}
-          <select value={job.biz_type} onChange={e => update('biz_type', e.target.value)}>
-            <option value="">—</option>
-            {BIZ_TYPES.map(b => <option key={b} value={b}>{b}</option>)}
-          </select>
-        </label>
+        <label>{t.f_biz_type}<input value={job.biz_type} onChange={e => update('biz_type', e.target.value)} placeholder="e.g. Japanese Restaurant, Farm, Cafe..." /></label>
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Shop 5, 123 George St, Sydney CBD" /></label>
         <MapPreview query={job.location} hint={t.map_verify_hint} />
