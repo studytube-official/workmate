@@ -2653,8 +2653,10 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
-  const [engFilter,    setEngFilter]    = useState('')   // '' | 'basic' | 'intermediate'
-  const [periodFilter, setPeriodFilter] = useState('')   // '' | '1m' | '3m' | '6m' | '1y' | 'no_limit'
+  const [engFilter,    setEngFilter]    = useState('')
+  const [periodFilter, setPeriodFilter] = useState('')
+  const [countryFilter, setCountryFilter] = useState('')
+  const [langFilter,    setLangFilter]    = useState('')
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -2681,6 +2683,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const filteredStaff = staffList.filter(s => {
     if (engFilter    && (PROFILE_ENG_RANK[s.english_level] || 0) < minEngRank)    return false
     if (periodFilter && (WORK_PERIOD_RANK[s.visa_expiry]   || 0) < minPeriodRank) return false
+    if (countryFilter && s.country !== countryFilter) return false
+    if (langFilter && !(s.languages || '').split(',').map(l => l.trim()).includes(langFilter)) return false
     return true
   })
 
@@ -2690,14 +2694,22 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       <p className="muted" style={{ marginBottom:12 }}>{t.staff_desc}</p>
       {/* フィルター */}
       <div style={{ marginBottom:16, display:'flex', gap:8, flexWrap:'wrap' }}>
-        <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:180 }}>
+        <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:160 }}>
           <option value="">{t.staff_eng_min} — {t.eng_cond}</option>
           <option value="basic">{t.plvl_basic} +</option>
           <option value="intermediate">{t.plvl_inter} +</option>
         </select>
-        <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:180 }}>
+        <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:160 }}>
           <option value="">{t.work_period_filter} — {t.f_work_period}</option>
           {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)} +</option>)}
+        </select>
+        <select value={countryFilter} onChange={e => setCountryFilter(e.target.value)} style={{ minWidth:160 }}>
+          <option value="">🌏 {t.f_country}</option>
+          {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select value={langFilter} onChange={e => setLangFilter(e.target.value)} style={{ minWidth:160 }}>
+          <option value="">🗣 {t.f_languages}</option>
+          {LANGUAGES_LIST.map(l => <option key={l} value={l}>{l}</option>)}
         </select>
       </div>
       {loading && <SkeletonGrid />}
@@ -2709,13 +2721,16 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
-            {s.english_level && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
+            {s.country        && <p className="muted" style={{ fontSize:13 }}>🌏 {s.country}</p>}
+            {s.english_level  && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
+            {s.languages      && <p className="muted" style={{ fontSize:12 }}>💬 {s.languages}</p>}
             {s.availability   && <p className="muted">📅 {displayAvailability(s.availability, lang)}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>🗓 {workPeriodLabel(s.visa_expiry, t)}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
               {s.english_level && <span>{profileEngLabel(s.english_level, t)}</span>}
-              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
+              {s.country && <span>{s.country}</span>}
+              {parseCats(s.job_categories).slice(0,2).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
             </div>
             <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
               {t.contact}
