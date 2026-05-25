@@ -92,8 +92,8 @@ const T = {
     toast_self_dm2:'Cannot message yourself',
     toast_new_app:'📨 New application received!',
     toast_closed:'This job is no longer accepting applications',
-    eng_basic:'Basic English OK', eng_none:'No English needed', eng_inter:'Intermediate+',
-    plvl_basic:'Basic', plvl_pre:'Pre-intermediate', plvl_inter:'Intermediate', plvl_upper:'Upper-intermediate', plvl_adv:'Advanced',
+    eng_none:'No English needed', eng_few:'A few words OK', eng_basic:'Basic English OK', eng_conv:'Conversational', eng_fluent:'Fluent / Advanced',
+    plvl_basic:'Basic', plvl_pre:'Pre-intermediate', plvl_inter:'Intermediate', plvl_upper:'Upper-intermediate', plvl_adv:'Advanced', plvl_native:'Native / Near-native',
     staff_eng_min:'Min. English', desc_ph:'Job description, hours, requirements...',
     role_title:'How will you use WorkMate?',
     role_student:'Looking for work', role_student_desc:'Find jobs, apply, and chat with employers',
@@ -186,8 +186,8 @@ const T = {
     toast_self_dm2:'自分自身にはDMできません',
     toast_new_app:'📨 新しい応募が届きました！',
     toast_closed:'この求人は募集終了です',
-    eng_basic:'英語初級OK', eng_none:'英語ほぼ不要', eng_inter:'Intermediate以上',
-    plvl_basic:'初級', plvl_pre:'初中級', plvl_inter:'中級', plvl_upper:'中上級', plvl_adv:'上級',
+    eng_none:'英語ほぼ不要', eng_few:'挨拶程度でOK', eng_basic:'英語初級OK', eng_conv:'日常会話OK', eng_fluent:'ビジネス／上級',
+    plvl_basic:'初級', plvl_pre:'初中級', plvl_inter:'中級', plvl_upper:'中上級', plvl_adv:'上級', plvl_native:'ネイティブ同等',
     staff_eng_min:'英語レベル（最低）', desc_ph:'仕事内容、勤務時間、条件など...',
     role_title:'WorkMateをどのように使いますか？',
     role_student:'仕事を探している', role_student_desc:'求人を探して応募・チャットができます',
@@ -281,8 +281,8 @@ const T = {
     toast_self_dm2:'자기 자신에게는 메시지를 보낼 수 없습니다',
     toast_new_app:'📨 새 지원이 도착했습니다!',
     toast_closed:'이 구인은 마감되었습니다',
-    eng_basic:'기초 영어 OK', eng_none:'영어 불필요', eng_inter:'중급 이상',
-    plvl_basic:'기초', plvl_pre:'초중급', plvl_inter:'중급', plvl_upper:'중상급', plvl_adv:'고급',
+    eng_none:'영어 불필요', eng_few:'간단한 영어 OK', eng_basic:'기초 영어 OK', eng_conv:'일상회화 OK', eng_fluent:'비즈니스 / 고급',
+    plvl_basic:'기초', plvl_pre:'초중급', plvl_inter:'중급', plvl_upper:'중상급', plvl_adv:'고급', plvl_native:'원어민 수준',
     staff_eng_min:'최소 영어 수준', desc_ph:'업무 내용, 근무 시간, 조건 등...',
     role_title:'WorkMate를 어떻게 사용하실 건가요?',
     role_student:'일자리를 찾고 있어요', role_student_desc:'구인 검색, 지원, 사업주와 채팅',
@@ -376,8 +376,8 @@ const T = {
     toast_self_dm2:'不能给自己发消息',
     toast_new_app:'📨 收到新申请！',
     toast_closed:'该职位已停止接受申请',
-    eng_basic:'基础英语OK', eng_none:'无需英语', eng_inter:'中级以上',
-    plvl_basic:'基础', plvl_pre:'初中级', plvl_inter:'中级', plvl_upper:'中高级', plvl_adv:'高级',
+    eng_none:'无需英语', eng_few:'简单英语OK', eng_basic:'基础英语OK', eng_conv:'日常会话OK', eng_fluent:'商务 / 高级',
+    plvl_basic:'基础', plvl_pre:'初中级', plvl_inter:'中级', plvl_upper:'中高级', plvl_adv:'高级', plvl_native:'母语水平',
     staff_eng_min:'最低英语水平', desc_ph:'工作内容、工作时间、要求等...',
     role_title:'您将如何使用WorkMate？',
     role_student:'我在找工作', role_student_desc:'搜索职位、投递简历、与雇主聊天',
@@ -471,8 +471,8 @@ const T = {
     toast_self_dm2:'No puedes enviarte mensajes a ti mismo',
     toast_new_app:'📨 ¡Nueva postulación recibida!',
     toast_closed:'Este empleo ya no acepta postulaciones',
-    eng_basic:'Inglés básico OK', eng_none:'Sin inglés necesario', eng_inter:'Intermedio+',
-    plvl_basic:'Básico', plvl_pre:'Preintermedio', plvl_inter:'Intermedio', plvl_upper:'Intermedio alto', plvl_adv:'Avanzado',
+    eng_none:'Sin inglés necesario', eng_few:'Pocas palabras OK', eng_basic:'Inglés básico OK', eng_conv:'Conversacional', eng_fluent:'Fluido / Avanzado',
+    plvl_basic:'Básico', plvl_pre:'Preintermedio', plvl_inter:'Intermedio', plvl_upper:'Intermedio alto', plvl_adv:'Avanzado', plvl_native:'Nativo / Casi nativo',
     staff_eng_min:'Inglés mín.', desc_ph:'Descripción, horarios, requisitos...',
     role_title:'¿Cómo usarás WorkMate?',
     role_student:'Busco trabajo', role_student_desc:'Busca empleos, postúlate y chatea con empleadores',
@@ -566,8 +566,8 @@ const T = {
     toast_self_dm2:'Impossible de vous envoyer un message',
     toast_new_app:'📨 Nouvelle candidature reçue !',
     toast_closed:"Cette offre n'accepte plus de candidatures",
-    eng_basic:'Anglais de base OK', eng_none:"Pas d'anglais requis", eng_inter:'Intermédiaire+',
-    plvl_basic:'Débutant', plvl_pre:'Pré-intermédiaire', plvl_inter:'Intermédiaire', plvl_upper:'Intermédiaire avancé', plvl_adv:'Avancé',
+    eng_none:"Pas d'anglais requis", eng_few:'Quelques mots OK', eng_basic:'Anglais de base OK', eng_conv:'Conversationnel', eng_fluent:'Courant / Avancé',
+    plvl_basic:'Débutant', plvl_pre:'Pré-intermédiaire', plvl_inter:'Intermédiaire', plvl_upper:'Intermédiaire avancé', plvl_adv:'Avancé', plvl_native:'Natif / Quasi-natif',
     staff_eng_min:'Anglais min.', desc_ph:'Description, horaires, conditions...',
     role_title:'Comment allez-vous utiliser WorkMate ?',
     role_student:'Je cherche un emploi', role_student_desc:'Trouvez des emplois, postulez et discutez avec les employeurs',
@@ -661,8 +661,8 @@ const T = {
     toast_self_dm2:'Não pode se enviar mensagem',
     toast_new_app:'📨 Nova candidatura recebida!',
     toast_closed:'Esta vaga não aceita mais candidaturas',
-    eng_basic:'Inglês básico OK', eng_none:'Sem inglês necessário', eng_inter:'Intermediário+',
-    plvl_basic:'Básico', plvl_pre:'Pré-intermediário', plvl_inter:'Intermediário', plvl_upper:'Intermediário avançado', plvl_adv:'Avançado',
+    eng_none:'Sem inglês necessário', eng_few:'Poucas palavras OK', eng_basic:'Inglês básico OK', eng_conv:'Conversacional', eng_fluent:'Fluente / Avançado',
+    plvl_basic:'Básico', plvl_pre:'Pré-intermediário', plvl_inter:'Intermediário', plvl_upper:'Intermediário avançado', plvl_adv:'Avançado', plvl_native:'Nativo / Quase nativo',
     staff_eng_min:'Inglês mín.', desc_ph:'Descrição, horários, requisitos...',
     role_title:'Como você vai usar o WorkMate?',
     role_student:'Estou procurando emprego', role_student_desc:'Encontre vagas, candidate-se e converse com empregadores',
@@ -756,8 +756,8 @@ const T = {
     toast_self_dm2:'Không thể nhắn tin cho chính mình',
     toast_new_app:'📨 Có đơn ứng tuyển mới!',
     toast_closed:'Tin tuyển dụng này đã đóng',
-    eng_basic:'Tiếng Anh cơ bản OK', eng_none:'Không cần tiếng Anh', eng_inter:'Trung cấp trở lên',
-    plvl_basic:'Cơ bản', plvl_pre:'Sơ trung cấp', plvl_inter:'Trung cấp', plvl_upper:'Trung cao cấp', plvl_adv:'Nâng cao',
+    eng_none:'Không cần tiếng Anh', eng_few:'Vài từ cũng OK', eng_basic:'Tiếng Anh cơ bản OK', eng_conv:'Giao tiếp thông thường', eng_fluent:'Thành thạo / Nâng cao',
+    plvl_basic:'Cơ bản', plvl_pre:'Sơ trung cấp', plvl_inter:'Trung cấp', plvl_upper:'Trung cao cấp', plvl_adv:'Nâng cao', plvl_native:'Bản ngữ / Gần bản ngữ',
     staff_eng_min:'Tiếng Anh tối thiểu', desc_ph:'Mô tả công việc, giờ làm, yêu cầu...',
     role_title:'Bạn sẽ dùng WorkMate như thế nào?',
     role_student:'Tôi đang tìm việc', role_student_desc:'Tìm việc, ứng tuyển và chat với nhà tuyển dụng',
@@ -851,8 +851,8 @@ const T = {
     toast_self_dm2:'Tidak dapat mengirim pesan ke diri sendiri',
     toast_new_app:'📨 Lamaran baru diterima!',
     toast_closed:'Lowongan ini sudah tidak menerima lamaran',
-    eng_basic:'Bahasa Inggris dasar OK', eng_none:'Tanpa bahasa Inggris', eng_inter:'Menengah ke atas',
-    plvl_basic:'Dasar', plvl_pre:'Pra-menengah', plvl_inter:'Menengah', plvl_upper:'Menengah atas', plvl_adv:'Mahir',
+    eng_none:'Tanpa bahasa Inggris', eng_few:'Beberapa kata OK', eng_basic:'Bahasa Inggris dasar OK', eng_conv:'Percakapan sehari-hari', eng_fluent:'Lancar / Mahir',
+    plvl_basic:'Dasar', plvl_pre:'Pra-menengah', plvl_inter:'Menengah', plvl_upper:'Menengah atas', plvl_adv:'Mahir', plvl_native:'Seperti penutur asli',
     staff_eng_min:'B. Inggris min.', desc_ph:'Deskripsi pekerjaan, jam kerja, syarat...',
     role_title:'Bagaimana Anda akan menggunakan WorkMate?',
     role_student:'Saya mencari pekerjaan', role_student_desc:'Cari lowongan, lamar, dan chat dengan pemberi kerja',
@@ -884,16 +884,19 @@ const useT = () => useContext(LangCtx)
 // 求人の必須レベルキー: 'none' | 'basic' | 'intermediate'
 // プロフィールの自己申告キー: 'Basic' | 'Pre-intermediate' | 'Intermediate' | 'Upper-intermediate' | 'Advanced'
 const PROFILE_ENG_RANK = {
-  'Basic': 1, 'Pre-intermediate': 2, 'Intermediate': 3, 'Upper-intermediate': 4, 'Advanced': 5,
+  'Basic': 1, 'Pre-intermediate': 2, 'Intermediate': 3, 'Upper-intermediate': 4, 'Advanced': 5, 'Native': 6,
 }
-const JOB_ENG_MIN_RANK = { 'none': 0, 'basic': 1, 'intermediate': 3 }
+const JOB_ENG_MIN_RANK = { 'none': 0, 'few': 0.5, 'basic': 1, 'conv': 2, 'intermediate': 3, 'fluent': 4 }
 
 // 旧DBの英語テキスト値を統一キーに変換（後方互換）
 function normalizeJobEng(val) {
   if (!val) return 'basic'
-  if (val === 'basic' || val === 'Basic English OK') return 'basic'
   if (val === 'none'  || val === 'No English needed') return 'none'
+  if (val === 'few') return 'few'
+  if (val === 'basic' || val === 'Basic English OK') return 'basic'
+  if (val === 'conv') return 'conv'
   if (val === 'intermediate' || val === 'Intermediate+') return 'intermediate'
+  if (val === 'fluent') return 'fluent'
   return 'basic'
 }
 
@@ -901,7 +904,10 @@ function normalizeJobEng(val) {
 function jobEngLabel(key, t) {
   const k = normalizeJobEng(key)
   if (k === 'none') return t.eng_none
-  if (k === 'intermediate') return t.eng_inter
+  if (k === 'few')  return t.eng_few
+  if (k === 'conv') return t.eng_conv
+  if (k === 'intermediate') return t.eng_inter || t.eng_conv
+  if (k === 'fluent') return t.eng_fluent
   return t.eng_basic
 }
 
@@ -909,7 +915,8 @@ function jobEngLabel(key, t) {
 function profileEngLabel(key, t) {
   const map = {
     'Basic': t.plvl_basic, 'Pre-intermediate': t.plvl_pre,
-    'Intermediate': t.plvl_inter, 'Upper-intermediate': t.plvl_upper, 'Advanced': t.plvl_adv,
+    'Intermediate': t.plvl_inter, 'Upper-intermediate': t.plvl_upper,
+    'Advanced': t.plvl_adv, 'Native': t.plvl_native,
   }
   return map[key] || key || ''
 }
@@ -2095,8 +2102,10 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
           <select value={english} onChange={e => setEnglish(e.target.value)}>
             <option value="">{t.eng_cond}</option>
             <option value="none">{t.eng_none}</option>
+            <option value="few">{t.eng_few}</option>
             <option value="basic">{t.eng_basic}</option>
-            <option value="intermediate">{t.eng_inter}</option>
+            <option value="conv">{t.eng_conv}</option>
+            <option value="fluent">{t.eng_fluent}</option>
           </select>
         </div>
         {/* カテゴリタグフィルター */}
@@ -2439,8 +2448,10 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
         <label>{t.f_eng}
           <select value={job.english_level} onChange={e => update('english_level', e.target.value)}>
             <option value="none">{t.eng_none}</option>
+            <option value="few">{t.eng_few}</option>
             <option value="basic">{t.eng_basic}</option>
-            <option value="intermediate">{t.eng_inter}</option>
+            <option value="conv">{t.eng_conv}</option>
+            <option value="fluent">{t.eng_fluent}</option>
           </select>
         </label>
         <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={t.desc_ph} /></label>
@@ -2528,8 +2539,10 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
           <label>{t.f_eng}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
               <option value="none">{t.eng_none}</option>
+              <option value="few">{t.eng_few}</option>
               <option value="basic">{t.eng_basic}</option>
-              <option value="intermediate">{t.eng_inter}</option>
+              <option value="conv">{t.eng_conv}</option>
+              <option value="fluent">{t.eng_fluent}</option>
             </select>
           </label>
           <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
@@ -2723,7 +2736,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
         <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:160 }}>
           <option value="">{t.staff_eng_min} — {t.eng_cond}</option>
           <option value="basic">{t.plvl_basic} +</option>
-          <option value="intermediate">{t.plvl_inter} +</option>
+          <option value="conv">{t.plvl_pre} +</option>
+          <option value="fluent">{t.plvl_upper} +</option>
         </select>
         <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:160 }}>
           <option value="">{t.work_period_filter} — {t.f_work_period}</option>
@@ -3333,6 +3347,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
               <option value="Intermediate">{t.plvl_inter}</option>
               <option value="Upper-intermediate">{t.plvl_upper}</option>
               <option value="Advanced">{t.plvl_adv}</option>
+              <option value="Native">{t.plvl_native}</option>
             </select>
           </label>
           <label>{t.f_avail}
