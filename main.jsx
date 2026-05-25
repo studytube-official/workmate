@@ -35,7 +35,7 @@ const T = {
     badge_active:'Hiring', badge_closed:'Closed',
     post_title:'Post a Job', post_login_title:'Login required to post',
     post_login_desc:'Sign in to post job listings.',
-    f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
+    f_title:'Job Title *', f_company:'Business Name *', f_biz_type:'Type of Business *', f_location:'Location',
     f_salary:'Pay Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
     f_categories:'Job Type (up to 5)',
     pay_hour:'/ hr', pay_day:'/ day', pay_week:'/ week', pay_month:'/ month', pay_casual:'Casual / Negotiable',
@@ -130,7 +130,7 @@ const T = {
     badge_active:'募集中', badge_closed:'募集終了',
     post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
     post_login_desc:'ログインして求人を投稿してください。',
-    f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
+    f_title:'求人タイトル *', f_company:'店名 *', f_biz_type:'業種 *', f_location:'場所',
     f_salary:'給与', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
     f_categories:'職種（最大5つ選択）',
     pay_hour:'時給', pay_day:'日給', pay_week:'週給', pay_month:'月給', pay_casual:'都度払い・応相談',
@@ -225,7 +225,7 @@ const T = {
     badge_active:'채용 중', badge_closed:'마감',
     post_title:'구인 등록', post_login_title:'로그인 후 등록 가능',
     post_login_desc:'Google 계정으로 로그인해 주세요.',
-    f_title:'직종 *', f_company:'가게 이름 *', f_location:'장소',
+    f_title:'직종 *', f_company:'가게 이름 *', f_biz_type:'업종 *', f_location:'장소',
     f_salary:'급여', f_eng:'영어 조건', f_desc:'업무 내용', f_img:'사진',
     f_categories:'직종 (최대 5개)',
     pay_hour:'시간당', pay_day:'일당', pay_week:'주급', pay_month:'월급', pay_casual:'건별 지급 / 협의',
@@ -320,7 +320,7 @@ const T = {
     badge_active:'招聘中', badge_closed:'已截止',
     post_title:'发布招聘', post_login_title:'发布招聘需要登录',
     post_login_desc:'请用Google账号登录。',
-    f_title:'职位名称 *', f_company:'店铺名称 *', f_location:'地点',
+    f_title:'职位名称 *', f_company:'店铺名称 *', f_biz_type:'业种 *', f_location:'地点',
     f_salary:'薪资', f_eng:'英语要求', f_desc:'工作内容', f_img:'图片',
     f_categories:'职种（最多5个）',
     pay_hour:'/ 小时', pay_day:'/ 天', pay_week:'/ 周', pay_month:'/ 月', pay_casual:'临时 / 协商',
@@ -415,7 +415,7 @@ const T = {
     badge_active:'Contratando', badge_closed:'Cerrado',
     post_title:'Publicar Empleo', post_login_title:'Inicia sesión para publicar',
     post_login_desc:'Inicia sesión con Google para publicar empleos.',
-    f_title:'Título del puesto *', f_company:'Nombre del negocio *', f_location:'Ubicación',
+    f_title:'Título del puesto *', f_company:'Nombre del negocio *', f_biz_type:'Tipo de negocio *', f_location:'Ubicación',
     f_salary:'Remuneración', f_eng:'Requisito de inglés', f_desc:'Descripción del trabajo', f_img:'Foto',
     f_categories:'Tipo de empleo (máx. 5)',
     pay_hour:'/ hora', pay_day:'/ día', pay_week:'/ semana', pay_month:'/ mes', pay_casual:'Casual / A convenir',
@@ -510,7 +510,7 @@ const T = {
     badge_active:'Recrutement', badge_closed:'Fermé',
     post_title:'Publier une offre', post_login_title:'Connexion requise',
     post_login_desc:'Connectez-vous avec Google pour publier des offres.',
-    f_title:'Intitulé du poste *', f_company:"Nom de l'établissement *", f_location:'Lieu',
+    f_title:'Intitulé du poste *', f_company:"Nom de l'établissement *", f_biz_type:"Type d'établissement *", f_location:'Lieu',
     f_salary:'Rémunération', f_eng:'Exigence en anglais', f_desc:'Description du poste', f_img:'Photo',
     f_categories:"Type d'emploi (max 5)",
     pay_hour:'/ heure', pay_day:'/ jour', pay_week:'/ semaine', pay_month:'/ mois', pay_casual:'Occasionnel / À négocier',
@@ -605,7 +605,7 @@ const T = {
     badge_active:'Contratando', badge_closed:'Encerrado',
     post_title:'Publicar Vaga', post_login_title:'Login necessário para publicar',
     post_login_desc:'Entre com sua conta Google para publicar vagas.',
-    f_title:'Título da vaga *', f_company:'Nome do negócio *', f_location:'Local',
+    f_title:'Título da vaga *', f_company:'Nome do negócio *', f_biz_type:'Tipo de negócio *', f_location:'Local',
     f_salary:'Remuneração', f_eng:'Requisito de inglês', f_desc:'Descrição da vaga', f_img:'Foto',
     f_categories:'Tipo de vaga (máx. 5)',
     pay_hour:'/ hora', pay_day:'/ dia', pay_week:'/ semana', pay_month:'/ mês', pay_casual:'Eventual / A combinar',
@@ -700,7 +700,7 @@ const T = {
     badge_active:'Đang tuyển', badge_closed:'Đã đóng',
     post_title:'Đăng tuyển dụng', post_login_title:'Cần đăng nhập để đăng tin',
     post_login_desc:'Vui lòng đăng nhập bằng Google.',
-    f_title:'Tên vị trí *', f_company:'Tên cơ sở *', f_location:'Địa điểm',
+    f_title:'Tên vị trí *', f_company:'Tên cơ sở *', f_biz_type:'Loại hình kinh doanh *', f_location:'Địa điểm',
     f_salary:'Mức lương', f_eng:'Yêu cầu tiếng Anh', f_desc:'Mô tả công việc', f_img:'Ảnh',
     f_categories:'Loại việc (tối đa 5)',
     pay_hour:'/ giờ', pay_day:'/ ngày', pay_week:'/ tuần', pay_month:'/ tháng', pay_casual:'Theo ca / Thỏa thuận',
@@ -795,7 +795,7 @@ const T = {
     badge_active:'Membuka Lowongan', badge_closed:'Ditutup',
     post_title:'Pasang Lowongan', post_login_title:'Login diperlukan untuk memasang',
     post_login_desc:'Masuk dengan Google untuk memasang lowongan.',
-    f_title:'Judul Pekerjaan *', f_company:'Nama Usaha *', f_location:'Lokasi',
+    f_title:'Judul Pekerjaan *', f_company:'Nama Usaha *', f_biz_type:'Jenis Usaha *', f_location:'Lokasi',
     f_salary:'Upah', f_eng:'Persyaratan Bahasa Inggris', f_desc:'Deskripsi Pekerjaan', f_img:'Foto',
     f_categories:'Jenis Pekerjaan (maks. 5)',
     pay_hour:'/ jam', pay_day:'/ hari', pay_week:'/ minggu', pay_month:'/ bulan', pay_casual:'Kasual / Negosiasi',
@@ -2143,6 +2143,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
     <article className="job" onClick={() => openJob(job)}>
       <div className="photo">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
       <h2>{job.company || 'No company'}</h2>
+      {job.biz_type && <p className="muted" style={{ fontSize:12 }}>{job.biz_type}</p>}
       <p className="muted">{job.title}</p>
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
@@ -2360,7 +2361,14 @@ function MapPreview({ query, hint }) {
   )
 }
 
-const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
+const BIZ_TYPES = [
+  'Japanese Restaurant','Asian Restaurant','Western Restaurant','Cafe / Coffee Shop',
+  'Bakery','Bar / Pub','Izakaya','Ramen Shop','Sushi Restaurant','Korean BBQ',
+  'Farm / Agriculture','Supermarket / Grocery','Retail / Shop','Hotel','Hostel',
+  'Cleaning','Construction','Office / Admin','Other',
+]
+
+const emptyJob = { title:'', company:'', biz_type:'', location:'', salary:'', english_level:'basic', description:'', image_url:'', categories:'' }
 
 function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJobs, setProfileTab }) {
   const { t } = useT()
@@ -2426,8 +2434,14 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
     <main>
       <h1>{t.post_title}</h1>
       <section className="card form">
-        <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
+        <label>{t.f_biz_type}
+          <select value={job.biz_type} onChange={e => update('biz_type', e.target.value)}>
+            <option value="">—</option>
+            {BIZ_TYPES.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+        </label>
+        <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Shop 5, 123 George St, Sydney CBD" /></label>
         <MapPreview query={job.location} hint={t.map_verify_hint} />
         <label>{t.f_salary}<SalaryInput value={job.salary} onChange={v => update('salary', v)} /></label>
