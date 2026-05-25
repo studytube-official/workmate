@@ -2777,6 +2777,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const [periodFilter, setPeriodFilter] = useState('')
   const [countryFilter, setCountryFilter] = useState('')
   const [langFilter,    setLangFilter]    = useState('')
+  const [selectedStaff, setSelectedStaff] = useState(null)
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -2797,16 +2798,59 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
   }, [])
 
-  // フィルター（英語レベル＋勤務期間）
+  // フィルター
   const minEngRank    = JOB_ENG_MIN_RANK[engFilter] ?? -1
   const minPeriodRank = WORK_PERIOD_RANK[periodFilter] ?? 0
   const filteredStaff = staffList.filter(s => {
+    if (s.role === 'employer') return false
     if (engFilter    && (PROFILE_ENG_RANK[s.english_level] || 0) < minEngRank)    return false
     if (periodFilter && (WORK_PERIOD_RANK[s.visa_expiry]   || 0) < minPeriodRank) return false
     if (countryFilter && s.country !== countryFilter) return false
     if (langFilter && !(s.languages || '').split(',').map(l => l.trim()).includes(langFilter)) return false
     return true
   })
+
+  // ── スタッフ詳細ビュー ──────────────────────
+  if (selectedStaff) {
+    const s = selectedStaff
+    return (
+      <main>
+        <button className="back-btn" onClick={() => setSelectedStaff(null)}>← {t.find_staff}</button>
+        {/* ヘッダー写真 */}
+        <div className="photo" style={{ width:'100%', height:200, borderRadius:16, overflow:'hidden', marginBottom:16, background:'var(--bg2)' }}>
+          {s.avatar_url
+            ? <img src={s.avatar_url} alt={s.display_name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
+            : <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:72 }}>👤</div>}
+        </div>
+        {/* 名前 */}
+        <h2 style={{ margin:'0 0 4px' }}>{s.display_name || 'Anonymous'}</h2>
+        {/* 基本情報 */}
+        <div style={{ display:'flex', flexDirection:'column', gap:6, margin:'12px 0' }}>
+          {s.country      && <p style={{ margin:0 }}>🌏 {s.country}</p>}
+          {s.english_level && <p style={{ margin:0 }}>🗣 {profileEngLabel(s.english_level, t)}</p>}
+          {s.languages    && <p style={{ margin:0 }}>💬 {s.languages}</p>}
+          {s.availability && <p style={{ margin:0 }}>📅 {displayAvailability(s.availability, lang)}</p>}
+          {s.visa_expiry  && <p style={{ margin:0 }}>🗓 {workPeriodLabel(s.visa_expiry, t)}</p>}
+        </div>
+        {/* 希望職種タグ */}
+        {parseCats(s.job_categories).length > 0 && (
+          <div className="tags" style={{ marginBottom:12 }}>
+            {parseCats(s.job_categories).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
+          </div>
+        )}
+        {/* 自己紹介 */}
+        {s.bio && (
+          <div className="card" style={{ marginBottom:16 }}>
+            <p style={{ margin:0, lineHeight:1.7, whiteSpace:'pre-wrap' }}>{s.bio}</p>
+          </div>
+        )}
+        <button className="primary" style={{ width:'100%' }}
+          onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff'); setSelectedStaff(null) }}>
+          {t.contact}
+        </button>
+      </main>
+    )
+  }
 
   return (
     <main>
@@ -2837,23 +2881,22 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       {!loading && !filteredStaff.length && <div className="empty">{t.no_staff}</div>}
       <div className="grid">
         {filteredStaff.map(s => (
-          <article className="job" key={s.id} style={{ cursor:'default' }}>
+          <article className="job" key={s.id} style={{ cursor:'pointer' }} onClick={() => setSelectedStaff(s)}>
             <div className="photo">
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
-            {s.country        && <p className="muted" style={{ fontSize:13 }}>🌏 {s.country}</p>}
-            {s.english_level  && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
-            {s.languages      && <p className="muted" style={{ fontSize:12 }}>💬 {s.languages}</p>}
-            {s.availability   && <p className="muted">📅 {displayAvailability(s.availability, lang)}</p>}
-            {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>🗓 {workPeriodLabel(s.visa_expiry, t)}</p>}
-            {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
+            {s.country       && <p className="muted" style={{ fontSize:13 }}>🌏 {s.country}</p>}
+            {s.english_level && <p className="muted">🗣 {profileEngLabel(s.english_level, t)}</p>}
+            {s.languages     && <p className="muted" style={{ fontSize:12 }}>💬 {s.languages.split(',').slice(0,2).join(', ')}</p>}
+            {s.availability  && <p className="muted">📅 {displayAvailability(s.availability, lang)}</p>}
+            {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,60)}{s.bio.length>60?'…':''}</p>}
             <div className="tags">
               {s.english_level && <span>{profileEngLabel(s.english_level, t)}</span>}
               {s.country && <span>{s.country}</span>}
               {parseCats(s.job_categories).slice(0,2).map(c => <span key={c}>{displayCat(c, lang)}</span>)}
             </div>
-            <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
+            <button className="primary" onClick={e => { e.stopPropagation(); if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
               {t.contact}
             </button>
           </article>
@@ -3326,7 +3369,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
       // バックグラウンドでDB保存
       supabase.from('profiles').upsert(updates).select().single()
         .then(({ data, error }) => {
-          if (error) console.error('profile save error:', error)
+          if (error) { console.error('profile save error:', error); notify('⚠️ Save error: ' + error.message) }
           else if (data) setProfile(data)
         })
     } catch(e) {
