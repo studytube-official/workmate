@@ -1378,6 +1378,7 @@ function App() {
   const [search, setSearch]           = useState('')
   const [area, setArea]               = useState('')
   const [english, setEnglish]         = useState('')
+  const [category, setCategory]       = useState('')
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
@@ -1568,10 +1569,11 @@ function App() {
   const filteredJobs = useMemo(() => jobs.filter(j => {
     if (j.is_active === false) return false
     const tx = [j.title, j.company, j.location, j.salary, j.description].join(' ').toLowerCase()
-    return (!search || tx.includes(search.toLowerCase()))
-        && (!area    || j.location === area)
-        && (!english || normalizeJobEng(j.english_level) === english)
-  }), [jobs, search, area, english])
+    return (!search   || tx.includes(search.toLowerCase()))
+        && (!area     || j.location === area)
+        && (!english  || normalizeJobEng(j.english_level) === english)
+        && (!category || parseCats(j.categories).includes(category))
+  }), [jobs, search, area, english, category])
 
   // ── アクション ─────────────────────────────
   function openJob(job) { setSelectedJob(job); setPage('job') }
@@ -1736,7 +1738,7 @@ function App() {
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
 
       {page === 'home'        && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
-      {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
+      {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} category={category} setCategory={setCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} setProfileTab={setProfileTab} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
@@ -2066,9 +2068,12 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 //  Jobs
 // ═════════════════════════════════════════════
-function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, setPage, isSaved, toggleSave }) {
-  const { t } = useT()
+function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, category, setCategory, setPage, isSaved, toggleSave }) {
+  const { t, lang } = useT()
   const [view, setView] = useState('list')
+
+  // 全カテゴリをフラットに取得（日本語キー）
+  const allCats = JOB_CATEGORIES.flatMap(g => g.items.map(i => i.ja))
   return (
     <main style={ view === 'map' ? { display:'flex', flexDirection:'column', height:'100dvh', overflow:'hidden' } : {} }>
       <header className="sticky">
@@ -2093,6 +2098,25 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
             <option value="basic">{t.eng_basic}</option>
             <option value="intermediate">{t.eng_inter}</option>
           </select>
+        </div>
+        {/* カテゴリタグフィルター */}
+        <div style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:4, marginTop:4, scrollbarWidth:'none' }}>
+          <button onClick={() => setCategory('')} style={{
+            flexShrink:0, padding:'6px 14px', borderRadius:999, fontSize:13, border:'1px solid',
+            background: !category ? 'var(--accent)' : 'var(--bg2)',
+            color: !category ? '#fff' : 'var(--text)',
+            borderColor: !category ? 'var(--accent)' : 'var(--border2)',
+            fontWeight: !category ? 700 : 400,
+          }}>{t.all_areas.replace('All','All') === t.all_areas ? 'All' : 'All'}</button>
+          {allCats.map(cat => (
+            <button key={cat} onClick={() => setCategory(category === cat ? '' : cat)} style={{
+              flexShrink:0, padding:'6px 14px', borderRadius:999, fontSize:13, border:'1px solid',
+              background: category === cat ? 'var(--accent)' : 'var(--bg2)',
+              color: category === cat ? '#fff' : 'var(--text)',
+              borderColor: category === cat ? 'var(--accent)' : 'var(--border2)',
+              fontWeight: category === cat ? 700 : 400,
+            }}>{displayCat(cat, lang)}</button>
+          ))}
         </div>
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
