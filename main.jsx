@@ -2078,9 +2078,29 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, category, setCategory, setPage, isSaved, toggleSave }) {
   const { t, lang } = useT()
   const [view, setView] = useState('list')
+  const [catOpen, setCatOpen] = useState(false)
 
-  // 全カテゴリをフラットに取得（日本語キー）
-  const allCats = JOB_CATEGORIES.flatMap(g => g.items.map(i => i.ja))
+  // 選択中カテゴリのラベル（ボタン表示用）
+  const selectedLabel = category
+    ? (() => {
+        for (const g of JOB_CATEGORIES) {
+          const item = g.items.find(i => i.ja === category)
+          if (item) return lang === 'ja' ? item.ja : item.en
+        }
+        return category
+      })()
+    : null
+
+  // タグボタンの共通スタイル
+  const tagBtn = (active) => ({
+    padding:'5px 12px', borderRadius:999, fontSize:12, border:'1px solid', cursor:'pointer',
+    background: active ? 'var(--accent)' : 'var(--bg2)',
+    color: active ? '#fff' : 'var(--text)',
+    borderColor: active ? 'var(--accent)' : 'var(--border2)',
+    fontWeight: active ? 700 : 400,
+    whiteSpace:'nowrap',
+  })
+
   return (
     <main style={ view === 'map' ? { display:'flex', flexDirection:'column', height:'100dvh', overflow:'hidden' } : {} }>
       <header className="sticky">
@@ -2091,7 +2111,6 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
             <button className={view==='map'?'active':''} onClick={() => setView('map')}>🗺 {t.view_map}</button>
           </div>
         </div>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
         <div className="filters">
           <select value={area} onChange={e => setArea(e.target.value)}>
             <option value="">{t.all_areas}</option>
@@ -2108,25 +2127,45 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
             <option value="fluent">{t.eng_fluent}</option>
           </select>
         </div>
-        {/* カテゴリタグフィルター */}
-        <div style={{ display:'flex', gap:8, overflowX:'auto', paddingBottom:4, marginTop:4, scrollbarWidth:'none' }}>
-          <button onClick={() => setCategory('')} style={{
-            flexShrink:0, padding:'6px 14px', borderRadius:999, fontSize:13, border:'1px solid',
-            background: !category ? 'var(--accent)' : 'var(--bg2)',
-            color: !category ? '#fff' : 'var(--text)',
-            borderColor: !category ? 'var(--accent)' : 'var(--border2)',
-            fontWeight: !category ? 700 : 400,
-          }}>{t.all_areas.replace('All','All') === t.all_areas ? 'All' : 'All'}</button>
-          {allCats.map(cat => (
-            <button key={cat} onClick={() => setCategory(category === cat ? '' : cat)} style={{
-              flexShrink:0, padding:'6px 14px', borderRadius:999, fontSize:13, border:'1px solid',
-              background: category === cat ? 'var(--accent)' : 'var(--bg2)',
-              color: category === cat ? '#fff' : 'var(--text)',
-              borderColor: category === cat ? 'var(--accent)' : 'var(--border2)',
-              fontWeight: category === cat ? 700 : 400,
-            }}>{displayCat(cat, lang)}</button>
-          ))}
+        {/* カテゴリタグフィルター — グループ別 */}
+        <div>
+          {/* トグルボタン */}
+          <button onClick={() => setCatOpen(o => !o)} style={{
+            width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center',
+            padding:'8px 12px', borderRadius:8, border:'1px solid var(--border2)',
+            background: category ? 'rgba(var(--accent-rgb,139,90,43),0.08)' : 'var(--bg2)',
+            color: category ? 'var(--accent)' : 'var(--text)', cursor:'pointer', fontSize:13,
+          }}>
+            <span style={{ fontWeight: category ? 700 : 400 }}>
+              {selectedLabel ? `🏷 ${selectedLabel}` : `🏷 Job Type — All`}
+            </span>
+            <span style={{ fontSize:11, opacity:.6 }}>{catOpen ? '▲' : '▼'}</span>
+          </button>
+          {/* グループ別タグパネル */}
+          {catOpen && (
+            <div style={{ marginTop:8, display:'flex', flexDirection:'column', gap:10, padding:'10px 4px' }}>
+              {/* Allボタン */}
+              <button onClick={() => { setCategory(''); setCatOpen(false) }} style={tagBtn(!category)}>All</button>
+              {JOB_CATEGORIES.map(({ group, en, items }) => (
+                <div key={group}>
+                  <p style={{ margin:'0 0 5px', fontSize:11, fontWeight:700, color:'var(--muted2)', textTransform:'uppercase', letterSpacing:'.06em' }}>
+                    {lang === 'ja' ? group : en}
+                  </p>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                    {items.map(item => (
+                      <button key={item.ja} onClick={() => { setCategory(category === item.ja ? '' : item.ja); setCatOpen(false) }}
+                        style={tagBtn(category === item.ja)}>
+                        {lang === 'ja' ? item.ja : item.en}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+        {/* サーチキーワード（一番下） */}
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} style={{ marginTop:4 }} />
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       {view === 'list'
