@@ -2209,7 +2209,6 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
           </div>
         )}
 
-        <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       {view === 'list'
         ? <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
