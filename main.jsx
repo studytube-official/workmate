@@ -94,7 +94,7 @@ const T = {
     toast_closed:'This job is no longer accepting applications',
     eng_none:'No English needed', eng_few:'A few words OK', eng_basic:'Basic English OK', eng_conv:'Conversational', eng_fluent:'Fluent / Advanced',
     plvl_basic:'Basic', plvl_pre:'Pre-intermediate', plvl_inter:'Intermediate', plvl_upper:'Upper-intermediate', plvl_adv:'Advanced', plvl_native:'Native / Near-native',
-    staff_eng_min:'Min. English', desc_ph:'Job description, hours, requirements...',
+    sal_min:'Min. Pay', staff_eng_min:'Min. English', desc_ph:'Job description, hours, requirements...',
     role_title:'How will you use WorkMate?',
     role_student:'Looking for work', role_student_desc:'Find jobs, apply, and chat with employers',
     role_employer:'Hiring staff', role_employer_desc:'Post job listings and find the right staff',
@@ -188,7 +188,7 @@ const T = {
     toast_closed:'この求人は募集終了です',
     eng_none:'英語ほぼ不要', eng_few:'挨拶程度でOK', eng_basic:'英語初級OK', eng_conv:'日常会話OK', eng_fluent:'ビジネス／上級',
     plvl_basic:'初級', plvl_pre:'初中級', plvl_inter:'中級', plvl_upper:'中上級', plvl_adv:'上級', plvl_native:'ネイティブ同等',
-    staff_eng_min:'英語レベル（最低）', desc_ph:'仕事内容、勤務時間、条件など...',
+    sal_min:'最低時給', staff_eng_min:'英語レベル（最低）', desc_ph:'仕事内容、勤務時間、条件など...',
     role_title:'WorkMateをどのように使いますか？',
     role_student:'仕事を探している', role_student_desc:'求人を探して応募・チャットができます',
     role_employer:'スタッフを採用したい', role_employer_desc:'求人を投稿してスタッフを探せます',
@@ -283,7 +283,7 @@ const T = {
     toast_closed:'이 구인은 마감되었습니다',
     eng_none:'영어 불필요', eng_few:'간단한 영어 OK', eng_basic:'기초 영어 OK', eng_conv:'일상회화 OK', eng_fluent:'비즈니스 / 고급',
     plvl_basic:'기초', plvl_pre:'초중급', plvl_inter:'중급', plvl_upper:'중상급', plvl_adv:'고급', plvl_native:'원어민 수준',
-    staff_eng_min:'최소 영어 수준', desc_ph:'업무 내용, 근무 시간, 조건 등...',
+    sal_min:'최소 시급', staff_eng_min:'최소 영어 수준', desc_ph:'업무 내용, 근무 시간, 조건 등...',
     role_title:'WorkMate를 어떻게 사용하실 건가요?',
     role_student:'일자리를 찾고 있어요', role_student_desc:'구인 검색, 지원, 사업주와 채팅',
     role_employer:'직원을 채용하고 싶어요', role_employer_desc:'구인을 등록하고 적합한 직원을 찾으세요',
@@ -378,7 +378,7 @@ const T = {
     toast_closed:'该职位已停止接受申请',
     eng_none:'无需英语', eng_few:'简单英语OK', eng_basic:'基础英语OK', eng_conv:'日常会话OK', eng_fluent:'商务 / 高级',
     plvl_basic:'基础', plvl_pre:'初中级', plvl_inter:'中级', plvl_upper:'中高级', plvl_adv:'高级', plvl_native:'母语水平',
-    staff_eng_min:'最低英语水平', desc_ph:'工作内容、工作时间、要求等...',
+    sal_min:'最低时薪', staff_eng_min:'最低英语水平', desc_ph:'工作内容、工作时间、要求等...',
     role_title:'您将如何使用WorkMate？',
     role_student:'我在找工作', role_student_desc:'搜索职位、投递简历、与雇主聊天',
     role_employer:'我要招聘员工', role_employer_desc:'发布招聘信息，找到合适的员工',
@@ -473,7 +473,7 @@ const T = {
     toast_closed:'Este empleo ya no acepta postulaciones',
     eng_none:'Sin inglés necesario', eng_few:'Pocas palabras OK', eng_basic:'Inglés básico OK', eng_conv:'Conversacional', eng_fluent:'Fluido / Avanzado',
     plvl_basic:'Básico', plvl_pre:'Preintermedio', plvl_inter:'Intermedio', plvl_upper:'Intermedio alto', plvl_adv:'Avanzado', plvl_native:'Nativo / Casi nativo',
-    staff_eng_min:'Inglés mín.', desc_ph:'Descripción, horarios, requisitos...',
+    sal_min:'Sueldo mín.', staff_eng_min:'Inglés mín.', desc_ph:'Descripción, horarios, requisitos...',
     role_title:'¿Cómo usarás WorkMate?',
     role_student:'Busco trabajo', role_student_desc:'Busca empleos, postúlate y chatea con empleadores',
     role_employer:'Quiero contratar personal', role_employer_desc:'Publica ofertas y encuentra al personal ideal',
@@ -568,7 +568,7 @@ const T = {
     toast_closed:"Cette offre n'accepte plus de candidatures",
     eng_none:"Pas d'anglais requis", eng_few:'Quelques mots OK', eng_basic:'Anglais de base OK', eng_conv:'Conversationnel', eng_fluent:'Courant / Avancé',
     plvl_basic:'Débutant', plvl_pre:'Pré-intermédiaire', plvl_inter:'Intermédiaire', plvl_upper:'Intermédiaire avancé', plvl_adv:'Avancé', plvl_native:'Natif / Quasi-natif',
-    staff_eng_min:'Anglais min.', desc_ph:'Description, horaires, conditions...',
+    sal_min:'Salaire min.', staff_eng_min:'Anglais min.', desc_ph:'Description, horaires, conditions...',
     role_title:'Comment allez-vous utiliser WorkMate ?',
     role_student:'Je cherche un emploi', role_student_desc:'Trouvez des emplois, postulez et discutez avec les employeurs',
     role_employer:'Je recrute du personnel', role_employer_desc:'Publiez des offres et trouvez le personnel idéal',
@@ -663,7 +663,7 @@ const T = {
     toast_closed:'Esta vaga não aceita mais candidaturas',
     eng_none:'Sem inglês necessário', eng_few:'Poucas palavras OK', eng_basic:'Inglês básico OK', eng_conv:'Conversacional', eng_fluent:'Fluente / Avançado',
     plvl_basic:'Básico', plvl_pre:'Pré-intermediário', plvl_inter:'Intermediário', plvl_upper:'Intermediário avançado', plvl_adv:'Avançado', plvl_native:'Nativo / Quase nativo',
-    staff_eng_min:'Inglês mín.', desc_ph:'Descrição, horários, requisitos...',
+    sal_min:'Sal. mínimo', staff_eng_min:'Inglês mín.', desc_ph:'Descrição, horários, requisitos...',
     role_title:'Como você vai usar o WorkMate?',
     role_student:'Estou procurando emprego', role_student_desc:'Encontre vagas, candidate-se e converse com empregadores',
     role_employer:'Quero contratar funcionários', role_employer_desc:'Publique vagas e encontre os funcionários certos',
@@ -758,7 +758,7 @@ const T = {
     toast_closed:'Tin tuyển dụng này đã đóng',
     eng_none:'Không cần tiếng Anh', eng_few:'Vài từ cũng OK', eng_basic:'Tiếng Anh cơ bản OK', eng_conv:'Giao tiếp thông thường', eng_fluent:'Thành thạo / Nâng cao',
     plvl_basic:'Cơ bản', plvl_pre:'Sơ trung cấp', plvl_inter:'Trung cấp', plvl_upper:'Trung cao cấp', plvl_adv:'Nâng cao', plvl_native:'Bản ngữ / Gần bản ngữ',
-    staff_eng_min:'Tiếng Anh tối thiểu', desc_ph:'Mô tả công việc, giờ làm, yêu cầu...',
+    sal_min:'Lương tối thiểu', staff_eng_min:'Tiếng Anh tối thiểu', desc_ph:'Mô tả công việc, giờ làm, yêu cầu...',
     role_title:'Bạn sẽ dùng WorkMate như thế nào?',
     role_student:'Tôi đang tìm việc', role_student_desc:'Tìm việc, ứng tuyển và chat với nhà tuyển dụng',
     role_employer:'Tôi muốn tuyển dụng nhân viên', role_employer_desc:'Đăng tin tuyển dụng và tìm nhân viên phù hợp',
@@ -853,7 +853,7 @@ const T = {
     toast_closed:'Lowongan ini sudah tidak menerima lamaran',
     eng_none:'Tanpa bahasa Inggris', eng_few:'Beberapa kata OK', eng_basic:'Bahasa Inggris dasar OK', eng_conv:'Percakapan sehari-hari', eng_fluent:'Lancar / Mahir',
     plvl_basic:'Dasar', plvl_pre:'Pra-menengah', plvl_inter:'Menengah', plvl_upper:'Menengah atas', plvl_adv:'Mahir', plvl_native:'Seperti penutur asli',
-    staff_eng_min:'B. Inggris min.', desc_ph:'Deskripsi pekerjaan, jam kerja, syarat...',
+    sal_min:'Gaji min.', staff_eng_min:'B. Inggris min.', desc_ph:'Deskripsi pekerjaan, jam kerja, syarat...',
     role_title:'Bagaimana Anda akan menggunakan WorkMate?',
     role_student:'Saya mencari pekerjaan', role_student_desc:'Cari lowongan, lamar, dan chat dengan pemberi kerja',
     role_employer:'Saya ingin merekrut staf', role_employer_desc:'Pasang lowongan dan temukan staf yang tepat',
@@ -1386,6 +1386,7 @@ function App() {
   const [area, setArea]               = useState('')
   const [english, setEnglish]         = useState('')
   const [category, setCategory]       = useState('')
+  const [minSalary, setMinSalary]     = useState('')
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
@@ -1576,11 +1577,21 @@ function App() {
   const filteredJobs = useMemo(() => jobs.filter(j => {
     if (j.is_active === false) return false
     const tx = [j.title, j.company, j.location, j.salary, j.description].join(' ').toLowerCase()
-    return (!search   || tx.includes(search.toLowerCase()))
-        && (!area     || j.location === area)
-        && (!english  || normalizeJobEng(j.english_level) === english)
-        && (!category || parseCats(j.categories).includes(category))
-  }), [jobs, search, area, english, category])
+    if (search   && !tx.includes(search.toLowerCase())) return false
+    if (area     && j.location !== area) return false
+    if (english  && normalizeJobEng(j.english_level) !== english) return false
+    if (category && !parseCats(j.categories).includes(category)) return false
+    if (minSalary) {
+      const { amount, period } = parseSalary(j.salary || '')
+      if (amount && period !== 'casual') {
+        const num = parseFloat(amount)
+        const multipliers = { hour:1, day:1/8, week:1/38, month:1/160 }
+        const hourly = num * (multipliers[period] || 1)
+        if (hourly < parseFloat(minSalary)) return false
+      }
+    }
+    return true
+  }), [jobs, search, area, english, category, minSalary])
 
   // ── アクション ─────────────────────────────
   function openJob(job) { setSelectedJob(job); setPage('job') }
@@ -1745,7 +1756,7 @@ function App() {
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
 
       {page === 'home'        && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
-      {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} category={category} setCategory={setCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
+      {page === 'jobs'        && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} category={category} setCategory={setCategory} minSalary={minSalary} setMinSalary={setMinSalary} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'        && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} setPostedJobs={setPostedJobs} setProfileTab={setProfileTab} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'       && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={profile?.role === 'employer'} />}
@@ -2075,13 +2086,17 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 //  Jobs
 // ═════════════════════════════════════════════
-function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, category, setCategory, setPage, isSaved, toggleSave }) {
+function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, category, setCategory, minSalary, setMinSalary, setPage, isSaved, toggleSave }) {
   const { t, lang } = useT()
   const [view, setView] = useState('list')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [catOpen, setCatOpen] = useState(false)
 
+  // アクティブなフィルター数
+  const activeFilterCount = [area, english, minSalary, category, search].filter(Boolean).length
+
   // 選択中カテゴリのラベル（ボタン表示用）
-  const selectedLabel = category
+  const catLabel = category
     ? (() => {
         for (const g of JOB_CATEGORIES) {
           const item = g.items.find(i => i.ja === category)
@@ -2101,9 +2116,18 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
     whiteSpace:'nowrap',
   })
 
+  // フィルタートグルボタンスタイル
+  const toggleBtnStyle = (active) => ({
+    width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center',
+    padding:'9px 13px', borderRadius:8, border:'1px solid var(--border2)',
+    background: active ? 'rgba(139,90,43,0.08)' : 'var(--bg2)',
+    color: active ? 'var(--accent)' : 'var(--text)', cursor:'pointer', fontSize:13,
+  })
+
   return (
     <main style={ view === 'map' ? { display:'flex', flexDirection:'column', height:'100dvh', overflow:'hidden' } : {} }>
       <header className="sticky">
+        {/* Row 1: Title + view toggle */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:8 }}>
           <h1 style={{ margin:0 }}>{t.search_jobs}</h1>
           <div className="view-toggle">
@@ -2111,61 +2135,80 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
             <button className={view==='map'?'active':''} onClick={() => setView('map')}>🗺 {t.view_map}</button>
           </div>
         </div>
-        <div className="filters">
-          <select value={area} onChange={e => setArea(e.target.value)}>
-            <option value="">{t.all_areas}</option>
-            <option>Sydney CBD</option><option>Bondi</option><option>Chatswood</option>
-            <option>Parramatta</option><option>Surry Hills</option><option>Newtown</option>
-            <option>North Sydney</option><option>Hurstville</option><option>Cabramatta</option>
-          </select>
-          <select value={english} onChange={e => setEnglish(e.target.value)}>
-            <option value="">{t.eng_cond}</option>
-            <option value="none">{t.eng_none}</option>
-            <option value="few">{t.eng_few}</option>
-            <option value="basic">{t.eng_basic}</option>
-            <option value="conv">{t.eng_conv}</option>
-            <option value="fluent">{t.eng_fluent}</option>
-          </select>
-        </div>
-        {/* カテゴリタグフィルター — グループ別 */}
-        <div>
-          {/* トグルボタン */}
-          <button onClick={() => setCatOpen(o => !o)} style={{
-            width:'100%', display:'flex', justifyContent:'space-between', alignItems:'center',
-            padding:'8px 12px', borderRadius:8, border:'1px solid var(--border2)',
-            background: category ? 'rgba(var(--accent-rgb,139,90,43),0.08)' : 'var(--bg2)',
-            color: category ? 'var(--accent)' : 'var(--text)', cursor:'pointer', fontSize:13,
-          }}>
-            <span style={{ fontWeight: category ? 700 : 400 }}>
-              {selectedLabel ? `🏷 ${selectedLabel}` : `🏷 Job Type — All`}
-            </span>
-            <span style={{ fontSize:11, opacity:.6 }}>{catOpen ? '▲' : '▼'}</span>
-          </button>
-          {/* グループ別タグパネル */}
-          {catOpen && (
-            <div style={{ marginTop:8, display:'flex', flexDirection:'column', gap:10, padding:'10px 4px' }}>
-              {/* Allボタン */}
-              <button onClick={() => { setCategory(''); setCatOpen(false) }} style={tagBtn(!category)}>All</button>
-              {JOB_CATEGORIES.map(({ group, en, items }) => (
-                <div key={group}>
-                  <p style={{ margin:'0 0 5px', fontSize:11, fontWeight:700, color:'var(--muted2)', textTransform:'uppercase', letterSpacing:'.06em' }}>
-                    {lang === 'ja' ? group : en}
-                  </p>
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                    {items.map(item => (
-                      <button key={item.ja} onClick={() => { setCategory(category === item.ja ? '' : item.ja); setCatOpen(false) }}
-                        style={tagBtn(category === item.ja)}>
-                        {lang === 'ja' ? item.ja : item.en}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+
+        {/* フィルター全体トグル */}
+        <button onClick={() => setFiltersOpen(o => !o)} style={toggleBtnStyle(activeFilterCount > 0)}>
+          <span style={{ fontWeight: activeFilterCount > 0 ? 700 : 400 }}>
+            🔍 {t.keyword_ph}{activeFilterCount > 0 ? `  ·  ${activeFilterCount} filter${activeFilterCount > 1 ? 's' : ''} active` : ''}
+          </span>
+          <span style={{ fontSize:11, opacity:.6 }}>{filtersOpen ? '▲' : '▼'}</span>
+        </button>
+
+        {/* 折りたたみフィルターパネル */}
+        {filtersOpen && (
+          <div style={{ display:'flex', flexDirection:'column', gap:8, paddingTop:2 }}>
+            {/* エリア + 英語レベル */}
+            <div className="filters">
+              <select value={area} onChange={e => setArea(e.target.value)}>
+                <option value="">{t.all_areas}</option>
+                <option>Sydney CBD</option><option>Bondi</option><option>Chatswood</option>
+                <option>Parramatta</option><option>Surry Hills</option><option>Newtown</option>
+                <option>North Sydney</option><option>Hurstville</option><option>Cabramatta</option>
+              </select>
+              <select value={english} onChange={e => setEnglish(e.target.value)}>
+                <option value="">{t.eng_cond}</option>
+                <option value="none">{t.eng_none}</option>
+                <option value="few">{t.eng_few}</option>
+                <option value="basic">{t.eng_basic}</option>
+                <option value="conv">{t.eng_conv}</option>
+                <option value="fluent">{t.eng_fluent}</option>
+              </select>
             </div>
-          )}
-        </div>
-        {/* サーチキーワード（一番下） */}
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} style={{ marginTop:4 }} />
+
+            {/* 最低時給フィルター */}
+            <select value={minSalary} onChange={e => setMinSalary(e.target.value)}>
+              <option value="">{t.sal_min} — All</option>
+              <option value="20">$20+ / hr</option>
+              <option value="25">$25+ / hr</option>
+              <option value="30">$30+ / hr</option>
+              <option value="35">$35+ / hr</option>
+            </select>
+
+            {/* カテゴリタグフィルター — グループ別 */}
+            <div>
+              <button onClick={() => setCatOpen(o => !o)} style={toggleBtnStyle(!!category)}>
+                <span style={{ fontWeight: category ? 700 : 400 }}>
+                  {catLabel ? `🏷 ${catLabel}` : `🏷 Job Type — All`}
+                </span>
+                <span style={{ fontSize:11, opacity:.6 }}>{catOpen ? '▲' : '▼'}</span>
+              </button>
+              {catOpen && (
+                <div style={{ marginTop:8, display:'flex', flexDirection:'column', gap:10, padding:'8px 4px' }}>
+                  <button onClick={() => { setCategory(''); setCatOpen(false) }} style={tagBtn(!category)}>All</button>
+                  {JOB_CATEGORIES.map(({ group, en, items }) => (
+                    <div key={group}>
+                      <p style={{ margin:'0 0 5px', fontSize:11, fontWeight:700, color:'var(--muted2)', textTransform:'uppercase', letterSpacing:'.06em' }}>
+                        {lang === 'ja' ? group : en}
+                      </p>
+                      <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                        {items.map(item => (
+                          <button key={item.ja} onClick={() => { setCategory(category === item.ja ? '' : item.ja); setCatOpen(false) }}
+                            style={tagBtn(category === item.ja)}>
+                            {lang === 'ja' ? item.ja : item.en}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* サーチキーワード（一番下） */}
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
+          </div>
+        )}
+
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       {view === 'list'
