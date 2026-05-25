@@ -60,7 +60,7 @@ const T = {
     photo_privacy:'🔒 Your profile and photo are only visible to employers — not to other users.',
     f_name:'Name', f_eng_level:'English Level', f_avail:'Availability',
     f_job_categories:'Preferred Job Types (up to 5)',
-    f_visa:'Visa Expiry', f_bio:'Bio',
+    f_visa:'Visa Expiry', f_bio:'Bio', f_country:'Country of Origin', f_languages:'Languages Spoken (other than English)',
     no_applied:'No applications yet.', no_saved_jobs:'No saved jobs yet.',
     no_posted:'No job listings yet.', post_first:'Post Your First Job',
     apps_count:'applications', view_apps:'▼ View Applicants', close_apps:'▲ Close',
@@ -153,7 +153,7 @@ const T = {
     change_photo:'📷 写真を変更', photo_pending:'保存するまで反映されません',
     photo_tip:'写真を追加すると採用率がアップします！',
     photo_privacy:'🔒 プロフィールと写真は求人を投稿した店側のみに表示されます。他のユーザーには見えません。',
-    f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日・時間帯', f_visa:'ビザ期限', f_bio:'自己紹介',
+    f_name:'名前', f_eng_level:'英語レベル', f_avail:'勤務可能日・時間帯', f_visa:'ビザ期限', f_bio:'自己紹介', f_country:'出身国', f_languages:'話せる言語（英語以外）',
     f_job_categories:'希望職種（最大5つ）',
     no_applied:'まだ応募した求人はありません。', no_saved_jobs:'まだ保存した求人はありません。',
     no_posted:'まだ求人を投稿していません。', post_first:'求人を投稿する',
@@ -248,7 +248,7 @@ const T = {
     change_photo:'📷 사진 변경', photo_pending:'저장 후 반영됩니다',
     photo_tip:'사진을 추가하면 채용 확률이 높아집니다!',
     photo_privacy:'🔒 프로필과 사진은 구인을 등록한 사업주에게만 공개됩니다. 다른 사용자에게는 보이지 않습니다.',
-    f_name:'이름', f_eng_level:'영어 수준', f_avail:'근무 가능 시간', f_visa:'비자 만료일', f_bio:'자기소개',
+    f_name:'이름', f_eng_level:'영어 수준', f_avail:'근무 가능 시간', f_visa:'비자 만료일', f_bio:'자기소개', f_country:'출신 국가', f_languages:'구사 가능 언어 (영어 제외)',
     f_job_categories:'희망 직종 (최대 5개)',
     no_applied:'아직 지원한 구인이 없습니다.', no_saved_jobs:'아직 저장한 구인이 없습니다.',
     no_posted:'아직 등록한 구인이 없습니다.', post_first:'첫 구인 등록하기',
@@ -343,7 +343,7 @@ const T = {
     change_photo:'📷 更换头像', photo_pending:'保存后生效',
     photo_tip:'添加照片能让雇主更了解你，提高录用机会！',
     photo_privacy:'🔒 你的资料和照片仅对发布招聘的雇主可见，其他用户无法查看。',
-    f_name:'姓名', f_eng_level:'英语水平', f_avail:'可工作时间', f_visa:'签证到期日', f_bio:'个人简介',
+    f_name:'姓名', f_eng_level:'英语水平', f_avail:'可工作时间', f_visa:'签证到期日', f_bio:'个人简介', f_country:'国籍', f_languages:'会说的语言（除英语外）',
     f_job_categories:'期望职种（最多5个）',
     no_applied:'还没有申请记录。', no_saved_jobs:'还没有收藏的职位。',
     no_posted:'还没有发布的招聘。', post_first:'发布第一个招聘',
@@ -438,7 +438,7 @@ const T = {
     change_photo:'📷 Cambiar foto', photo_pending:'Guarda para aplicar cambios',
     photo_tip:'¡Agregar una foto aumenta tus chances de ser contratado!',
     photo_privacy:'🔒 Tu perfil y foto solo son visibles para los empleadores, no para otros usuarios.',
-    f_name:'Nombre', f_eng_level:'Nivel de inglés', f_avail:'Disponibilidad', f_visa:'Vencimiento de visa', f_bio:'Sobre mí',
+    f_name:'Nombre', f_eng_level:'Nivel de inglés', f_avail:'Disponibilidad', f_visa:'Vencimiento de visa', f_bio:'Sobre mí', f_country:'País de origen', f_languages:'Idiomas hablados (aparte del inglés)',
     f_job_categories:'Tipos de empleo preferidos (máx. 5)',
     no_applied:'Aún no te has postulado.', no_saved_jobs:'Aún no tienes empleos guardados.',
     no_posted:'Aún no has publicado empleos.', post_first:'Publicar primer empleo',
@@ -533,7 +533,7 @@ const T = {
     change_photo:'📷 Changer la photo', photo_pending:'Sauvegardez pour appliquer les changements',
     photo_tip:"Ajouter une photo augmente vos chances d'être recruté !",
     photo_privacy:'🔒 Votre profil et votre photo ne sont visibles que par les employeurs, pas par les autres utilisateurs.',
-    f_name:'Nom', f_eng_level:"Niveau d'anglais", f_avail:'Disponibilités', f_visa:'Expiration du visa', f_bio:'À propos de moi',
+    f_name:'Nom', f_eng_level:"Niveau d'anglais", f_avail:'Disponibilités', f_visa:'Expiration du visa', f_bio:'À propos de moi', f_country:"Pays d'origine", f_languages:'Langues parlées (hors anglais)',
     f_job_categories:"Types d'emploi souhaités (max 5)",
     no_applied:'Aucune candidature pour le moment.', no_saved_jobs:'Aucune offre sauvegardée.',
     no_posted:'Aucune offre publiée.', post_first:'Publier ma première offre',
@@ -628,7 +628,7 @@ const T = {
     change_photo:'📷 Mudar Foto', photo_pending:'Salve para aplicar as mudanças',
     photo_tip:'Adicionar uma foto aumenta suas chances de ser contratado!',
     photo_privacy:'🔒 Seu perfil e foto são visíveis apenas para empregadores, não para outros usuários.',
-    f_name:'Nome', f_eng_level:'Nível de inglês', f_avail:'Disponibilidade', f_visa:'Vencimento do visto', f_bio:'Sobre mim',
+    f_name:'Nome', f_eng_level:'Nível de inglês', f_avail:'Disponibilidade', f_visa:'Vencimento do visto', f_bio:'Sobre mim', f_country:'País de origem', f_languages:'Idiomas falados (além do inglês)',
     f_job_categories:'Tipos de vaga preferidos (máx. 5)',
     no_applied:'Ainda não se candidatou.', no_saved_jobs:'Ainda não há vagas salvas.',
     no_posted:'Ainda não publicou vagas.', post_first:'Publicar Primeira Vaga',
@@ -723,7 +723,7 @@ const T = {
     change_photo:'📷 Đổi ảnh', photo_pending:'Lưu để áp dụng thay đổi',
     photo_tip:'Thêm ảnh giúp tăng cơ hội được tuyển dụng!',
     photo_privacy:'🔒 Hồ sơ và ảnh của bạn chỉ hiển thị với nhà tuyển dụng, không hiển thị với người dùng khác.',
-    f_name:'Họ tên', f_eng_level:'Trình độ tiếng Anh', f_avail:'Thời gian có thể làm', f_visa:'Hạn visa', f_bio:'Giới thiệu bản thân',
+    f_name:'Họ tên', f_eng_level:'Trình độ tiếng Anh', f_avail:'Thời gian có thể làm', f_visa:'Hạn visa', f_bio:'Giới thiệu bản thân', f_country:'Quốc gia', f_languages:'Ngôn ngữ khác (ngoài tiếng Anh)',
     f_job_categories:'Loại việc mong muốn (tối đa 5)',
     no_applied:'Chưa có đơn ứng tuyển.', no_saved_jobs:'Chưa có việc làm đã lưu.',
     no_posted:'Chưa đăng tin tuyển dụng.', post_first:'Đăng tin đầu tiên',
@@ -818,7 +818,7 @@ const T = {
     change_photo:'📷 Ganti Foto', photo_pending:'Simpan untuk menerapkan perubahan',
     photo_tip:'Menambahkan foto meningkatkan peluang Anda diterima kerja!',
     photo_privacy:'🔒 Profil dan foto Anda hanya terlihat oleh pengusaha, bukan pengguna lain.',
-    f_name:'Nama', f_eng_level:'Tingkat Bahasa Inggris', f_avail:'Ketersediaan', f_visa:'Kedaluwarsa Visa', f_bio:'Tentang Saya',
+    f_name:'Nama', f_eng_level:'Tingkat Bahasa Inggris', f_avail:'Ketersediaan', f_visa:'Kedaluwarsa Visa', f_bio:'Tentang Saya', f_country:'Negara Asal', f_languages:'Bahasa yang dikuasai (selain Inggris)',
     f_job_categories:'Jenis Pekerjaan Diinginkan (maks. 5)',
     no_applied:'Belum ada lamaran.', no_saved_jobs:'Belum ada lowongan tersimpan.',
     no_posted:'Belum ada lowongan yang dipasang.', post_first:'Pasang Lowongan Pertama',
@@ -1193,6 +1193,47 @@ JOB_CATEGORIES.forEach(g => g.items.forEach(item => { CAT_JA_TO_EN[item.ja] = it
 function displayCat(jaName, lang) {
   if (lang === 'ja') return jaName
   return CAT_JA_TO_EN[jaName] || jaName
+}
+
+// ── 出身国リスト ──────────────────────────────
+const COUNTRIES = [
+  'Japan','South Korea','China','Taiwan','Hong Kong','Vietnam','Indonesia',
+  'Thailand','Philippines','Malaysia','Singapore','India','Nepal','Myanmar',
+  'France','Germany','Spain','Italy','Portugal','Ireland','UK','Netherlands',
+  'Sweden','Norway','Denmark','Finland','Switzerland','Austria','Belgium',
+  'Canada','USA','Mexico','Brazil','Argentina','Colombia','Chile',
+  'New Zealand','South Africa','Other'
+]
+
+// ── 言語ピッカー ──────────────────────────────
+const LANGUAGES_LIST = [
+  'Japanese','Korean','Mandarin Chinese','Cantonese','Vietnamese','Indonesian',
+  'Thai','Tagalog','Hindi','Nepali','Burmese',
+  'French','German','Spanish','Italian','Portuguese','Dutch','Swedish',
+  'Norwegian','Danish','Finnish',
+]
+
+function LanguagePicker({ value, onChange }) {
+  const selected = value ? value.split(',').map(s => s.trim()).filter(Boolean) : []
+  function toggle(lang) {
+    const next = selected.includes(lang)
+      ? selected.filter(l => l !== lang)
+      : [...selected, lang]
+    onChange(next.join(','))
+  }
+  return (
+    <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginTop:6 }}>
+      {LANGUAGES_LIST.map(lang => (
+        <button key={lang} type="button" onClick={() => toggle(lang)} style={{
+          padding:'6px 14px', borderRadius:999, fontSize:13, border:'1px solid',
+          background: selected.includes(lang) ? 'var(--accent)' : 'var(--bg2)',
+          color: selected.includes(lang) ? '#fff' : 'var(--text)',
+          borderColor: selected.includes(lang) ? 'var(--accent)' : 'var(--border2)',
+          fontWeight: selected.includes(lang) ? 700 : 400,
+        }}>{lang}</button>
+      ))}
+    </div>
+  )
 }
 
 // CategoryPicker コンポーネント
@@ -3055,7 +3096,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob, initialTab, setProfileTab }) {
   const { t, lang } = useT()
   const isEmployer = profile?.role === 'employer'
-  const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
+  const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'', country:'', languages:'' })
   const [busy, setBusy]       = useState(false)
   const [tab,  setTab]        = useState(initialTab || 'profile')
   const [avatarFile, setAvatarFile]     = useState(null)
@@ -3089,6 +3130,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
         bio:             profile.bio             || '',
         visa_expiry:     profile.visa_expiry     || '',
         job_categories:  profile.job_categories  || '',
+        country:         profile.country         || '',
+        languages:       profile.languages       || '',
       })
       // 求人を持つユーザーはreceivedタブをデフォルトに（initialTabが指定されていない場合）
       if (!initialTab && (profile.role === 'employer')) setTab('received')
@@ -3262,6 +3305,15 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
               <option value="">—</option>
               {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)}</option>)}
             </select>
+          </label>
+          <label>{t.f_country}
+            <select value={form.country} onChange={e => upd('country', e.target.value)}>
+              <option value="">—</option>
+              {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </label>
+          <label style={{ display:'block' }}>{t.f_languages}
+            <LanguagePicker value={form.languages} onChange={v => upd('languages', v)} />
           </label>
           <label>{t.f_bio}<textarea value={form.bio} onChange={e => upd('bio', e.target.value)} placeholder="I have 2 years restaurant experience in Japan..." /></label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
