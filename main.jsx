@@ -1084,6 +1084,19 @@ function JobMap({ jobs, openJob }) {
 
 // ─── 職種マスタ ───────────────────────────────
 const JOB_CATEGORIES = [
+  { group:'よく使われる職種', en:'Common Job Types',
+    items:[
+      {ja:'レストラン',         en:'Restaurant'},
+      {ja:'キッチン・厨房',     en:'Kitchen'},
+      {ja:'カフェ',             en:'Café'},
+      {ja:'バー',               en:'Bar'},
+      {ja:'販売・小売',         en:'Retail'},
+      {ja:'ホテル',             en:'Hotel'},
+      {ja:'オフィス・事務',     en:'Office'},
+      {ja:'農業・ファーム',     en:'Farm Work'},
+      {ja:'倉庫・物流',         en:'Warehouse / Logistics'},
+      {ja:'その他・未定',       en:'Other / Undecided'},
+    ]},
   { group:'FOH（ホール・接客）', en:'FOH – Front of House',
     items:[
       {ja:'ウェイター・ウェイトレス', en:'Waiter / Waitress'},
