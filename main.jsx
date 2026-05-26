@@ -1189,6 +1189,20 @@ const JOB_CATEGORIES = [
     ]},
 ]
 
+// よく使われる職種のクイックタグ（Staffフィルター上部に表示）
+const QUICK_CATS = [
+  {ja:'ウェイター・ウェイトレス', en:'Waiter / Waitress'},
+  {ja:'フロアスタッフ',           en:'Floor Staff'},
+  {ja:'キッチンハンド',           en:'Kitchen Hand'},
+  {ja:'バリスタ',                 en:'Barista'},
+  {ja:'ライン・コック',           en:'Line Cook'},
+  {ja:'カフェ・コーヒーショップ', en:'Café'},
+  {ja:'バー・パブ',               en:'Bar / Pub'},
+  {ja:'居酒屋・和食レストラン',   en:'Japanese Restaurant'},
+  {ja:'コンビニ・スーパー',       en:'Convenience Store'},
+  {ja:'倉庫・ピッキング',         en:'Warehouse'},
+]
+
 // カンマ区切り文字列 ↔ 配列
 const parseCats  = s => s ? s.split(',').map(x => x.trim()).filter(Boolean) : []
 const formatCats = a => a.join(',')
@@ -2773,11 +2787,13 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
-  const [engFilter,    setEngFilter]    = useState('')
-  const [periodFilter, setPeriodFilter] = useState('')
-  const [countryFilter, setCountryFilter] = useState('')
-  const [langFilter,    setLangFilter]    = useState('')
-  const [selectedStaff, setSelectedStaff] = useState(null)
+  const [engFilter,      setEngFilter]      = useState('')
+  const [periodFilter,   setPeriodFilter]   = useState('')
+  const [countryFilter,  setCountryFilter]  = useState('')
+  const [langFilter,     setLangFilter]     = useState('')
+  const [catFilter,      setCatFilter]      = useState('')
+  const [catPanelOpen,   setCatPanelOpen]   = useState(false)
+  const [selectedStaff,  setSelectedStaff]  = useState(null)
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -2807,6 +2823,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
     if (periodFilter && (WORK_PERIOD_RANK[s.visa_expiry]   || 0) < minPeriodRank) return false
     if (countryFilter && s.country !== countryFilter) return false
     if (langFilter && !(s.languages || '').split(',').map(l => l.trim()).includes(langFilter)) return false
+    if (catFilter && !parseCats(s.job_categories).includes(catFilter)) return false
     return true
   })
 
@@ -2857,25 +2874,80 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
       <h1>{t.find_staff}</h1>
       <p className="muted" style={{ marginBottom:12 }}>{t.staff_desc}</p>
       {/* フィルター */}
-      <div style={{ marginBottom:16, display:'flex', gap:8, flexWrap:'wrap' }}>
-        <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:160 }}>
-          <option value="">{t.staff_eng_min} — {t.eng_cond}</option>
-          <option value="basic">{t.plvl_basic} +</option>
-          <option value="conv">{t.plvl_pre} +</option>
-          <option value="fluent">{t.plvl_upper} +</option>
-        </select>
-        <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:160 }}>
-          <option value="">{t.work_period_filter} — {t.f_work_period}</option>
-          {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)} +</option>)}
-        </select>
-        <select value={countryFilter} onChange={e => setCountryFilter(e.target.value)} style={{ minWidth:160 }}>
-          <option value="">🌏 {t.f_country}</option>
-          {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <select value={langFilter} onChange={e => setLangFilter(e.target.value)} style={{ minWidth:160 }}>
-          <option value="">🗣 {t.f_languages}</option>
-          {LANGUAGES_LIST.map(l => <option key={l} value={l}>{l}</option>)}
-        </select>
+      <div style={{ marginBottom:16, display:'flex', flexDirection:'column', gap:10 }}>
+        {/* 職種タグフィルター */}
+        <div>
+          {/* クイックタグ */}
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:6 }}>
+            <button onClick={() => setCatFilter('')} style={{
+              padding:'5px 12px', borderRadius:999, fontSize:12, border:'1px solid', cursor:'pointer',
+              background: !catFilter ? 'var(--accent)' : 'var(--bg2)',
+              color: !catFilter ? '#fff' : 'var(--text)',
+              borderColor: !catFilter ? 'var(--accent)' : 'var(--border2)',
+              fontWeight: !catFilter ? 700 : 400,
+            }}>All</button>
+            {QUICK_CATS.map(item => (
+              <button key={item.ja} onClick={() => setCatFilter(catFilter === item.ja ? '' : item.ja)} style={{
+                padding:'5px 12px', borderRadius:999, fontSize:12, border:'1px solid', cursor:'pointer',
+                background: catFilter === item.ja ? 'var(--accent)' : 'var(--bg2)',
+                color: catFilter === item.ja ? '#fff' : 'var(--text)',
+                borderColor: catFilter === item.ja ? 'var(--accent)' : 'var(--border2)',
+                fontWeight: catFilter === item.ja ? 700 : 400,
+              }}>{lang === 'ja' ? item.ja : item.en}</button>
+            ))}
+          </div>
+          {/* 詳細グループ（折りたたみ） */}
+          <button onClick={() => setCatPanelOpen(o => !o)} style={{
+            display:'flex', alignItems:'center', gap:6, background:'none', border:'none',
+            color:'var(--muted2)', fontSize:12, cursor:'pointer', padding:'2px 0',
+          }}>
+            {catPanelOpen ? '▲' : '▼'} {lang === 'ja' ? 'すべての職種' : 'All categories'}
+          </button>
+          {catPanelOpen && (
+            <div style={{ marginTop:8, display:'flex', flexDirection:'column', gap:10 }}>
+              {JOB_CATEGORIES.map(({ group, en, items }) => (
+                <div key={group}>
+                  <p style={{ margin:'0 0 5px', fontSize:11, fontWeight:700, color:'var(--muted2)', textTransform:'uppercase', letterSpacing:'.06em' }}>
+                    {lang === 'ja' ? group : en}
+                  </p>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                    {items.map(item => (
+                      <button key={item.ja} onClick={() => { setCatFilter(catFilter === item.ja ? '' : item.ja); setCatPanelOpen(false) }} style={{
+                        padding:'5px 12px', borderRadius:999, fontSize:12, border:'1px solid', cursor:'pointer',
+                        background: catFilter === item.ja ? 'var(--accent)' : 'var(--bg2)',
+                        color: catFilter === item.ja ? '#fff' : 'var(--text)',
+                        borderColor: catFilter === item.ja ? 'var(--accent)' : 'var(--border2)',
+                        fontWeight: catFilter === item.ja ? 700 : 400,
+                        whiteSpace:'nowrap',
+                      }}>{lang === 'ja' ? item.ja : item.en}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* その他フィルター */}
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+          <select value={engFilter} onChange={e => setEngFilter(e.target.value)} style={{ minWidth:140 }}>
+            <option value="">{t.staff_eng_min} — All</option>
+            <option value="basic">{t.plvl_basic} +</option>
+            <option value="conv">{t.plvl_pre} +</option>
+            <option value="fluent">{t.plvl_upper} +</option>
+          </select>
+          <select value={periodFilter} onChange={e => setPeriodFilter(e.target.value)} style={{ minWidth:140 }}>
+            <option value="">{t.work_period_filter} — All</option>
+            {WORK_PERIOD_KEYS.map(k => <option key={k} value={k}>{workPeriodLabel(k, t)} +</option>)}
+          </select>
+          <select value={countryFilter} onChange={e => setCountryFilter(e.target.value)} style={{ minWidth:140 }}>
+            <option value="">🌏 {t.f_country}</option>
+            {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select value={langFilter} onChange={e => setLangFilter(e.target.value)} style={{ minWidth:140 }}>
+            <option value="">🗣 {t.f_languages}</option>
+            {LANGUAGES_LIST.map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
+        </div>
       </div>
       {loading && <SkeletonGrid />}
       {!loading && !filteredStaff.length && <div className="empty">{t.no_staff}</div>}
