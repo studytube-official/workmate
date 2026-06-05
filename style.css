@@ -281,6 +281,14 @@ label {
   display: flex; flex-direction: column; gap: 8px;
   font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
 }
+/* Used instead of <label> for photo upload sections to avoid double file-dialog trigger */
+.form-field {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.form-field-label {
+  font-weight: 700; color: var(--muted2);
+  font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+}
 textarea { min-height: 120px; resize: vertical }
 
 /* ── Empty state ── */

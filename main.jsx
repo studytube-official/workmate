@@ -1756,7 +1756,12 @@ function App() {
   }
 
   function openMap(loc) {
-    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc || 'Sydney')}`, '_blank')
+    if (!loc) { window.open('https://www.google.com/maps/search/?api=1&query=Sydney+Australia', '_blank'); return }
+    const lower = loc.toLowerCase()
+    const query = (lower.includes('sydney') || lower.includes('nsw') || lower.includes('australia'))
+      ? loc
+      : `${loc}, Sydney NSW Australia`
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`, '_blank')
   }
 
   function signInGoogle() { setPage('login') }
@@ -2463,12 +2468,18 @@ function MapPreview({ query, hint }) {
     return () => clearTimeout(timer.current)
   }, [query])
   if (!liveQuery) return null
+  // Append Sydney, Australia context if not already present, so the embed
+  // always shows the right location rather than a random city with the same name.
+  const lowerQ = liveQuery.toLowerCase()
+  const mapQuery = (lowerQ.includes('sydney') || lowerQ.includes('nsw') || lowerQ.includes('australia'))
+    ? liveQuery
+    : `${liveQuery}, Sydney NSW Australia`
   return (
     <div className="map-preview">
       <iframe
-        key={liveQuery}
+        key={mapQuery}
         title="map-preview"
-        src={`https://maps.google.com/maps?q=${encodeURIComponent(liveQuery)}&output=embed&hl=en`}
+        src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&hl=en`}
         loading="lazy"
         allowFullScreen
       />
@@ -2531,6 +2542,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
       loadJobs()
       notify(t.job_saved)
       setJob(emptyJob); setFile(null); setPreview(null)
+      if (fileRef.current) fileRef.current.value = ''
       setProfileTab('posted')
       setPage('profile')
     } catch(e) {
@@ -2563,7 +2575,8 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
           </select>
         </label>
         <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={t.desc_ph} /></label>
-        <label>{t.f_img}
+        <div className="form-field">
+          <span className="form-field-label">{t.f_img}</span>
           <input type="file" accept="image/*" ref={fileRef} style={{ display:'none' }}
             onChange={e => {
               const f = e.target.files?.[0] || null
@@ -2574,7 +2587,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
             {preview ? (
               <div className="photo-upload-preview">
                 <img src={preview} alt="preview" />
-                <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null) }}>×</button>
+                <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null); if (fileRef.current) fileRef.current.value = '' }}>×</button>
                 <button className="photo-upload-change" onClick={e => { e.stopPropagation(); fileRef.current?.click() }}>📷 Change</button>
               </div>
             ) : (
@@ -2585,7 +2598,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle, setPostedJo
               </div>
             )}
           </div>
-        </label>
+        </div>
         <button className="primary" onClick={submit} disabled={busy}>
           {busy ? (file ? '📤 Uploading photo...' : t.saving) : t.save_btn}
         </button>
@@ -2654,7 +2667,8 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
             </select>
           </label>
           <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
-          <label>{t.f_img}
+          <div className="form-field">
+            <span className="form-field-label">{t.f_img}</span>
             <input type="file" accept="image/*" ref={fileRef} style={{ display:'none' }}
               onChange={e => {
                 const f = e.target.files?.[0] || null
@@ -2665,7 +2679,7 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
               {preview ? (
                 <div className="photo-upload-preview">
                   <img src={preview} alt="preview" />
-                  <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null) }}>×</button>
+                  <button className="photo-upload-remove" onClick={e => { e.stopPropagation(); setFile(null); setPreview(null); if (fileRef.current) fileRef.current.value = '' }}>×</button>
                   <button className="photo-upload-change" onClick={e => { e.stopPropagation(); fileRef.current?.click() }}>📷 Change</button>
                 </div>
               ) : (
@@ -2676,7 +2690,7 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
                 </div>
               )}
             </div>
-          </label>
+          </div>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </div>
       </div>
