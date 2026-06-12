@@ -3,6 +3,17 @@ import React, {
 } from 'react'
 import { createRoot } from 'react-dom/client'
 import { supabase } from './supabase'
+import {
+  demoApplications,
+  demoConversations,
+  demoJobs,
+  demoMessages,
+  demoPostedJobs,
+  demoProfile,
+  demoSavedJobIds,
+  demoSession,
+  demoStaff,
+} from './demoData'
 import './style.css'
 
 // ═════════════════════════════════════════════
@@ -13,6 +24,20 @@ const T = {
     nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
     tagline:'シドニーで今日もいい仕事を見つけよう',
     section_nearby:'近くの求人', section_saved:'保存した求人',
+    guest_banner:'ログインしてスカウトを待とう',
+    guest_banner_btn:'ログイン / 登録',
+    role_q_title:'WorkMateで何をしたいですか？',
+    role_q_sub:'あてはまる方を選んでください。',
+    role_seeker:'仕事を探したい',
+    role_seeker_desc:'募集中の店を探したり、店からスカウトを受け取れます。',
+    role_employer:'スタッフを探したい',
+    role_employer_desc:'求人を投稿して、シドニーで働くスタッフを検索できます。',
+    emp_banner:'求人を投稿するとスタッフ検索が使えるようになります。',
+    emp_banner_btn:'求人を投稿',
+    seeker_banner:'プロフィールを設定して、応募またはスカウトを待ちましょう。',
+    seeker_banner_btn:'プロフィール設定',
+    profile_privacy_note:'写真やプロフィール情報は店側にのみ表示され、一般公開はされません。',
+    profile_photo_tip:'好きな写真を自由に設定できます。写真を設定するとスカウトされる可能性が上がります。',
     login_cta_title:'ログインして全機能を使おう',
     login_cta_desc:'求人保存・応募・リアルタイムDMが使えるようになります。',
     profile_completion:'プロフィール完成度',
@@ -86,6 +111,20 @@ const T = {
     nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
     tagline:'Find your perfect job in Sydney today',
     section_nearby:'Jobs Near You', section_saved:'Saved Jobs',
+    guest_banner:'Log in and get scouted',
+    guest_banner_btn:'Log In / Sign Up',
+    role_q_title:'What brings you to WorkMate?',
+    role_q_sub:'Pick the option that fits you.',
+    role_seeker:"I'm looking for a job",
+    role_seeker_desc:'Find shops hiring and get scouted by employers.',
+    role_employer:"I'm looking for staff",
+    role_employer_desc:'Post jobs and search for staff in Sydney.',
+    emp_banner:'Post a job to unlock staff search.',
+    emp_banner_btn:'Post a job',
+    seeker_banner:'Set up your profile — then apply or get scouted.',
+    seeker_banner_btn:'Set up profile',
+    profile_privacy_note:'Your photo and details are only visible to employers — never shown publicly.',
+    profile_photo_tip:'Use any photo you like. Adding a photo makes you far more likely to get scouted.',
     login_cta_title:'Log in to access all features',
     login_cta_desc:'Save jobs, apply, and use real-time messaging.',
     profile_completion:'Profile Completion',
@@ -327,11 +366,15 @@ const fmt = (d, lang='ja') =>
 //  App
 // ═════════════════════════════════════════════
 function App() {
-  const [lang, setLang]     = useState(() => localStorage.getItem('wm_lang') || 'ja')
+  const [lang, setLang]     = useState(() => localStorage.getItem('wm_lang') || 'en')
   const t = T[lang]
   const changeLang = l => { setLang(l); localStorage.setItem('wm_lang', l) }
+  const isDemo = useMemo(() => new URLSearchParams(window.location.search).get('demo') === '1', [])
+  const isDemoTour = useMemo(() => new URLSearchParams(window.location.search).get('tour') === '1', [])
 
   const [page, setPage]               = useState('home')
+  const [role, setRole]               = useState(() => localStorage.getItem('wm_role') || '')
+  const chooseRole = r => { localStorage.setItem('wm_role', r); setRole(r) }
   const [session, setSession]         = useState(null)
   const [profile, setProfile]         = useState(null)
   const [jobs, setJobs]               = useState([])
@@ -343,6 +386,10 @@ function App() {
   const [search, setSearch]           = useState('')
   const [area, setArea]               = useState('')
   const [english, setEnglish]         = useState('')
+  const [jobCategory, setJobCategory] = useState('')
+  const [staffSearch, setStaffSearch] = useState('')
+  const [staffCategory, setStaffCategory] = useState('')
+  const [staffEnglish, setStaffEnglish] = useState('')
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
@@ -352,8 +399,36 @@ function App() {
     setToast(msg); setTimeout(() => setToast(''), ms)
   }, [])
 
+  useEffect(() => {
+    if (!isDemo) return
+    setSession(demoSession)
+    setProfile(demoProfile)
+    setJobs(demoJobs)
+    setSavedJobIds(demoSavedJobIds)
+    setApplications(demoApplications)
+    setPostedJobs(demoPostedJobs)
+    setConversations(demoConversations)
+    setUnreadCount(3)
+    setPage('home')
+  }, [isDemo])
+
+  useEffect(() => {
+    if (!isDemo || !isDemoTour) return
+    const steps = [
+      [900,  () => { setPage('jobs'); setSearch('barista'); setArea(''); setEnglish('') }],
+      [2300, () => setEnglish(T.en.eng_basic)],
+      [3700, () => { setSearch('kitchen'); setEnglish('') }],
+      [5200, () => { setSelectedJob(demoJobs[1]); setPage('job') }],
+      [7200, () => { setPage('staff'); setStaffSearch('barista'); setStaffCategory('Barista'); setStaffEnglish('Basic English OK') }],
+      [9800, () => { setActiveConvId('demo-conv-1'); setPage('chat') }],
+      [12500, () => setPage('profile')],
+    ].map(([ms, fn]) => setTimeout(fn, ms))
+    return () => steps.forEach(clearTimeout)
+  }, [isDemo, isDemoTour])
+
   // ── 認証 ──────────────────────────────────
   useEffect(() => {
+    if (isDemo) return
     // PKCE: URLに ?code= がある場合は明示的にコード交換してセッションを取得
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
@@ -424,6 +499,7 @@ function App() {
 
   // ── 求人リアルタイム ───────────────────────
   useEffect(() => {
+    if (isDemo) return
     loadJobs()
     const ch = supabase.channel('jobs-rt')
       .on('postgres_changes', { event:'*', schema:'public', table:'jobs' }, loadJobs)
@@ -438,18 +514,18 @@ function App() {
 
   // ── 会話リアルタイム ───────────────────────
   useEffect(() => {
-    if (!session) return
+    if (isDemo || !session) return
     const uid = session.user.id
     const ch = supabase.channel('conv-rt')
       .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_a=eq.${uid}` }, () => loadUserData(uid))
       .on('postgres_changes', { event:'*', schema:'public', table:'conversations', filter:`participant_b=eq.${uid}` }, () => loadUserData(uid))
       .subscribe()
     return () => supabase.removeChannel(ch)
-  }, [session])
+  }, [session, isDemo])
 
   // ── 新着応募通知（リアルタイム）──────────────
   useEffect(() => {
-    if (!session || !postedJobs.length) return
+    if (isDemo || !session || !postedJobs.length) return
     const ch = supabase.channel('new-apps-rt')
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'applications' }, payload => {
         if (postedJobs.some(j => j.id === payload.new.job_id)) {
@@ -459,20 +535,25 @@ function App() {
       })
       .subscribe()
     return () => supabase.removeChannel(ch)
-  }, [session, postedJobs])
+  }, [session, postedJobs, isDemo])
 
   const filteredJobs = useMemo(() => jobs.filter(j => {
     if (j.is_active === false) return false
-    const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description].join(' ').toLowerCase()
+    const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description, j.categories].join(' ').toLowerCase()
     return (!search || tx.includes(search.toLowerCase()))
         && (!area    || j.location      === area)
         && (!english || j.english_level === english)
-  }), [jobs, search, area, english])
+        && (!jobCategory || parseCats(j.categories).includes(jobCategory))
+  }), [jobs, search, area, english, jobCategory])
 
   // ── アクション ─────────────────────────────
   function openJob(job) { setSelectedJob(job); setPage('job') }
 
   async function toggleSave(jobId) {
+    if (isDemo) {
+      setSavedJobIds(p => p.includes(jobId) ? p.filter(x => x !== jobId) : [...p, jobId])
+      return
+    }
     if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
     if (savedJobIds.includes(jobId)) {
@@ -486,6 +567,12 @@ function App() {
   const isSaved = jobId => savedJobIds.includes(jobId)
 
   async function applyToJob(job, msg) {
+    if (isDemo) {
+      if (applications.some(a => a.job_id === job.id)) { notify(t.toast_applied_already); return false }
+      setApplications(p => [...p, { id:`demo-user-app-${Date.now()}`, user_id:demoSession.user.id, job_id:job.id, message:msg, status:'pending' }])
+      notify(t.toast_applied_ok)
+      return true
+    }
     if (!session) { notify(t.toast_login); return false }
     if (job.is_active === false) { notify(t.toast_closed); return false }
     const uid = session.user.id
@@ -500,6 +587,11 @@ function App() {
 
   // ── 求人 DM ────────────────────────────────
   async function startDM(job) {
+    if (isDemo) {
+      const ex = demoConversations.find(c => c.job_id === job.id) || demoConversations[0]
+      setActiveConvId(ex.id); setPage('chat')
+      return
+    }
     if (!session) { notify(t.toast_login); return }
     if (job.is_active === false) { notify(t.toast_closed); return }
     const uid = session.user.id
@@ -521,6 +613,11 @@ function App() {
 
   // ── スタッフ DM ───────────────────────────
   async function startStaffDM(targetUid, displayName) {
+    if (isDemo) {
+      const ex = demoConversations.find(c => c.participant_b === targetUid) || demoConversations[2]
+      setActiveConvId(ex.id); setPage('chat')
+      return
+    }
     if (!session) { notify(t.toast_login); return }
     const uid = session.user.id
     if (targetUid === uid) { notify(t.toast_self_dm2); return }
@@ -544,6 +641,14 @@ function App() {
 
   // ── 採用・不採用更新 ──────────────────────
   async function updateAppStatus(appId, status) {
+    if (isDemo) {
+      setPostedJobs(p => p.map(j => ({
+        ...j,
+        applications:(j.applications||[]).map(a => a.id === appId ? { ...a, status } : a)
+      })))
+      notify(status === 'accepted' ? t.hire : status === 'rejected' ? t.reject : t.status_updated)
+      return
+    }
     const { error } = await supabase.from('applications').update({ status }).eq('id', appId)
     if (error) { notify(error.message); return }
     if (session) loadUserData(session.user.id)
@@ -552,6 +657,12 @@ function App() {
 
   // ── 求人ステータス切替 ────────────────────
   async function toggleJobStatus(jobId, isActive) {
+    if (isDemo) {
+      setJobs(p => p.map(j => j.id === jobId ? { ...j, is_active:!isActive } : j))
+      setPostedJobs(p => p.map(j => j.id === jobId ? { ...j, is_active:!isActive } : j))
+      notify(t.status_updated)
+      return
+    }
     const { error } = await supabase.from('jobs').update({ is_active:!isActive }).eq('id', jobId)
     if (error) { notify(error.message); return }
     if (session) loadUserData(session.user.id)
@@ -561,6 +672,12 @@ function App() {
 
   // ── 求人削除 ──────────────────────────────
   async function deleteJob(jobId) {
+    if (isDemo) {
+      setJobs(p => p.filter(j => j.id !== jobId))
+      setPostedJobs(p => p.filter(j => j.id !== jobId))
+      notify(t.job_deleted)
+      return
+    }
     if (!window.confirm(t.confirm_del)) return
     const { error } = await supabase.from('jobs').delete().eq('id', jobId)
     if (error) { notify(error.message); return }
@@ -571,6 +688,7 @@ function App() {
 
   // ── 既読処理 ──────────────────────────────
   async function markConvRead(convId) {
+    if (isDemo) { setUnreadCount(0); return }
     if (!session) return
     await supabase.from('messages').update({ read:true })
       .eq('conversation_id', convId).eq('read', false).neq('sender_id', session.user.id)
@@ -605,18 +723,28 @@ function App() {
       </button>
 
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
+      {isDemo && <DemoRecordingBar isTour={isDemoTour} />}
 
       {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
-      {page === 'jobs'    && <Jobs jobs={filteredJobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
+      {page === 'jobs'    && <Jobs jobs={filteredJobs} allJobs={jobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} jobCategory={jobCategory} setJobCategory={setJobCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
-      {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} />}
+      {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} demoStaff={isDemo ? demoStaff : null} staffSearch={staffSearch} setStaffSearch={setStaffSearch} staffCategory={staffCategory} setStaffCategory={setStaffCategory} staffEnglish={staffEnglish} setStaffEnglish={setStaffEnglish} />}
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
-      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} />}
-      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} />}
+      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} demoMessages={isDemo ? demoMessages : null} />}
+      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} role={role} />}
       {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
+
+      {!role && !isDemo && <RoleSelect chooseRole={chooseRole} />}
+
+      {role === 'employer' && postedJobs.length === 0 && page !== 'post' && page !== 'login' && (
+        <RoleBanner icon="📋" text={t.emp_banner} btn={t.emp_banner_btn} onClick={() => setPage('post')} />
+      )}
+      {role === 'seeker' && !profile?.avatar_url && page !== 'profile' && page !== 'login' && (
+        <RoleBanner icon="✨" text={t.seeker_banner} btn={t.seeker_banner_btn} onClick={() => setPage(session ? 'profile' : 'login')} />
+      )}
 
       <nav className="bottom">
         <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
@@ -632,6 +760,48 @@ function App() {
         <button className={page==='profile'?'active':''} onClick={() => setPage('profile')}>👤<br/><small>{t.nav_profile}</small></button>
       </nav>
     </LangCtx.Provider>
+  )
+}
+
+// ═════════════════════════════════════════════
+//  Guest Banner
+// ═════════════════════════════════════════════
+function DemoRecordingBar({ isTour }) {
+  return (
+    <div className="demo-rec-bar">
+      <b>Recording demo mode</b>
+      <span>{isTour ? 'Auto tour: search, results, staff, DM, dashboard.' : 'Add &tour=1 to run the automatic walkthrough.'}</span>
+    </div>
+  )
+}
+
+function RoleSelect({ chooseRole }) {
+  const { t } = useT()
+  return (
+    <div className="role-overlay">
+      <div className="role-card">
+        <div className="role-logo">WM</div>
+        <h2>{t.role_q_title}</h2>
+        <p className="muted">{t.role_q_sub}</p>
+        <button className="role-option" onClick={() => chooseRole('seeker')}>
+          <span className="role-emoji">🔍</span>
+          <span className="role-text"><b>{t.role_seeker}</b><small>{t.role_seeker_desc}</small></span>
+        </button>
+        <button className="role-option" onClick={() => chooseRole('employer')}>
+          <span className="role-emoji">🏪</span>
+          <span className="role-text"><b>{t.role_employer}</b><small>{t.role_employer_desc}</small></span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function RoleBanner({ icon, text, btn, onClick }) {
+  return (
+    <div className="guest-banner">
+      <span>{icon} {text}</span>
+      <button className="primary" onClick={onClick}>{btn}</button>
+    </div>
   )
 }
 
@@ -794,13 +964,15 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 //  Jobs
 // ═════════════════════════════════════════════
-function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEnglish, setPage, isSaved, toggleSave }) {
+function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, english, setEnglish, jobCategory, setJobCategory, setPage, isSaved, toggleSave }) {
   const { t } = useT()
+  const categories = useMemo(() => Array.from(new Set(allJobs.flatMap(j => parseCats(j.categories)))).slice(0, 14), [allJobs])
   return (
     <main>
       <header className="sticky">
-        <h1>{t.search_jobs}</h1>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
+        <h1>Find Shops Hiring</h1>
+        <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>Filter by shop name, role, area, and English level.</p>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search shop, role, barista, kitchen..." />
         <div className="filters">
           <select value={area} onChange={e => setArea(e.target.value)}>
             <option value="">{t.all_areas}</option>
@@ -814,6 +986,16 @@ function Jobs({ jobs, openJob, search, setSearch, area, setArea, english, setEng
             <option>{t.eng_inter}</option>
           </select>
         </div>
+        <select value={jobCategory} onChange={e => setJobCategory(e.target.value)}>
+          <option value="">All job types</option>
+          {categories.map(c => <option key={c}>{c}</option>)}
+        </select>
+        <div className="filter-chips">
+          {['Barista','Kitchen Hand','Waiter / Waitress','Bartender','Sushi Restaurant'].map(c => (
+            <button key={c} className={jobCategory === c ? 'active' : ''} onClick={() => setJobCategory(jobCategory === c ? '' : c)}>{c}</button>
+          ))}
+        </div>
+        <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{jobs.length}</b> shops match your filters</p>
         <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
@@ -1135,10 +1317,17 @@ function AvailabilityPicker({ value, onChange }) {
 // ═════════════════════════════════════════════
 //  Staff
 // ═════════════════════════════════════════════
-function Staff({ setPage, session, startStaffDM, isEmployer }) {
+function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSearch, setStaffSearch, staffCategory, setStaffCategory, staffEnglish, setStaffEnglish }) {
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
+  const staffCategories = useMemo(() => Array.from(new Set(staffList.flatMap(s => parseCats(s.job_categories)))).slice(0, 14), [staffList])
+  const filteredStaff = useMemo(() => staffList.filter(s => {
+    const tx = [s.display_name, s.english_level, s.availability, s.visa_expiry, s.bio, s.job_categories].join(' ').toLowerCase()
+    return (!staffSearch || tx.includes(staffSearch.toLowerCase()))
+        && (!staffCategory || parseCats(s.job_categories).includes(staffCategory))
+        && (!staffEnglish || s.english_level === staffEnglish)
+  }), [staffList, staffSearch, staffCategory, staffEnglish])
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -1155,20 +1344,46 @@ function Staff({ setPage, session, startStaffDM, isEmployer }) {
   )
 
   useEffect(() => {
+    if (demoStaff) {
+      setStaffList(demoStaff)
+      setLoading(false)
+      return
+    }
     supabase.from('profiles').select('*')
       .not('display_name', 'is', null)
       .order('updated_at', { ascending:false }).limit(40)
       .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
-  }, [])
+  }, [demoStaff])
 
   return (
     <main>
-      <h1>{t.find_staff}</h1>
-      <p className="muted" style={{ marginBottom:16 }}>{t.staff_desc}</p>
+      <header className="sticky">
+        <h1>{t.find_staff}</h1>
+        <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>{t.staff_desc}</p>
+        <input value={staffSearch} onChange={e => setStaffSearch(e.target.value)} placeholder="Search name, barista, kitchen, WHV..." />
+        <div className="filters">
+          <select value={staffCategory} onChange={e => setStaffCategory(e.target.value)}>
+            <option value="">All preferred roles</option>
+            {staffCategories.map(c => <option key={c}>{c}</option>)}
+          </select>
+          <select value={staffEnglish} onChange={e => setStaffEnglish(e.target.value)}>
+            <option value="">Any English level</option>
+            <option>{t.eng_basic}</option>
+            <option>{t.eng_none}</option>
+            <option>{t.eng_inter}</option>
+          </select>
+        </div>
+        <div className="filter-chips">
+          {['Barista','Kitchen Hand','Floor Staff','Waiter / Waitress','Bartender'].map(c => (
+            <button key={c} className={staffCategory === c ? 'active' : ''} onClick={() => setStaffCategory(staffCategory === c ? '' : c)}>{c}</button>
+          ))}
+        </div>
+        <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{filteredStaff.length}</b> staff candidates match your filters</p>
+      </header>
       {loading && <SkeletonGrid />}
-      {!loading && !staffList.length && <div className="empty">{t.no_staff}</div>}
+      {!loading && !filteredStaff.length && <div className="empty">{t.no_staff}</div>}
       <div className="grid">
-        {staffList.map(s => (
+        {filteredStaff.map(s => (
           <article className="job" key={s.id} style={{ cursor:'default' }}>
             <div className="photo">
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
@@ -1229,7 +1444,7 @@ function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) 
 // ═════════════════════════════════════════════
 //  Chat
 // ═════════════════════════════════════════════
-function Chat({ convId, setPage, session, conversations, setConversations, notify, markConvRead, lang }) {
+function Chat({ convId, setPage, session, conversations, setConversations, notify, markConvRead, lang, demoMessages }) {
   const { t } = useT()
   const [messages, setMessages] = useState([])
   const [text,     setText]     = useState('')
@@ -1240,13 +1455,19 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 
   useEffect(() => {
     if (!convId) return
+    if (demoMessages) {
+      setMessages(demoMessages[convId] || [])
+      setLoading(false)
+      markConvRead(convId)
+      return
+    }
     loadMessages()
     const ch = supabase.channel('chat-'+convId)
       .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages', filter:`conversation_id=eq.${convId}` },
         payload => setMessages(p => [...p, payload.new]))
       .subscribe()
     return () => supabase.removeChannel(ch)
-  }, [convId])
+  }, [convId, demoMessages])
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:'smooth' }) }, [messages])
 
@@ -1261,6 +1482,11 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 
   async function send() {
     if (!text.trim() || busy || !session) return
+    if (demoMessages) {
+      const msg = text.trim(); setText('')
+      setMessages(p => [...p, { id:`demo-message-${Date.now()}`, sender_id:session.user.id, text:msg, created_at:new Date().toISOString() }])
+      return
+    }
     setBusy(true)
     const msg = text.trim(); setText('')
     const { error } = await supabase.from('messages')
@@ -1310,11 +1536,11 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 // ═════════════════════════════════════════════
 function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
-                   updateAppStatus, toggleJobStatus, deleteJob, setEditingJob }) {
+                   updateAppStatus, toggleJobStatus, deleteJob, setEditingJob, role }) {
   const { t } = useT()
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
-  const [tab,  setTab]        = useState('profile')
+  const [tab,  setTab]        = useState(() => new URLSearchParams(window.location.search).get('demo') === '1' ? 'posted' : 'profile')
   const [avatarFile, setAvatarFile]     = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(null)
   const [expandedJob, setExpandedJob]   = useState(null)
@@ -1420,7 +1646,13 @@ function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, 
             <input id="avatarInput" type="file" accept="image/*" style={{ display:'none' }} onChange={handleAvatarChange} />
             <button style={{ fontSize:13, padding:'8px 16px' }} onClick={() => document.getElementById('avatarInput').click()}>{t.change_photo}</button>
             {avatarPreview && <p className="muted" style={{ fontSize:12 }}>{t.photo_pending}</p>}
+            {role !== 'employer' && (
+              <p className="muted" style={{ fontSize:12, textAlign:'center', margin:'2px 0 0', maxWidth:280 }}>📸 {t.profile_photo_tip}</p>
+            )}
           </div>
+          {role !== 'employer' && (
+            <div className="privacy-note">🔒 {t.profile_privacy_note}</div>
+          )}
           <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
           <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>

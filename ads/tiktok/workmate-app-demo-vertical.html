@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkMate App Demo Vertical Ad</title>
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --bg: #f5f0e8;
+    --bg2: #ede6d8;
+    --bg3: #faf8f4;
+    --border: rgba(160, 125, 85, 0.2);
+    --text: #1e130a;
+    --muted: #7a6248;
+    --accent: #9b4f1a;
+    --amber: #c2692a;
+    --green: #3d6b4a;
+    --red: #b83030;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #17100b;
+    display: grid;
+    place-items: center;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+  }
+
+  .stage {
+    width: min(100vw, 56.25vh);
+    aspect-ratio: 9 / 16;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(194,105,42,.34), transparent 34%),
+      linear-gradient(180deg, #f5f0e8 0%, #ede6d8 100%);
+    box-shadow: 0 24px 90px rgba(0,0,0,.48);
+  }
+
+  .top-copy {
+    position: absolute;
+    top: 4.2%;
+    left: 6%;
+    right: 6%;
+    z-index: 20;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.78);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-weight: 900;
+    font-size: clamp(12px, 2.5vw, 23px);
+    box-shadow: 0 10px 26px rgba(160,125,85,.18);
+  }
+
+  .headline {
+    margin: 14px 0 0;
+    max-width: 92%;
+    font-weight: 950;
+    letter-spacing: -.058em;
+    line-height: .96;
+    font-size: clamp(40px, 8.6vw, 92px);
+    color: #2a160a;
+  }
+
+  .headline span {
+    color: var(--accent);
+  }
+
+  .phone {
+    position: absolute;
+    left: 50%;
+    bottom: 5.2%;
+    width: 82%;
+    height: 72%;
+    transform: translateX(-50%);
+    border-radius: 42px;
+    background: #14100d;
+    padding: 12px;
+    box-shadow:
+      0 28px 70px rgba(30,19,10,.34),
+      inset 0 0 0 2px rgba(255,255,255,.14);
+  }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 32px;
+    background: var(--bg);
+  }
+
+  .notch {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 33%;
+    height: 22px;
+    transform: translateX(-50%);
+    background: #14100d;
+    border-radius: 999px;
+    z-index: 30;
+  }
+
+  .app {
+    position: absolute;
+    inset: 0;
+    padding: 42px 16px 74px;
+    opacity: 0;
+    transform: translateX(24px) scale(.985);
+  }
+
+  .app-home { animation: showPanel 2.8s ease 0s both, hidePanel .45s ease 2.85s forwards; }
+  .app-jobs { animation: showPanel .55s ease 3.05s both, hidePanel .45s ease 5.65s forwards; }
+  .app-staff { animation: showPanel .55s ease 5.85s both, hidePanel .45s ease 8.55s forwards; }
+  .app-dm { animation: showPanel .55s ease 8.75s both, hidePanel .45s ease 11.25s forwards; }
+  .app-hiring { animation: showPanel .55s ease 11.45s both; }
+
+  .hero {
+    margin: -42px -16px 14px;
+    padding: 58px 16px 22px;
+    background: linear-gradient(160deg, #ede0cc, #f8f2e8);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mini-muted {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(10px, 2.1vw, 18px);
+    line-height: 1.45;
+    font-weight: 650;
+  }
+
+  .title {
+    margin: 4px 0;
+    font-size: clamp(24px, 5vw, 48px);
+    line-height: 1.02;
+    letter-spacing: -.05em;
+    font-weight: 950;
+    background: linear-gradient(135deg, #1e130a 30%, #9b4f1a 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .section-title {
+    margin: 14px 0 9px;
+    font-size: clamp(16px, 3.3vw, 29px);
+    line-height: 1;
+    letter-spacing: -.03em;
+    font-weight: 920;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 13px;
+  }
+
+  .stat,
+  .card,
+  .job,
+  .staff,
+  .dm,
+  .applicant {
+    background: rgba(250,248,244,.96);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(160,125,85,.12);
+  }
+
+  .stat {
+    border-radius: 16px;
+    padding: 10px 8px;
+  }
+
+  .stat b {
+    display: block;
+    font-size: clamp(18px, 3.9vw, 34px);
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: clamp(9px, 1.8vw, 15px);
+    font-weight: 750;
+  }
+
+  .search {
+    height: 36px;
+    border-radius: 13px;
+    border: 1px solid rgba(160,125,85,.32);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: var(--muted);
+    font-size: clamp(10px, 2.1vw, 18px);
+    font-weight: 750;
+  }
+
+  .list {
+    display: grid;
+    gap: 9px;
+  }
+
+  .job,
+  .staff,
+  .dm,
+  .applicant {
+    border-radius: 18px;
+    padding: 11px;
+  }
+
+  .job {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 11px;
+    align-items: center;
+  }
+
+  .photo {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 27px;
+    background: linear-gradient(135deg, #7c3f12, #c2692a);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .name {
+    margin: 0;
+    font-size: clamp(13px, 2.6vw, 23px);
+    font-weight: 900;
+    line-height: 1.15;
+  }
+
+  .small {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: clamp(9px, 1.9vw, 16px);
+    line-height: 1.35;
+    font-weight: 650;
+  }
+
+  .pill-row {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 7px;
+  }
+
+  .pill {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(155,79,26,.1);
+    color: #7c3f12;
+    border: 1px solid rgba(155,79,26,.2);
+    font-size: clamp(8px, 1.6vw, 14px);
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .staff {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 950;
+    background: linear-gradient(135deg, #7c3f12, #c2692a);
+  }
+
+  .button {
+    border: 0;
+    border-radius: 12px;
+    padding: 8px 10px;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3f12, #c2692a);
+    font-size: clamp(8px, 1.7vw, 15px);
+    font-weight: 900;
+  }
+
+  .dm {
+    display: grid;
+    grid-template-columns: 46px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .badge {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: var(--red);
+    font-size: 11px;
+    font-weight: 950;
+  }
+
+  .chat {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .bubble {
+    max-width: 84%;
+    padding: 9px 12px;
+    border-radius: 16px;
+    font-size: clamp(10px, 2.1vw, 18px);
+    line-height: 1.35;
+    font-weight: 650;
+  }
+
+  .them {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 5px;
+  }
+
+  .me {
+    justify-self: end;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3f12, #c2692a);
+    border-bottom-right-radius: 5px;
+  }
+
+  .applicant {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .actions {
+    grid-column: 2;
+    display: flex;
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  .hire,
+  .reject {
+    flex: 1;
+    border-radius: 11px;
+    padding: 8px;
+    border: 0;
+    font-size: clamp(8px, 1.7vw, 15px);
+    font-weight: 900;
+  }
+
+  .hire { color: #fff; background: var(--green); }
+  .reject { color: var(--muted); background: var(--bg2); }
+
+  .nav {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    height: 52px;
+    border-radius: 999px;
+    background: rgba(250,248,244,.92);
+    border: 1px solid rgba(160,125,85,.32);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    padding: 5px;
+    box-shadow: 0 8px 24px rgba(160,125,85,.18);
+  }
+
+  .nav span {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    border-radius: 999px;
+    color: #a08060;
+    font-size: 17px;
+  }
+
+  .nav span.active {
+    color: #fff;
+    background: linear-gradient(135deg, #7c3f12, #c2692a);
+  }
+
+  .overlay-copy {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: 3.2%;
+    z-index: 40;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(20px);
+    text-shadow: 0 4px 22px rgba(0,0,0,.38);
+  }
+
+  .copy-1 { animation: copyIn 2.5s ease .1s both, copyOut .35s ease 2.65s forwards; }
+  .copy-2 { animation: copyIn .5s ease 3.15s both, copyOut .35s ease 5.6s forwards; }
+  .copy-3 { animation: copyIn .5s ease 5.95s both, copyOut .35s ease 8.5s forwards; }
+  .copy-4 { animation: copyIn .5s ease 8.85s both, copyOut .35s ease 11.25s forwards; }
+  .copy-5 { animation: copyIn .5s ease 11.55s both; }
+
+  .overlay-copy h2 {
+    margin: 0;
+    font-size: clamp(34px, 7vw, 78px);
+    line-height: .96;
+    letter-spacing: -.05em;
+    font-weight: 950;
+  }
+
+  .overlay-copy p {
+    margin: 10px 0 0;
+    max-width: 92%;
+    font-size: clamp(15px, 3.1vw, 31px);
+    line-height: 1.18;
+    font-weight: 800;
+    color: #fff4e2;
+  }
+
+  .darken {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(30,19,10,0) 45%, rgba(30,19,10,.6) 100%);
+    z-index: 35;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 7px;
+    background: rgba(255,255,255,.25);
+    z-index: 50;
+  }
+
+  .progress::after {
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: #f5c87a;
+    transform-origin: left;
+    animation: progress 15s linear forwards;
+  }
+
+  @keyframes showPanel {
+    from { opacity: 0; transform: translateX(24px) scale(.985); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  @keyframes hidePanel {
+    to { opacity: 0; transform: translateX(-24px) scale(.985); }
+  }
+
+  @keyframes copyIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes copyOut {
+    to { opacity: 0; transform: translateY(-12px); }
+  }
+
+  @keyframes progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" aria-label="WorkMate app screen vertical demo ad">
+    <div class="top-copy">
+      <div class="eyebrow">WorkMate Australia</div>
+      <h1 class="headline">Sydney hiring, <span>inside one app.</span></h1>
+    </div>
+
+    <div class="phone">
+      <div class="screen">
+        <div class="notch"></div>
+
+        <section class="app app-home">
+          <div class="hero">
+            <p class="mini-muted">Good day</p>
+            <h2 class="title">WorkMate Australia</h2>
+            <p class="mini-muted">Hospitality jobs and staff in Sydney</p>
+            <div class="stats">
+              <div class="stat"><b>128</b><span>staff profiles</span></div>
+              <div class="stat"><b>42</b><span>open jobs</span></div>
+              <div class="stat"><b>310</b><span>messages</span></div>
+            </div>
+          </div>
+          <h3 class="section-title">Today's activity</h3>
+          <div class="list">
+            <div class="job"><div class="photo">☕</div><div><p class="name">Barista shifts matched</p><p class="small">12 candidates available this week</p></div></div>
+            <div class="job"><div class="photo">🍜</div><div><p class="name">Kitchen hand applicants</p><p class="small">7 new applications since morning</p></div></div>
+          </div>
+        </section>
+
+        <section class="app app-jobs">
+          <h2 class="title">Find Jobs</h2>
+          <div class="search">Search cafe, barista, kitchen...</div>
+          <h3 class="section-title">Hiring now</h3>
+          <div class="list">
+            <div class="job"><div class="photo">☕</div><div><p class="name">Morning Barista</p><p class="small">Harbour Cafe / Circular Quay / $30 hr</p><div class="pill-row"><span class="pill">Basic English OK</span><span class="pill">Part-time</span></div></div></div>
+            <div class="job"><div class="photo">🍣</div><div><p class="name">Sushi Roll Maker</p><p class="small">Sakura Kitchen / CBD / $29 hr</p><div class="pill-row"><span class="pill">No English needed</span><span class="pill">Dinner</span></div></div></div>
+            <div class="job"><div class="photo">🍸</div><div><p class="name">Bartender</p><p class="small">George St Bar / CBD / $32 hr</p><div class="pill-row"><span class="pill">Weekend</span><span class="pill">Trial shift</span></div></div></div>
+          </div>
+        </section>
+
+        <section class="app app-staff">
+          <h2 class="title">Find Staff</h2>
+          <p class="mini-muted">Browse working holiday makers and international students ready for shifts.</p>
+          <h3 class="section-title">Available candidates</h3>
+          <div class="list">
+            <div class="staff"><div class="avatar">M</div><div><p class="name">Mika Tanaka</p><p class="small">Japan / Barista / Mon-Fri</p><div class="pill-row"><span class="pill">WHV</span><span class="pill">Basic English OK</span></div></div><div class="button">DM</div></div>
+            <div class="staff"><div class="avatar">J</div><div><p class="name">Jiho Park</p><p class="small">Korea / Kitchen hand / Nights</p><div class="pill-row"><span class="pill">Student</span><span class="pill">Dinner shifts</span></div></div><div class="button">DM</div></div>
+            <div class="staff"><div class="avatar">A</div><div><p class="name">Alex Kim</p><p class="small">WHV / Floor staff / Weekend</p><div class="pill-row"><span class="pill">Cafe</span><span class="pill">Restaurant</span></div></div><div class="button">DM</div></div>
+          </div>
+        </section>
+
+        <section class="app app-dm">
+          <h2 class="title">Messages</h2>
+          <div class="list">
+            <div class="dm"><div class="avatar">S</div><div><p class="name">Sakura Kitchen</p><p class="small">Trial shift available this Thursday?</p></div><div class="badge">2</div></div>
+            <div class="dm"><div class="avatar">H</div><div><p class="name">Harbour Cafe</p><p class="small">Thanks! I can start at 7am.</p></div><div></div></div>
+          </div>
+          <div class="chat">
+            <div class="bubble them">Hi Mika, are you available for a trial shift this week?</div>
+            <div class="bubble me">Yes, Wednesday or Thursday works for me.</div>
+            <div class="bubble them">Great. Let's confirm Thursday 10am.</div>
+          </div>
+        </section>
+
+        <section class="app app-hiring">
+          <h2 class="title">My Listings</h2>
+          <div class="card">
+            <p class="name">Kitchen staff wanted</p>
+            <p class="small">Sakura Kitchen / Sydney CBD / $29 hr</p>
+            <div class="pill-row"><span class="pill">14 applications</span><span class="pill">Hiring</span></div>
+          </div>
+          <h3 class="section-title">New applicants</h3>
+          <div class="applicant">
+            <div class="avatar">J</div>
+            <div>
+              <p class="name">Jiho Park</p>
+              <p class="small">Kitchen hand experience. Available weeknights.</p>
+            </div>
+            <div class="actions"><button class="hire">Hire</button><button class="reject">Review</button></div>
+          </div>
+          <div class="applicant">
+            <div class="avatar">Y</div>
+            <div>
+              <p class="name">Yui Sato</p>
+              <p class="small">Japanese restaurant experience. WHV holder.</p>
+            </div>
+            <div class="actions"><button class="hire">Hire</button><button class="reject">Review</button></div>
+          </div>
+        </section>
+
+        <nav class="nav" aria-label="demo navigation">
+          <span class="active">⌂</span>
+          <span>💼</span>
+          <span>👥</span>
+          <span>💬</span>
+          <span>👤</span>
+        </nav>
+      </div>
+    </div>
+
+    <div class="darken"></div>
+    <section class="overlay-copy copy-1">
+      <h2>When the app is active...</h2>
+      <p>Employers see real activity, not empty listings.</p>
+    </section>
+    <section class="overlay-copy copy-2">
+      <h2>Jobs fill the feed.</h2>
+      <p>Cafes, restaurants, and bars can post roles in minutes.</p>
+    </section>
+    <section class="overlay-copy copy-3">
+      <h2>Staff profiles are ready.</h2>
+      <p>WHV holders and students show availability, skills, and visa details.</p>
+    </section>
+    <section class="overlay-copy copy-4">
+      <h2>Hiring moves to DM.</h2>
+      <p>No agency. No waiting. Just direct conversation.</p>
+    </section>
+    <section class="overlay-copy copy-5">
+      <h2>WorkMate Australia</h2>
+      <p>Start hiring for free in Sydney hospitality.</p>
+    </section>
+
+    <div class="progress"></div>
+  </main>
+</body>
+</html>

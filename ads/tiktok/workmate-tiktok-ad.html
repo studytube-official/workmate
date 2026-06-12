@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkMate TikTok Ad</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #17100b;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    display: grid;
+    place-items: center;
+  }
+
+  .stage {
+    position: relative;
+    width: min(100vw, 56.25vh);
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    background: #f5f0e8;
+    color: #fff;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    background: url("./workmate-tiktok-keyvisual.png") center / cover no-repeat;
+    animation: slowZoom 15s ease-in-out forwards;
+    transform-origin: 50% 58%;
+  }
+
+  .shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(39, 18, 6, 0.2) 0%, rgba(39, 18, 6, 0.08) 28%, rgba(39, 18, 6, 0.28) 62%, rgba(39, 18, 6, 0.72) 100%),
+      radial-gradient(circle at 50% 53%, rgba(245, 240, 232, 0) 0 28%, rgba(20, 11, 5, 0.24) 78%);
+  }
+
+  .brand {
+    position: absolute;
+    top: 5.4%;
+    left: 7%;
+    right: 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    color: #3b1f0e;
+    animation: fadeIn 0.7s ease-out both;
+  }
+
+  .brand-name {
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.88);
+    color: #3b1f0e;
+    font-size: clamp(18px, 3.5vw, 34px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    box-shadow: 0 12px 34px rgba(59, 31, 14, 0.18);
+  }
+
+  .free-pill {
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: #8b4513;
+    color: #fff;
+    font-weight: 900;
+    font-size: clamp(13px, 2.6vw, 24px);
+    white-space: nowrap;
+    box-shadow: 0 12px 34px rgba(59, 31, 14, 0.24);
+  }
+
+  .line {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    bottom: 12%;
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    text-shadow: 0 5px 28px rgba(0, 0, 0, 0.48);
+  }
+
+  .line h1,
+  .line h2 {
+    margin: 0;
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+    font-weight: 950;
+  }
+
+  .line h1 {
+    font-size: clamp(50px, 11vw, 116px);
+  }
+
+  .line h2 {
+    font-size: clamp(42px, 8.8vw, 94px);
+  }
+
+  .line p {
+    margin: 18px 0 0;
+    max-width: 88%;
+    color: #fff1d9;
+    font-size: clamp(18px, 3.8vw, 40px);
+    line-height: 1.14;
+    font-weight: 750;
+  }
+
+  .line-1 {
+    animation: cardIn 2s ease-out 0s both, cardOut 0.45s ease-in 2.1s forwards;
+  }
+
+  .line-2 {
+    animation: cardIn 0.55s ease-out 2.2s both, cardOut 0.45s ease-in 5s forwards;
+  }
+
+  .line-3 {
+    animation: cardIn 0.55s ease-out 5.1s both, cardOut 0.45s ease-in 8.6s forwards;
+  }
+
+  .line-4 {
+    animation: cardIn 0.55s ease-out 8.7s both, cardOut 0.45s ease-in 12s forwards;
+  }
+
+  .line-5 {
+    animation: cardIn 0.55s ease-out 12.1s both;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .chip {
+    padding: 11px 15px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #3b1f0e;
+    font-size: clamp(14px, 2.8vw, 27px);
+    font-weight: 850;
+    box-shadow: 0 8px 28px rgba(59, 31, 14, 0.18);
+  }
+
+  .cta {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 16px 22px;
+    border-radius: 18px;
+    background: #fff;
+    color: #3b1f0e;
+    font-size: clamp(17px, 3.3vw, 34px);
+    font-weight: 950;
+    box-shadow: 0 14px 42px rgba(0, 0, 0, 0.26);
+  }
+
+  .url {
+    margin-top: 13px;
+    color: #fff6e8;
+    font-size: clamp(15px, 2.9vw, 29px);
+    font-weight: 800;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 8px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.24);
+  }
+
+  .progress::after {
+    content: "";
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: #f5c87a;
+    transform-origin: left center;
+    animation: progress 15s linear forwards;
+  }
+
+  @keyframes slowZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.075) translateY(-1.5%); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(22px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes cardOut {
+    to { opacity: 0; transform: translateY(-16px) scale(1.01); }
+  }
+
+  @keyframes progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" aria-label="WorkMate Australia TikTok vertical ad preview">
+    <div class="bg"></div>
+    <div class="shade"></div>
+
+    <div class="brand">
+      <div class="brand-name">WorkMate Australia</div>
+      <div class="free-pill">$0 to post</div>
+    </div>
+
+    <section class="line line-1">
+      <h1>Still hiring through posts and group chats?</h1>
+    </section>
+
+    <section class="line line-2">
+      <h2>Meet WorkMate Australia</h2>
+      <p>Free hospitality hiring in Sydney.</p>
+    </section>
+
+    <section class="line line-3">
+      <h2>Post jobs. Browse staff. DM directly.</h2>
+      <div class="chips">
+        <span class="chip">Cafe</span>
+        <span class="chip">Restaurant</span>
+        <span class="chip">Bar</span>
+      </div>
+    </section>
+
+    <section class="line line-4">
+      <h2>Built for Sydney hospitality</h2>
+      <p>Working holiday makers and international students, ready for shifts.</p>
+    </section>
+
+    <section class="line line-5">
+      <h2>Start hiring for free today</h2>
+      <div class="cta">Open WorkMate Australia</div>
+      <div class="url">workmate-three.vercel.app</div>
+    </section>
+
+    <div class="progress"></div>
+  </main>
+</body>
+</html>

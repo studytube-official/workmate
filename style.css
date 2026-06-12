@@ -166,6 +166,79 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
   transform: translateY(-4px);
 }
 
+/* ── Guest Banner ── */
+.guest-banner {
+  position: fixed; left: 50%; bottom: 90px;
+  transform: translateX(-50%);
+  width: min(720px, 94%);
+  background: rgba(18,18,18,0.92);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  z-index: 9998;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.guest-banner span {
+  font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35;
+}
+.guest-banner .primary {
+  font-size: 12px; padding: 6px 14px; white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── Role selection overlay ── */
+.role-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(20,16,12,0.55);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.role-card {
+  width: min(420px, 100%);
+  background: var(--bg3, #fff);
+  border: 1px solid var(--border2);
+  border-radius: 22px;
+  padding: 28px 22px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+.role-logo {
+  width: 52px; height: 52px; margin: 0 auto 14px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 18px; color: #fff;
+  background: linear-gradient(135deg, #7c3f12, #c2692a);
+}
+.role-card h2 { margin: 0 0 4px; font-size: 20px; }
+.role-card .muted { margin: 0 0 18px; }
+.role-option {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  text-align: left; padding: 16px; margin-top: 12px;
+  border: 1.5px solid var(--border2); border-radius: 16px;
+  background: transparent; cursor: pointer;
+  transition: border-color .15s, transform .1s, background .15s;
+}
+.role-option:hover {
+  border-color: #c2692a; background: rgba(194,105,42,0.06);
+  transform: translateY(-1px);
+}
+.role-emoji { font-size: 28px; flex-shrink: 0; }
+.role-text { display: flex; flex-direction: column; gap: 3px; }
+.role-text b { font-size: 16px; }
+.role-text small { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+
+/* ── Profile privacy note ── */
+.privacy-note {
+  margin-top: 14px; padding: 12px 14px;
+  background: rgba(61,107,74,0.1);
+  border: 1px solid rgba(61,107,74,0.22);
+  border-radius: 12px;
+  font-size: 12.5px; font-weight: 600; color: #3d6b4a; line-height: 1.4;
+}
+
 /* ── Bottom nav ── */
 .bottom {
   position: fixed; left: 50%; bottom: 16px;
@@ -275,6 +348,28 @@ input:focus, select:focus, textarea:focus {
 select option { background: var(--bg3); color: var(--text) }
 
 .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 }
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 0 2px;
+  margin: 0 -2px;
+}
+.filter-chips button {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--bg3);
+  color: var(--muted2);
+  border: 1px solid var(--border2);
+  box-shadow: none;
+  font-size: 12px;
+}
+.filter-chips button.active {
+  background: linear-gradient(135deg, #7c3f12, #c2692a);
+  color: #fdf9f5;
+  border-color: transparent;
+}
 .form { display: grid; gap: 14px }
 label {
   font-weight: 700; color: var(--muted2);
@@ -366,6 +461,37 @@ textarea { min-height: 120px; resize: vertical }
   font-weight: 600; font-size: 14px;
 }
 .toast button { margin-left: 4px; padding: 4px 10px; background: rgba(255,255,255,0.12); color: #faf8f4; border-color: transparent }
+
+.demo-rec-bar {
+  position: fixed;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  z-index: 99997;
+  width: min(520px, calc(100% - 28px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(30,19,10,0.88);
+  color: #faf8f4;
+  border: 1px solid rgba(194,105,42,0.32);
+  box-shadow: 0 10px 30px rgba(30,19,10,0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.demo-rec-bar b { font-size: 12px; white-space: nowrap }
+.demo-rec-bar span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f5d8b2;
+  font-size: 11px;
+  font-weight: 700;
+}
 
 /* ── Section titles ── */
 .sectionTitle {
