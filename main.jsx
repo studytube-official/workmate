@@ -962,7 +962,7 @@ function Login({ setPage, notify }) {
         <div className="form">
           {tab === 'signup' && (
             <label>{t.f_displayname}
-              <input value={name} onChange={e => setName(e.target.value)} placeholder={lang === 'ja' ? '山田 太郎' : 'Taro Yamada'} />
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="Alex Smith" />
             </label>
           )}
           <label>{t.f_email}
@@ -1255,7 +1255,7 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
       <h1>{t.post_title}</h1>
       <section className="card form">
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
-        <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
+        <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Harbour View Cafe" /></label>
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
         <MapPreview query={job.location} hint={t.map_verify_hint} />
         <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
@@ -1786,7 +1786,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
           {role !== 'employer' && (
             <div className="privacy-note">🔒 {t.profile_privacy_note}</div>
           )}
-          <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Haru Yamamoto" /></label>
+          <label>{t.f_name}<input value={form.display_name} onChange={e => upd('display_name', e.target.value)} placeholder="Alex Smith" /></label>
           <label>{t.f_eng_level}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
               <option>Basic</option><option>Pre-intermediate</option><option>Intermediate</option>
