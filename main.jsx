@@ -61,6 +61,7 @@ const T = {
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
     f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
     f_categories:'職種（最大5つ選択）',
+    map_verify_hint:'ピンが正しい場所にあるか確認し、必要なら住所を調整してください。',
     save_btn:'保存する', saving:'保存中...',
     required_err:'求人タイトルと店名は必須です。', job_saved:'求人を保存しました。',
     find_staff:'スタッフを探す', staff_desc:'シドニーで働くスタッフ候補を探せます。',
@@ -147,6 +148,7 @@ const T = {
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
     f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
     f_categories:'Job Type (up to 5)',
+    map_verify_hint:'Check the pin is correct — adjust the address if needed.',
     save_btn:'Save', saving:'Saving...',
     required_err:'Job title and business name are required.', job_saved:'Job posted successfully.',
     find_staff:'Find Staff', staff_desc:'Browse staff candidates available in Sydney.',
@@ -368,6 +370,36 @@ function CategoryPicker({ value, onChange, max = 5 }) {
           ✓ {selected.length}/{max}{lang === 'ja' ? '件選択中' : ' selected'}: {selected.map(c => catLabel(c, lang)).join(lang === 'ja' ? '・' : ', ')}
         </p>
       )}
+    </div>
+  )
+}
+
+// ─── 地図プレビュー（住所入力中に自動表示）───────
+function MapPreview({ query, hint }) {
+  const [liveQuery, setLiveQuery] = useState('')
+  const timer = useRef(null)
+  useEffect(() => {
+    clearTimeout(timer.current)
+    if (!query?.trim()) { setLiveQuery(''); return }
+    timer.current = setTimeout(() => setLiveQuery(query.trim()), 900)
+    return () => clearTimeout(timer.current)
+  }, [query])
+  if (!liveQuery) return null
+  // シドニー以外の同名地名に飛ばないよう、地域指定がなければ Sydney を補う
+  const lowerQ = liveQuery.toLowerCase()
+  const mapQuery = (lowerQ.includes('sydney') || lowerQ.includes('nsw') || lowerQ.includes('australia'))
+    ? liveQuery
+    : `${liveQuery}, Sydney NSW Australia`
+  return (
+    <div className="map-preview">
+      <iframe
+        key={mapQuery}
+        title="map-preview"
+        src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed&hl=en`}
+        loading="lazy"
+        allowFullScreen
+      />
+      <p className="map-preview-hint">📍 {hint}</p>
     </div>
   )
 }
@@ -1153,6 +1185,7 @@ function PostJob({ setPage, loadJobs, notify, session }) {
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Sakura Kitchen" /></label>
         <label>{t.f_location}<input value={job.location} onChange={e => update('location', e.target.value)} placeholder="Sydney CBD" /></label>
+        <MapPreview query={job.location} hint={t.map_verify_hint} />
         <label>{t.f_salary}<input value={job.salary} onChange={e => update('salary', e.target.value)} placeholder="$28/h" /></label>
         <label>{t.f_categories}
           <CategoryPicker value={job.categories} onChange={v => update('categories', v)} max={5} />
@@ -1210,6 +1243,7 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
           <label>{t.f_title}<input value={form.title} onChange={e => upd('title', e.target.value)} /></label>
           <label>{t.f_company}<input value={form.company} onChange={e => upd('company', e.target.value)} /></label>
           <label>{t.f_location}<input value={form.location} onChange={e => upd('location', e.target.value)} /></label>
+          <MapPreview query={form.location} hint={t.map_verify_hint} />
           <label>{t.f_salary}<input value={form.salary} onChange={e => upd('salary', e.target.value)} /></label>
           <label>{t.f_eng}
             <select value={form.english_level} onChange={e => upd('english_level', e.target.value)}>
