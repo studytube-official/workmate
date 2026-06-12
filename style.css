@@ -363,6 +363,44 @@ input:focus, select:focus, textarea:focus {
 select option { background: var(--bg3); color: var(--text) }
 
 .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 }
+.filter-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+.filter-toggle,
+.filter-clear {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  box-shadow: none;
+}
+.filter-toggle {
+  background: var(--bg3);
+  color: var(--text);
+  border-color: var(--border2);
+}
+.filter-clear {
+  background: transparent;
+  color: var(--muted2);
+}
+.filter-panel {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(250,248,244,0.72);
+}
+.filter-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.filter-summary .muted { margin: 0; font-size: 13px }
+.filter-summary .primary { padding: 8px 14px; font-size: 12px; white-space: nowrap }
 .filter-chips {
   display: flex;
   gap: 8px;
@@ -385,6 +423,12 @@ select option { background: var(--bg3); color: var(--text) }
   color: #fdf9f5;
   border-color: transparent;
 }
+.filter-chips.all-tags {
+  flex-wrap: wrap;
+  overflow-x: visible;
+  padding-bottom: 0;
+}
+.filter-chips.all-tags button { white-space: normal }
 .form { display: grid; gap: 14px }
 label {
   font-weight: 700; color: var(--muted2);

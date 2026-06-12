@@ -342,6 +342,7 @@ const uniqueCatOptions = cats => {
     return true
   })
 }
+const ALL_CATEGORY_OPTIONS = uniqueCatOptions(JOB_CATEGORIES.flatMap(g => g.items.map(({ en }) => en)))
 
 // 各行: [ja表示, en表示, ...旧データの別表記]
 const ENG_PAIRS = [['英語初級OK','Basic English OK','basic','Basic'], ['英語ほぼ不要','No English needed'], ['Intermediate以上','Intermediate+']]
@@ -1044,37 +1045,56 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, english, setEnglish, jobCategory, setJobCategory, setPage, isSaved, toggleSave }) {
   const { t, lang } = useT()
-  const categories = useMemo(() => uniqueCatOptions(allJobs.flatMap(j => parseCats(j.categories))).slice(0, 14), [allJobs])
+  const categories = ALL_CATEGORY_OPTIONS
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const activeFilters = [area, english, jobCategory].filter(Boolean).length
+  const clearFilters = () => {
+    setArea('')
+    setEnglish('')
+    setJobCategory('')
+  }
   return (
     <main>
       <header className="sticky">
         <h1>Find Shops Hiring</h1>
         <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>Filter by shop name, role, area, and English level.</p>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search shop, role, barista, kitchen..." />
-        <div className="filters">
-          <select value={area} onChange={e => setArea(e.target.value)}>
-            <option value="">{t.all_areas}</option>
-            <option>Sydney</option><option>Sydney CBD</option><option>CBD</option>
-            <option>Bondi</option><option>Chatswood</option>
-          </select>
-          <select value={english} onChange={e => setEnglish(e.target.value)}>
-            <option value="">{t.eng_cond}</option>
-            <option>{t.eng_basic}</option>
-            <option>{t.eng_none}</option>
-            <option>{t.eng_inter}</option>
-          </select>
+        <div className="filter-toolbar">
+          <button className="filter-toggle" onClick={() => setFiltersOpen(v => !v)} aria-expanded={filtersOpen}>
+            {filtersOpen ? 'Hide Filters' : 'Filters'}{activeFilters ? ` (${activeFilters})` : ''}
+          </button>
+          {activeFilters > 0 && <button className="filter-clear" onClick={clearFilters}>Clear</button>}
         </div>
-        <select value={jobCategory} onChange={e => setJobCategory(e.target.value)}>
-          <option value="">All job types</option>
-          {categories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
-        </select>
-        <div className="filter-chips">
-          {['Barista','Kitchen Hand','Waiter / Waitress','Bartender','Sushi Restaurant'].map(c => (
-            <button key={c} className={sameCat(jobCategory, c) ? 'active' : ''} onClick={() => setJobCategory(sameCat(jobCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
-          ))}
+        {filtersOpen && (
+          <div className="filter-panel">
+            <div className="filters">
+              <select value={area} onChange={e => setArea(e.target.value)}>
+                <option value="">{t.all_areas}</option>
+                <option>Sydney</option><option>Sydney CBD</option><option>CBD</option>
+                <option>Bondi</option><option>Chatswood</option>
+              </select>
+              <select value={english} onChange={e => setEnglish(e.target.value)}>
+                <option value="">{t.eng_cond}</option>
+                <option>{t.eng_basic}</option>
+                <option>{t.eng_none}</option>
+                <option>{t.eng_inter}</option>
+              </select>
+            </div>
+            <select value={jobCategory} onChange={e => setJobCategory(e.target.value)}>
+              <option value="">All job types</option>
+              {categories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
+            </select>
+            <div className="filter-chips all-tags">
+              {categories.map(c => (
+                <button key={c} className={sameCat(jobCategory, c) ? 'active' : ''} onClick={() => setJobCategory(sameCat(jobCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="filter-summary">
+          <p className="muted"><b>{jobs.length}</b> shops match your filters</p>
+          <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
         </div>
-        <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{jobs.length}</b> shops match your filters</p>
-        <button className="primary" onClick={() => setPage('post')}>{t.post_btn}</button>
       </header>
       <JobGrid jobs={jobs} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
     </main>
@@ -1403,7 +1423,13 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
-  const staffCategories = useMemo(() => uniqueCatOptions(staffList.flatMap(s => parseCats(s.job_categories))).slice(0, 14), [staffList])
+  const staffCategories = ALL_CATEGORY_OPTIONS
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const activeFilters = [staffCategory, staffEnglish].filter(Boolean).length
+  const clearFilters = () => {
+    setStaffCategory('')
+    setStaffEnglish('')
+  }
   const filteredStaff = useMemo(() => staffList.filter(s => {
     const categoryTerms = parseCats(s.job_categories).flatMap(catSearchTerms)
     const tx = [
@@ -1456,24 +1482,36 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
         <h1>{t.find_staff}</h1>
         <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>{t.staff_desc}</p>
         <input value={staffSearch} onChange={e => setStaffSearch(e.target.value)} placeholder="Search name, barista, kitchen, WHV..." />
-        <div className="filters">
-          <select value={staffCategory} onChange={e => setStaffCategory(e.target.value)}>
-            <option value="">All preferred roles</option>
-            {staffCategories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
-          </select>
-          <select value={staffEnglish} onChange={e => setStaffEnglish(e.target.value)}>
-            <option value="">Any English level</option>
-            <option>{t.eng_basic}</option>
-            <option>{t.eng_none}</option>
-            <option>{t.eng_inter}</option>
-          </select>
+        <div className="filter-toolbar">
+          <button className="filter-toggle" onClick={() => setFiltersOpen(v => !v)} aria-expanded={filtersOpen}>
+            {filtersOpen ? 'Hide Filters' : 'Filters'}{activeFilters ? ` (${activeFilters})` : ''}
+          </button>
+          {activeFilters > 0 && <button className="filter-clear" onClick={clearFilters}>Clear</button>}
         </div>
-        <div className="filter-chips">
-          {['Barista','Kitchen Hand','Floor Staff','Waiter / Waitress','Bartender'].map(c => (
-            <button key={c} className={sameCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(sameCat(staffCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
-          ))}
+        {filtersOpen && (
+          <div className="filter-panel">
+            <div className="filters">
+              <select value={staffCategory} onChange={e => setStaffCategory(e.target.value)}>
+                <option value="">All preferred roles</option>
+                {staffCategories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
+              </select>
+              <select value={staffEnglish} onChange={e => setStaffEnglish(e.target.value)}>
+                <option value="">Any English level</option>
+                <option>{t.eng_basic}</option>
+                <option>{t.eng_none}</option>
+                <option>{t.eng_inter}</option>
+              </select>
+            </div>
+            <div className="filter-chips all-tags">
+              {staffCategories.map(c => (
+                <button key={c} className={sameCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(sameCat(staffCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="filter-summary">
+          <p className="muted"><b>{filteredStaff.length}</b> staff candidates match your filters</p>
         </div>
-        <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{filteredStaff.length}</b> staff candidates match your filters</p>
       </header>
       {loading && <SkeletonGrid />}
       {!loading && !filteredStaff.length && <div className="empty">{t.no_staff}</div>}
