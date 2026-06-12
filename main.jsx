@@ -309,6 +309,22 @@ const JOB_CATEGORIES = [
 const parseCats  = s => s ? s.split(',').map(x => x.trim()).filter(Boolean) : []
 const formatCats = a => a.join(',')
 
+// データはja正規で保存し、enモードでは英語ラベルに変換して表示
+// 旧マスタで保存された値（DBに残存）は個別エイリアスで対応
+const CAT_EN = {
+  'キッチン・厨房':'Kitchen', 'レストラン':'Restaurant',
+  ...Object.fromEntries(JOB_CATEGORIES.flatMap(g => g.items.map(({ ja, en }) => [ja, en]))),
+}
+const catLabel = (c, lang) => (lang === 'ja' ? c : (CAT_EN[c] || c))
+
+// 各行: [ja表示, en表示, ...旧データの別表記]
+const ENG_PAIRS = [['英語初級OK','Basic English OK','basic','Basic'], ['英語ほぼ不要','No English needed'], ['Intermediate以上','Intermediate+']]
+const engLabel = (v, lang) => { for (const p of ENG_PAIRS) { if (p.includes(v)) return lang === 'ja' ? p[0] : p[1] } return v }
+const sameEng  = (a, b) => a === b || ENG_PAIRS.some(p => p.includes(a) && p.includes(b))
+
+const DAY_EN = { '月':'Mon', '火':'Tue', '水':'Wed', '木':'Thu', '金':'Fri', '土':'Sat', '日':'Sun' }
+const availLabel = (v, lang) => (!v || lang === 'ja') ? v : v.replace(/[月火水木金土日]/g, d => DAY_EN[d]).replace(/・/g, ' / ').replace('〜', '–')
+
 // CategoryPicker コンポーネント
 function CategoryPicker({ value, onChange, max = 5 }) {
   const { lang } = useT()
@@ -349,7 +365,7 @@ function CategoryPicker({ value, onChange, max = 5 }) {
       ))}
       {selected.length > 0 && (
         <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>
-          ✓ {selected.length}/{max}件選択中: {selected.join('・')}
+          ✓ {selected.length}/{max}{lang === 'ja' ? '件選択中' : ' selected'}: {selected.map(c => catLabel(c, lang)).join(lang === 'ja' ? '・' : ', ')}
         </p>
       )}
     </div>
@@ -540,7 +556,7 @@ function App() {
     const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description, j.categories].join(' ').toLowerCase()
     return (!search || tx.includes(search.toLowerCase()))
         && (!area    || j.location      === area)
-        && (!english || j.english_level === english)
+        && (!english || sameEng(j.english_level, english))
         && (!jobCategory || parseCats(j.categories).includes(jobCategory))
   }), [jobs, search, area, english, jobCategory])
 
@@ -799,7 +815,7 @@ function RoleBanner({ icon, text, btn, onClick }) {
 //  Login
 // ═════════════════════════════════════════════
 function Login({ setPage, notify }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [tab,      setTab]      = useState('signup')
   const [name,     setName]     = useState('')
   const [email,    setEmail]    = useState('')
@@ -863,14 +879,14 @@ function Login({ setPage, notify }) {
         <div className="form">
           {tab === 'signup' && (
             <label>{t.f_displayname}
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="山田 太郎" />
+              <input value={name} onChange={e => setName(e.target.value)} placeholder={lang === 'ja' ? '山田 太郎' : 'Taro Yamada'} />
             </label>
           )}
           <label>{t.f_email}
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
           </label>
           <label>{t.f_password}
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="6文字以上" />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={lang === 'ja' ? '6文字以上' : '6+ characters'} />
           </label>
           <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16, marginTop:4 }}
             onClick={tab==='signup' ? handleSignup : handleLogin} disabled={busy}>
@@ -945,7 +961,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 //  Jobs
 // ═════════════════════════════════════════════
 function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, english, setEnglish, jobCategory, setJobCategory, setPage, isSaved, toggleSave }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const categories = useMemo(() => Array.from(new Set(allJobs.flatMap(j => parseCats(j.categories)))).slice(0, 14), [allJobs])
   return (
     <main>
@@ -968,11 +984,11 @@ function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, englis
         </div>
         <select value={jobCategory} onChange={e => setJobCategory(e.target.value)}>
           <option value="">All job types</option>
-          {categories.map(c => <option key={c}>{c}</option>)}
+          {categories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
         </select>
         <div className="filter-chips">
-          {['Barista','Kitchen Hand','Waiter / Waitress','Bartender','Sushi Restaurant'].map(c => (
-            <button key={c} className={jobCategory === c ? 'active' : ''} onClick={() => setJobCategory(jobCategory === c ? '' : c)}>{c}</button>
+          {['バリスタ','キッチンハンド','ウェイター・ウェイトレス','バーテンダー','寿司・寿司屋'].map(c => (
+            <button key={c} className={jobCategory === c ? 'active' : ''} onClick={() => setJobCategory(jobCategory === c ? '' : c)}>{catLabel(c, lang)}</button>
           ))}
         </div>
         <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{jobs.length}</b> shops match your filters</p>
@@ -993,7 +1009,7 @@ function JobGrid({ jobs, openJob, isSaved, toggleSave }) {
 }
 
 function JobCard({ job, openJob, isSaved, toggleSave }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   return (
     <article className="job" onClick={() => openJob(job)}>
       <div className="photo">{job.image_url ? <img src={job.image_url} alt={job.company} /> : '💼'}</div>
@@ -1001,8 +1017,8 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
       <p className="muted">{job.title}</p>
       <p className="muted" style={{ fontSize:13 }}>{job.location || t.loc_tbd} / {job.salary || t.salary_tbd}</p>
       <div className="tags">
-        {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{c}</span>)}
-        <span>{job.english_level || t.no_eng}</span>
+        {parseCats(job.categories).slice(0,2).map(c => <span key={c}>{catLabel(c, lang)}</span>)}
+        <span>{job.english_level ? engLabel(job.english_level, lang) : t.no_eng}</span>
         {job.is_active === false && <span style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'4px 10px', borderRadius:999, fontSize:12, fontWeight:700 }}>{t.badge_closed}</span>}
       </div>
       <div className="actions" onClick={e => e.stopPropagation()}>
@@ -1019,7 +1035,7 @@ function JobCard({ job, openJob, isSaved, toggleSave }) {
 //  JobDetail
 // ═════════════════════════════════════════════
 function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, hasApplied, openMap, session }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [showApply, setShowApply] = useState(false)
   const [applyMsg,  setApplyMsg]  = useState('')
   const [busy,      setBusy]      = useState(false)
@@ -1048,11 +1064,11 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
           </span>
         </div>
         <p className="muted">{job.title} / {job.location} / {job.salary}</p>
-        <div className="tags"><span>{job.english_level}</span><span>{job.location}</span></div>
+        <div className="tags"><span>{engLabel(job.english_level, lang)}</span><span>{job.location}</span></div>
         <p style={{ lineHeight:1.8, marginTop:12 }}>{job.description}</p>
         <div className="row"><b>{t.f_location}</b><span>{job.location}</span></div>
         <div className="row"><b>{t.f_salary}</b><span>{job.salary}</span></div>
-        <div className="row"><b>{t.f_eng}</b><span>{job.english_level}</span></div>
+        <div className="row"><b>{t.f_eng}</b><span>{engLabel(job.english_level, lang)}</span></div>
         <button onClick={() => openMap(job.location)} style={{ marginTop:12 }}>{t.view_map}</button>
 
         {showApply && (
@@ -1090,7 +1106,7 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
 
 function PostJob({ setPage, loadJobs, notify, session }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
@@ -1146,7 +1162,7 @@ function PostJob({ setPage, loadJobs, notify, session }) {
             <option>{t.eng_basic}</option><option>{t.eng_none}</option><option>{t.eng_inter}</option>
           </select>
         </label>
-        <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder="仕事内容、勤務時間、条件など..." /></label>
+        <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={lang === 'ja' ? '仕事内容、勤務時間、条件など...' : 'Job details, hours, requirements...'} /></label>
         <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
         <button className="primary" onClick={submit} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
       </section>
@@ -1288,7 +1304,7 @@ function AvailabilityPicker({ value, onChange }) {
         </select>
       </div>
       {value && (
-        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>📅 {value}</p>
+        <p style={{ margin:0, fontSize:13, color:'var(--accent)' }}>📅 {availLabel(value, lang)}</p>
       )}
     </div>
   )
@@ -1306,7 +1322,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
     const tx = [s.display_name, s.english_level, s.availability, s.visa_expiry, s.bio, s.job_categories].join(' ').toLowerCase()
     return (!staffSearch || tx.includes(staffSearch.toLowerCase()))
         && (!staffCategory || parseCats(s.job_categories).includes(staffCategory))
-        && (!staffEnglish || s.english_level === staffEnglish)
+        && (!staffEnglish || sameEng(s.english_level, staffEnglish))
   }), [staffList, staffSearch, staffCategory, staffEnglish])
 
   // 雇用主以外はアクセス不可
@@ -1344,7 +1360,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
         <div className="filters">
           <select value={staffCategory} onChange={e => setStaffCategory(e.target.value)}>
             <option value="">All preferred roles</option>
-            {staffCategories.map(c => <option key={c}>{c}</option>)}
+            {staffCategories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
           </select>
           <select value={staffEnglish} onChange={e => setStaffEnglish(e.target.value)}>
             <option value="">Any English level</option>
@@ -1354,8 +1370,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
           </select>
         </div>
         <div className="filter-chips">
-          {['Barista','Kitchen Hand','Floor Staff','Waiter / Waitress','Bartender'].map(c => (
-            <button key={c} className={staffCategory === c ? 'active' : ''} onClick={() => setStaffCategory(staffCategory === c ? '' : c)}>{c}</button>
+          {['バリスタ','キッチンハンド','フロアスタッフ','ウェイター・ウェイトレス','バーテンダー'].map(c => (
+            <button key={c} className={staffCategory === c ? 'active' : ''} onClick={() => setStaffCategory(staffCategory === c ? '' : c)}>{catLabel(c, lang)}</button>
           ))}
         </div>
         <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{filteredStaff.length}</b> staff candidates match your filters</p>
@@ -1369,13 +1385,13 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
-            {s.english_level && <p className="muted">🗣 {s.english_level}</p>}
-            {s.availability   && <p className="muted">📅 {s.availability}</p>}
+            {s.english_level && <p className="muted">🗣 {engLabel(s.english_level, lang)}</p>}
+            {s.availability   && <p className="muted">📅 {availLabel(s.availability, lang)}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
             {s.bio && <p className="muted" style={{ fontSize:13, marginTop:6 }}>{s.bio.slice(0,80)}{s.bio.length>80?'…':''}</p>}
             <div className="tags">
-              {s.english_level && <span>{s.english_level}</span>}
-              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{c}</span>)}
+              {s.english_level && <span>{engLabel(s.english_level, lang)}</span>}
+              {parseCats(s.job_categories).slice(0,3).map(c => <span key={c}>{catLabel(c, lang)}</span>)}
             </div>
             <button className="primary" onClick={() => { if (!session){setPage('login');return}; startStaffDM(s.id, s.display_name||'Staff') }}>
               {t.contact}
@@ -1517,7 +1533,7 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 function Profile({ setPage, session, profile, setProfile, notify, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob, role }) {
-  const { t } = useT()
+  const { t, lang } = useT()
   const [form, setForm]       = useState({ display_name:'', english_level:'Basic', availability:'', bio:'', visa_expiry:'', job_categories:'' })
   const [busy, setBusy]       = useState(false)
   const [tab,  setTab]        = useState(() => new URLSearchParams(window.location.search).get('demo') === '1' ? 'posted' : 'profile')
@@ -1745,7 +1761,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
                                 <div style={{ flex:1, minWidth:0 }}>
                                   <b>{p.display_name || 'Anonymous'}</b>
                                   <p className="muted" style={{ fontSize:12, margin:0 }}>
-                                    {p.english_level||t.not_set} ／ {p.availability||t.not_set}
+                                    {p.english_level ? engLabel(p.english_level, lang) : t.not_set} ／ {p.availability ? availLabel(p.availability, lang) : t.not_set}
                                   </p>
                                 </div>
                                 <span style={statusStyle(app.status)}>
