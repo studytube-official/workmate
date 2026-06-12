@@ -57,7 +57,7 @@ const T = {
     view_map:'📍 Google Mapsで見る', dm_btn:'💬 DMする',
     badge_active:'募集中', badge_closed:'募集終了',
     post_title:'求人を投稿する', post_login_title:'求人投稿にはログインが必要です',
-    post_login_desc:'Googleアカウントでログインしてください。',
+    post_login_desc:'ログインして求人を投稿してください。',
     f_title:'求人タイトル *', f_company:'店名 *', f_location:'場所',
     f_salary:'時給', f_eng:'英語条件', f_desc:'仕事内容', f_img:'画像',
     f_categories:'職種（最大5つ選択）',
@@ -85,13 +85,12 @@ const T = {
     status_updated:'求人ステータスを更新しました', post_new:'＋ 新しい求人を投稿',
     login_title:'WorkMateにログイン',
     login_sub:'シドニーで働く留学生のためのジョブマッチングアプリ',
-    login_google:'Googleでログイン', guest:'← ゲストとして続ける',
+    guest:'← ゲストとして続ける',
     login_profile:'ログインしてプロフィールを作成',
     login_profile_desc:'求人保存・応募履歴がここに表示されます。',
     signup_tab:'新規登録', login_tab:'ログイン',
     f_email:'メールアドレス', f_password:'パスワード', f_displayname:'名前（表示名）',
     signup_btn:'アカウントを作成', login_btn:'ログイン',
-    or_google:'または',
     err_required:'名前・メール・パスワードを入力してください',
     err_password_short:'パスワードは6文字以上にしてください',
     signup_ok:'アカウントを作成しました！',
@@ -144,7 +143,7 @@ const T = {
     view_map:'📍 View on Google Maps', dm_btn:'💬 Message',
     badge_active:'Hiring', badge_closed:'Closed',
     post_title:'Post a Job', post_login_title:'Login required to post',
-    post_login_desc:'Sign in with Google to post job listings.',
+    post_login_desc:'Log in to post job listings.',
     f_title:'Job Title *', f_company:'Business Name *', f_location:'Location',
     f_salary:'Hourly Rate', f_eng:'English Requirement', f_desc:'Job Description', f_img:'Photo',
     f_categories:'Job Type (up to 5)',
@@ -173,13 +172,12 @@ const T = {
     status_updated:'Job status updated', post_new:'＋ Post New Job',
     login_title:'Sign in to WorkMate',
     login_sub:'Job matching for international students in Sydney',
-    login_google:'Sign in with Google', guest:'← Continue as guest',
+    guest:'← Continue as guest',
     login_profile:'Log in to create your profile',
     login_profile_desc:'View saved jobs and application history here.',
     signup_tab:'Sign Up', login_tab:'Log In',
     f_email:'Email', f_password:'Password', f_displayname:'Display Name',
     signup_btn:'Create Account', login_btn:'Log In',
-    or_google:'or',
     err_required:'Please fill in name, email and password',
     err_password_short:'Password must be at least 6 characters',
     signup_ok:'Account created!',
@@ -700,14 +698,6 @@ function App() {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc || 'Sydney')}`, '_blank')
   }
 
-  async function signInGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider:'google',
-      options:{ redirectTo: window.location.origin }
-    })
-    if (error) notify(error.message)
-  }
-
   async function signOut() {
     await supabase.auth.signOut(); setPage('home'); notify(t.toast_logout)
   }
@@ -727,13 +717,13 @@ function App() {
 
       {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
       {page === 'jobs'    && <Jobs jobs={filteredJobs} allJobs={jobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} jobCategory={jobCategory} setJobCategory={setJobCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
-      {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} signInGoogle={signInGoogle} />}
+      {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} demoStaff={isDemo ? demoStaff : null} staffSearch={staffSearch} setStaffSearch={setStaffSearch} staffCategory={staffCategory} setStaffCategory={setStaffCategory} staffEnglish={staffEnglish} setStaffEnglish={setStaffEnglish} />}
-      {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} signInGoogle={signInGoogle} />}
+      {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} />}
       {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={lang} demoMessages={isDemo ? demoMessages : null} />}
-      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signInGoogle={signInGoogle} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} role={role} />}
-      {page === 'login'   && <Login signInGoogle={signInGoogle} setPage={setPage} notify={notify} />}
+      {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} role={role} />}
+      {page === 'login'   && <Login setPage={setPage} notify={notify} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
@@ -808,7 +798,7 @@ function RoleBanner({ icon, text, btn, onClick }) {
 // ═════════════════════════════════════════════
 //  Login
 // ═════════════════════════════════════════════
-function Login({ signInGoogle, setPage, notify }) {
+function Login({ setPage, notify }) {
   const { t } = useT()
   const [tab,      setTab]      = useState('signup')
   const [name,     setName]     = useState('')
@@ -888,16 +878,6 @@ function Login({ signInGoogle, setPage, notify }) {
           </button>
         </div>
 
-        <div style={{ display:'flex', alignItems:'center', gap:12, margin:'20px 0', color:'var(--muted)' }}>
-          <div style={{ flex:1, height:1, background:'var(--border)' }} />
-          <span style={{ fontSize:13 }}>{t.or_google}</span>
-          <div style={{ flex:1, height:1, background:'var(--border)' }} />
-        </div>
-
-        <button onClick={signInGoogle} style={{ width:'100%', padding:'13px', display:'flex', alignItems:'center', justifyContent:'center', gap:10, fontSize:15 }}>
-          <GoogleIcon /> {t.login_google}
-        </button>
-
         <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:12, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
           {t.guest}
         </button>
@@ -946,7 +926,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           <p style={{ fontSize:32, marginBottom:8 }}>🔑</p>
           <h2>{t.login_cta_title}</h2>
           <p className="muted">{t.login_cta_desc}</p>
-          <button className="primary" onClick={() => setPage('login')}>{t.login_google}</button>
+          <button className="primary" onClick={() => setPage('login')}>{t.login_btn}</button>
         </section>
       )}
       <Section title={t.section_nearby}>
@@ -1109,7 +1089,7 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 // ═════════════════════════════════════════════
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
 
-function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
+function PostJob({ setPage, loadJobs, notify, session }) {
   const { t } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
@@ -1120,7 +1100,7 @@ function PostJob({ setPage, loadJobs, notify, session, signInGoogle }) {
       <p style={{ fontSize:48 }}>🔒</p>
       <h2>{t.post_login_title}</h2>
       <p className="muted" style={{ marginBottom:20 }}>{t.post_login_desc}</p>
-      <button className="primary" onClick={signInGoogle}>{t.login_google}</button>
+      <button className="primary" onClick={() => setPage('login')}>{t.login_btn}</button>
       <br />
       <button style={{ marginTop:12, background:'transparent', border:'none', color:'var(--muted2)' }} onClick={() => setPage('jobs')}>← {t.nav_jobs}</button>
     </main>
@@ -1410,13 +1390,13 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
 // ═════════════════════════════════════════════
 //  DM
 // ═════════════════════════════════════════════
-function DM({ conversations, setActiveConvId, setPage, session, signInGoogle }) {
+function DM({ conversations, setActiveConvId, setPage, session }) {
   const { t, lang } = useT()
   if (!session) return (
     <main style={{ textAlign:'center', paddingTop:40 }}>
       <p style={{ fontSize:40 }}>💬</p>
       <h2>{t.dm_login_title}</h2>
-      <button className="primary" style={{ marginTop:16 }} onClick={signInGoogle}>{t.login_google}</button>
+      <button className="primary" style={{ marginTop:16 }} onClick={() => setPage('login')}>{t.login_btn}</button>
     </main>
   )
   return (
@@ -1534,7 +1514,7 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
 // ═════════════════════════════════════════════
 //  Profile
 // ═════════════════════════════════════════════
-function Profile({ setPage, session, profile, setProfile, notify, signInGoogle, signOut,
+function Profile({ setPage, session, profile, setProfile, notify, signOut,
                    applications, jobs, isSaved, openJob, savedJobIds, postedJobs,
                    updateAppStatus, toggleJobStatus, deleteJob, setEditingJob, role }) {
   const { t } = useT()
@@ -1820,17 +1800,6 @@ function SkeletonGrid() {
         </div>
       ))}
     </div>
-  )
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 48 48">
-      <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.5 33.7 29.2 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.6 20-21 0-1.3-.1-2.7-.4-4z"/>
-      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3.1 0 5.9 1.1 8.1 2.9l6-6C34.5 5.1 29.5 3 24 3 16.3 3 9.7 7.9 6.3 14.7z"/>
-      <path fill="#4CAF50" d="M24 45c5.2 0 10-1.9 13.7-5.1L31.5 35C29.5 36.6 27 37.5 24 37.5c-5.2 0-9.5-3.3-11.3-7.9L6 34.4C9.3 40.5 16.1 45 24 45z"/>
-      <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.6-2.7 4.7-5 6L36.7 38C40.9 34.2 44 29.4 44 24c0-1.3-.1-2.7-.4-4z"/>
-    </svg>
   )
 }
 
