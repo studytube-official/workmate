@@ -317,7 +317,31 @@ const CAT_EN = {
   'キッチン・厨房':'Kitchen', 'レストラン':'Restaurant',
   ...Object.fromEntries(JOB_CATEGORIES.flatMap(g => g.items.map(({ ja, en }) => [ja, en]))),
 }
-const catLabel = (c, lang) => (lang === 'ja' ? c : (CAT_EN[c] || c))
+const CAT_JA = Object.fromEntries(JOB_CATEGORIES.flatMap(g => g.items.map(({ ja, en }) => [en, ja])))
+const catEnglish = c => CAT_EN[c] || c || ''
+const catLabel = (c, lang) => (lang === 'ja' ? (CAT_JA[c] || c) : catEnglish(c))
+const catKey = c => catEnglish(c)
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, ' ')
+  .trim()
+const sameCat = (a, b) => {
+  if (!a || !b) return false
+  const ak = catKey(a)
+  const bk = catKey(b)
+  return a === b || (ak && bk && (ak === bk || ak.includes(bk) || bk.includes(ak)))
+}
+const catSearchTerms = c => [c, catEnglish(c), CAT_JA[catEnglish(c)] || ''].filter(Boolean)
+const uniqueCatOptions = cats => {
+  const seen = new Set()
+  return cats.map(catEnglish).filter(c => {
+    const key = catKey(c)
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
 
 // 各行: [ja表示, en表示, ...旧データの別表記]
 const ENG_PAIRS = [['英語初級OK','Basic English OK','basic','Basic'], ['英語ほぼ不要','No English needed'], ['Intermediate以上','Intermediate+']]
@@ -606,11 +630,16 @@ function App() {
 
   const filteredJobs = useMemo(() => jobs.filter(j => {
     if (j.is_active === false) return false
-    const tx = [j.title, j.company, j.location, j.salary, j.english_level, j.description, j.categories].join(' ').toLowerCase()
+    const categoryTerms = parseCats(j.categories).flatMap(catSearchTerms)
+    const tx = [
+      j.title, j.company, j.location, j.salary, j.english_level, j.description, j.categories,
+      engLabel(j.english_level, 'en'), engLabel(j.english_level, 'ja'),
+      ...categoryTerms,
+    ].join(' ').toLowerCase()
     return (!search || tx.includes(search.toLowerCase()))
         && (!area    || j.location      === area)
         && (!english || sameEng(j.english_level, english))
-        && (!jobCategory || parseCats(j.categories).includes(jobCategory))
+        && (!jobCategory || parseCats(j.categories).some(c => sameCat(c, jobCategory)))
   }), [jobs, search, area, english, jobCategory])
 
   // ── アクション ─────────────────────────────
@@ -786,7 +815,7 @@ function App() {
 
       {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
       {page === 'jobs'    && <Jobs jobs={filteredJobs} allJobs={jobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} jobCategory={jobCategory} setJobCategory={setJobCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
-      {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} notify={notify} session={session} />}
+      {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} notify={notify} session={session} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} demoStaff={isDemo ? demoStaff : null} staffSearch={staffSearch} setStaffSearch={setStaffSearch} staffCategory={staffCategory} setStaffCategory={setStaffCategory} staffEnglish={staffEnglish} setStaffEnglish={setStaffEnglish} />}
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} />}
@@ -1015,7 +1044,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
 // ═════════════════════════════════════════════
 function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, english, setEnglish, jobCategory, setJobCategory, setPage, isSaved, toggleSave }) {
   const { t, lang } = useT()
-  const categories = useMemo(() => Array.from(new Set(allJobs.flatMap(j => parseCats(j.categories)))).slice(0, 14), [allJobs])
+  const categories = useMemo(() => uniqueCatOptions(allJobs.flatMap(j => parseCats(j.categories))).slice(0, 14), [allJobs])
   return (
     <main>
       <header className="sticky">
@@ -1040,8 +1069,8 @@ function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, englis
           {categories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
         </select>
         <div className="filter-chips">
-          {['バリスタ','キッチンハンド','ウェイター・ウェイトレス','バーテンダー','寿司・寿司屋'].map(c => (
-            <button key={c} className={jobCategory === c ? 'active' : ''} onClick={() => setJobCategory(jobCategory === c ? '' : c)}>{catLabel(c, lang)}</button>
+          {['Barista','Kitchen Hand','Waiter / Waitress','Bartender','Sushi Restaurant'].map(c => (
+            <button key={c} className={sameCat(jobCategory, c) ? 'active' : ''} onClick={() => setJobCategory(sameCat(jobCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
           ))}
         </div>
         <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{jobs.length}</b> shops match your filters</p>
@@ -1158,7 +1187,7 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 // ═════════════════════════════════════════════
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
 
-function PostJob({ setPage, loadJobs, notify, session }) {
+function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
   const { t, lang } = useT()
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
@@ -1194,7 +1223,9 @@ function PostJob({ setPage, loadJobs, notify, session }) {
       const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
       if (error) throw error
       notify(t.job_saved); setJob(emptyJob); setFile(null)
-      await loadJobs(); setPage('jobs')
+      await loadJobs()
+      await loadUserData?.()
+      setPage('staff')
     } catch(e) { notify(e.message) }
     finally { setBusy(false) }
   }
@@ -1372,13 +1403,38 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
   const { t, lang } = useT()
   const [staffList, setStaffList] = useState([])
   const [loading,   setLoading]   = useState(true)
-  const staffCategories = useMemo(() => Array.from(new Set(staffList.flatMap(s => parseCats(s.job_categories)))).slice(0, 14), [staffList])
+  const staffCategories = useMemo(() => uniqueCatOptions(staffList.flatMap(s => parseCats(s.job_categories))).slice(0, 14), [staffList])
   const filteredStaff = useMemo(() => staffList.filter(s => {
-    const tx = [s.display_name, s.english_level, s.availability, s.visa_expiry, s.bio, s.job_categories].join(' ').toLowerCase()
-    return (!staffSearch || tx.includes(staffSearch.toLowerCase()))
-        && (!staffCategory || parseCats(s.job_categories).includes(staffCategory))
+    const categoryTerms = parseCats(s.job_categories).flatMap(catSearchTerms)
+    const tx = [
+      s.display_name, s.english_level, s.availability, s.visa_expiry, s.bio, s.job_categories,
+      engLabel(s.english_level, 'en'), engLabel(s.english_level, 'ja'),
+      availLabel(s.availability, 'en'), availLabel(s.availability, 'ja'),
+      ...categoryTerms,
+    ].join(' ').toLowerCase()
+    const terms = staffSearch.toLowerCase().split(/\s+/).filter(Boolean)
+    return (!terms.length || terms.every(term => tx.includes(term)))
+        && (!staffCategory || parseCats(s.job_categories).some(c => sameCat(c, staffCategory)))
         && (!staffEnglish || sameEng(s.english_level, staffEnglish))
   }), [staffList, staffSearch, staffCategory, staffEnglish])
+
+  useEffect(() => {
+    if (!session || !isEmployer) {
+      setStaffList([])
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    if (demoStaff) {
+      setStaffList(demoStaff)
+      setLoading(false)
+      return
+    }
+    supabase.from('profiles').select('*')
+      .not('display_name', 'is', null)
+      .order('updated_at', { ascending:false }).limit(40)
+      .then(({ data }) => { setStaffList(data || []); setLoading(false) })
+  }, [session, isEmployer, demoStaff])
 
   // 雇用主以外はアクセス不可
   if (!session || !isEmployer) return (
@@ -1393,18 +1449,6 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
       </div>
     </main>
   )
-
-  useEffect(() => {
-    if (demoStaff) {
-      setStaffList(demoStaff)
-      setLoading(false)
-      return
-    }
-    supabase.from('profiles').select('*')
-      .not('display_name', 'is', null)
-      .order('updated_at', { ascending:false }).limit(40)
-      .then(({ data }) => { if (data) setStaffList(data); setLoading(false) })
-  }, [demoStaff])
 
   return (
     <main>
@@ -1425,8 +1469,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
           </select>
         </div>
         <div className="filter-chips">
-          {['バリスタ','キッチンハンド','フロアスタッフ','ウェイター・ウェイトレス','バーテンダー'].map(c => (
-            <button key={c} className={staffCategory === c ? 'active' : ''} onClick={() => setStaffCategory(staffCategory === c ? '' : c)}>{catLabel(c, lang)}</button>
+          {['Barista','Kitchen Hand','Floor Staff','Waiter / Waitress','Bartender'].map(c => (
+            <button key={c} className={sameCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(sameCat(staffCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
           ))}
         </div>
         <p className="muted" style={{ margin:'10px 0 0', fontSize:13 }}><b>{filteredStaff.length}</b> staff candidates match your filters</p>
