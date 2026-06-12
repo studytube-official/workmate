@@ -404,6 +404,27 @@ function MapPreview({ query, hint }) {
   )
 }
 
+function ImageFilePicker({ file, onChange }) {
+  const { lang } = useT()
+  const inputId = useMemo(() => `image-file-${Math.random().toString(36).slice(2)}`, [])
+  const chooseLabel = lang === 'ja' ? '写真を選択' : 'Choose Photo'
+  const emptyLabel = lang === 'ja' ? 'ファイル未選択' : 'No file selected'
+
+  return (
+    <div className="file-picker">
+      <input
+        id={inputId}
+        className="file-picker-input"
+        type="file"
+        accept="image/*"
+        onChange={e => onChange(e.target.files?.[0] || null)}
+      />
+      <label className="file-picker-button" htmlFor={inputId}>{chooseLabel}</label>
+      <span className="file-picker-name">{file?.name || emptyLabel}</span>
+    </div>
+  )
+}
+
 const fmt = (d, lang='ja') =>
   new Date(d).toLocaleString(lang === 'ja' ? 'ja-JP' : 'en-AU',
     { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' })
@@ -1196,7 +1217,7 @@ function PostJob({ setPage, loadJobs, notify, session }) {
           </select>
         </label>
         <label>{t.f_desc}<textarea value={job.description} onChange={e => update('description', e.target.value)} placeholder={lang === 'ja' ? '仕事内容、勤務時間、条件など...' : 'Job details, hours, requirements...'} /></label>
-        <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+        <label>{t.f_img}<ImageFilePicker file={file} onChange={setFile} /></label>
         <button className="primary" onClick={submit} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
       </section>
     </main>
@@ -1251,7 +1272,7 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
             </select>
           </label>
           <label>{t.f_desc}<textarea value={form.description} onChange={e => upd('description', e.target.value)} rows={4} /></label>
-          <label>{t.f_img}<input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} /></label>
+          <label>{t.f_img}<ImageFilePicker file={file} onChange={setFile} /></label>
           <button className="primary" onClick={save} disabled={busy}>{busy ? t.saving : t.save_btn}</button>
         </div>
       </div>
