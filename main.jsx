@@ -120,6 +120,12 @@ const T = {
     home_empty_jobs_btn:'プロフィールを作成',
     home_empty_saved_title:'保存した求人はここに表示されます',
     home_empty_saved_desc:'気になる求人が出たら保存して、後からすぐ確認できます。',
+    install_title:'WorkMateをホーム画面に追加',
+    install_desc:'アプリのようにすぐ開いて、求人・DM・応募者を確認できます。',
+    install_btn:'ホーム画面に追加',
+    install_ios_hint:'iPhoneの場合: 共有ボタン → 「ホーム画面に追加」',
+    install_browser_hint:'ブラウザのメニューから「ホーム画面に追加」または「アプリをインストール」を選んでください。',
+    install_not_now:'今はしない',
   },
   en: {
     nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
@@ -222,11 +228,25 @@ const T = {
     home_empty_jobs_btn:'Create profile',
     home_empty_saved_title:'Saved jobs will appear here',
     home_empty_saved_desc:'When listings go live, save roles you like and come back anytime.',
+    install_title:'Add WorkMate to your Home Screen',
+    install_desc:'Open it like an app and check jobs, messages, and applicants faster.',
+    install_btn:'Add to Home Screen',
+    install_ios_hint:'On iPhone: tap Share, then Add to Home Screen.',
+    install_browser_hint:'Use your browser menu and choose Add to Home Screen or Install app.',
+    install_not_now:'Not now',
   }
 }
 
-const LangCtx = createContext({ lang:'ja', setLang:()=>{}, t:T.ja })
+const LangCtx = createContext({ lang:'en', setLang:()=>{}, t:T.en })
 const useT = () => useContext(LangCtx)
+
+const isStandaloneApp = () =>
+  window.matchMedia?.('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true
+
+const isIosDevice = () =>
+  /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+  (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1)
 
 // ─── 職種マスタ ───────────────────────────────
 const JOB_CATEGORIES = [
@@ -517,10 +537,63 @@ function App() {
   const [activeConvId, setActiveConvId]   = useState(null)
   const [unreadCount, setUnreadCount] = useState(0)
   const [editingJob, setEditingJob]   = useState(null)
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [installDismissed, setInstallDismissed] = useState(() => localStorage.getItem('wm_install_dismissed') === '1')
+  const [isStandalone, setIsStandalone] = useState(() => isStandaloneApp())
+  const [isIos] = useState(() => isIosDevice())
 
   const notify = useCallback((msg, ms=3000) => {
     setToast(msg); setTimeout(() => setToast(''), ms)
   }, [])
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+    const canRegister =
+      window.location.protocol === 'https:' ||
+      ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    if (!canRegister) return
+    navigator.serviceWorker.register('/sw.js').catch(console.warn)
+  }, [])
+
+  useEffect(() => {
+    const onBeforeInstallPrompt = e => {
+      e.preventDefault()
+      setInstallPrompt(e)
+    }
+    const onInstalled = () => {
+      setIsStandalone(true)
+      setInstallPrompt(null)
+      localStorage.setItem('wm_install_dismissed', '1')
+      setInstallDismissed(true)
+    }
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+    window.addEventListener('appinstalled', onInstalled)
+    const media = window.matchMedia?.('(display-mode: standalone)')
+    const onDisplayModeChange = () => setIsStandalone(isStandaloneApp())
+    media?.addEventListener?.('change', onDisplayModeChange)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+      window.removeEventListener('appinstalled', onInstalled)
+      media?.removeEventListener?.('change', onDisplayModeChange)
+    }
+  }, [])
+
+  async function addToHomeScreen() {
+    if (!installPrompt) return false
+    await installPrompt.prompt()
+    const choice = await installPrompt.userChoice
+    setInstallPrompt(null)
+    if (choice?.outcome === 'accepted') {
+      localStorage.setItem('wm_install_dismissed', '1')
+      setInstallDismissed(true)
+    }
+    return choice?.outcome === 'accepted'
+  }
+
+  function dismissInstallCard() {
+    localStorage.setItem('wm_install_dismissed', '1')
+    setInstallDismissed(true)
+  }
 
   useEffect(() => {
     if (!isDemo) return
@@ -845,7 +918,14 @@ function App() {
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
       {isDemo && <DemoRecordingBar isTour={isDemoTour} />}
 
-      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} />}
+      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} installPrompt={{
+        canInstall:Boolean(installPrompt),
+        isIos,
+        isStandalone,
+        dismissed:installDismissed,
+        onInstall:addToHomeScreen,
+        onDismiss:dismissInstallCard,
+      }} />}
       {page === 'jobs'    && <Jobs jobs={filteredJobs} allJobs={jobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} jobCategory={jobCategory} setJobCategory={setJobCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} notify={notify} session={session} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
@@ -1020,7 +1100,29 @@ function Login({ setPage, notify }) {
 // ═════════════════════════════════════════════
 //  Home
 // ═════════════════════════════════════════════
-function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter, role }) {
+function AddToHomeCard({ installPrompt }) {
+  const { t } = useT()
+  if (!installPrompt || installPrompt.dismissed || installPrompt.isStandalone) return null
+  const hint = installPrompt.isIos ? t.install_ios_hint : t.install_browser_hint
+  return (
+    <section className="install-card" aria-label={t.install_title}>
+      <div className="install-icon">📱</div>
+      <div className="install-copy">
+        <b>{t.install_title}</b>
+        <p>{t.install_desc}</p>
+        <small>{hint}</small>
+      </div>
+      <div className="install-actions">
+        {installPrompt.canInstall && (
+          <button className="primary" onClick={installPrompt.onInstall}>{t.install_btn}</button>
+        )}
+        <button className="install-dismiss" onClick={installPrompt.onDismiss}>{t.install_not_now}</button>
+      </div>
+    </section>
+  )
+}
+
+function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter, role, installPrompt }) {
   const { t } = useT()
   const openJobs = jobs.filter(j => j.is_active !== false)
   const savedJobsList = jobs.filter(j => isSaved(j.id))
@@ -1061,6 +1163,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           </button>
         </section>
       )}
+      <AddToHomeCard installPrompt={installPrompt} />
       <section className={hasSelectedRole ? 'quick quick-compact' : 'quick'}>
         {isEmployer && <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>}
         <button onClick={() => setPage('jobs')}>💼 {t.quick_jobs}<span>{t.quick_jobs_sub}</span></button>

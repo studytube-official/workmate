@@ -1,7 +1,7 @@
 {
   "name": "WorkMate",
   "short_name": "WorkMate",
-  "description": "シドニーで働く留学生のためのジョブマッチングアプリ",
+  "description": "Job matching for Working Holiday makers, international students, and hospitality businesses in Sydney.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d1117",

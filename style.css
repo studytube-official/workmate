@@ -127,6 +127,66 @@ main { max-width: 1100px; margin: auto; padding: 24px }
   font-size: 13px;
   line-height: 1.5;
 }
+.install-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0 8px;
+  padding: 14px 16px;
+  background: rgba(250,248,244,0.94);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(160,125,85,0.12);
+}
+.install-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: linear-gradient(135deg, rgba(155,79,26,0.14), rgba(194,105,42,0.08));
+  border: 1px solid rgba(155,79,26,0.18);
+  font-size: 24px;
+}
+.install-copy {
+  flex: 1;
+  min-width: 0;
+}
+.install-copy b {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.install-copy p {
+  margin: 0 0 4px;
+  color: var(--muted2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.install-copy small {
+  display: block;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.install-actions button {
+  white-space: nowrap;
+  padding: 9px 12px;
+  font-size: 12px;
+}
+.install-dismiss {
+  background: transparent;
+  box-shadow: none;
+}
 
 /* ── Typography ── */
 h1 {
@@ -843,6 +903,22 @@ textarea { min-height: 120px; resize: vertical }
   }
   .role-selected .home-hero h1 { font-size: 30px }
   .home-audience { margin-top: -36px }
+  .install-card {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+  }
+  .install-actions {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .install-actions button {
+    padding: 8px 10px;
+  }
   .role-selected .quick {
     gap: 10px;
     margin-top: 14px;
