@@ -842,7 +842,7 @@ function App() {
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
       {isDemo && <DemoRecordingBar isTour={isDemoTour} />}
 
-      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} />}
+      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} />}
       {page === 'jobs'    && <Jobs jobs={filteredJobs} allJobs={jobs} openJob={openJob} search={search} setSearch={setSearch} area={area} setArea={setArea} english={english} setEnglish={setEnglish} jobCategory={jobCategory} setJobCategory={setJobCategory} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} />}
       {page === 'post'    && <PostJob setPage={setPage} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} notify={notify} session={session} />}
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
@@ -1017,21 +1017,23 @@ function Login({ setPage, notify }) {
 // ═════════════════════════════════════════════
 //  Home
 // ═════════════════════════════════════════════
-function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter }) {
+function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter, role }) {
   const { t } = useT()
   const openJobs = jobs.filter(j => j.is_active !== false)
   const savedJobsList = jobs.filter(j => isSaved(j.id))
   const displayName   = profile?.display_name || session?.user?.email?.split('@')[0] || 'Guest'
   const fields = [profile?.display_name, profile?.bio, profile?.availability, profile?.visa_expiry, profile?.avatar_url]
   const pct    = Math.round((fields.filter(Boolean).length / fields.length) * 100)
+  const hasSelectedRole = Boolean(role)
+  const isEmployer = role === 'employer'
   return (
-    <main>
-      <section className="hero home-hero">
+    <main className={hasSelectedRole ? 'home-main role-selected' : 'home-main'}>
+      <section className={hasSelectedRole ? 'hero home-hero home-hero-compact' : 'hero home-hero'}>
         <div className="hero-copy">
           <p className="eyebrow">{t.home_badge}</p>
           <h1>{session ? `Hi, ${displayName.split(' ')[0]}` : t.home_title_guest}</h1>
           <p className="muted">{session ? t.tagline : t.home_sub_guest}</p>
-          {!session && (
+          {!session && !hasSelectedRole && (
             <div className="hero-actions">
               <button className="primary" onClick={() => setPage('login')}>{t.signup_tab}</button>
               <button onClick={() => setPage('post')}>{t.quick_post}</button>
@@ -1044,7 +1046,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
             : avatarLetter}
         </button>
       </section>
-      {!session && (
+      {!session && !hasSelectedRole && (
         <section className="home-audience">
           <button onClick={() => setPage('login')}>
             <b>🔎 {t.home_seekers_title}</b>
@@ -1056,9 +1058,10 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           </button>
         </section>
       )}
-      <section className="quick">
+      <section className={hasSelectedRole ? 'quick quick-compact' : 'quick'}>
+        {isEmployer && <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>}
         <button onClick={() => setPage('jobs')}>💼 {t.quick_jobs}<span>{t.quick_jobs_sub}</span></button>
-        <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>
+        {!isEmployer && <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>}
       </section>
       {session && pct < 100 && (
         <section className="card">
@@ -1068,7 +1071,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           <button className="primary" onClick={() => setPage('profile')}>{t.complete_profile}</button>
         </section>
       )}
-      {!session && (
+      {!session && !hasSelectedRole && (
         <section className="card" style={{ textAlign:'center' }}>
           <p style={{ fontSize:32, marginBottom:8 }}>🔑</p>
           <h2>{t.login_cta_title}</h2>

@@ -31,12 +31,16 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
-  padding-bottom: 108px;
+  padding-bottom: calc(132px + env(safe-area-inset-bottom));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 main { max-width: 1100px; margin: auto; padding: 24px }
+
+.home-main.role-selected {
+  padding-bottom: calc(190px + env(safe-area-inset-bottom));
+}
 
 /* ── Hero ── */
 .hero {
@@ -63,6 +67,10 @@ main { max-width: 1100px; margin: auto; padding: 24px }
 .home-hero {
   min-height: 260px;
   align-items: flex-start;
+}
+.home-hero-compact {
+  min-height: auto;
+  padding-bottom: 28px;
 }
 .hero-copy {
   position: relative;
@@ -150,6 +158,9 @@ h3 { font-size: 17px; font-weight: 700; margin: 0 0 10px; color: var(--text) }
 
 /* ── Quick grid ── */
 .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0 }
+.quick-compact {
+  margin: 16px 0 18px;
+}
 .quick button {
   text-align: left; font-weight: 800; font-size: 18px;
   background: var(--bg3);
@@ -227,7 +238,7 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
 
 /* ── Guest Banner ── */
 .guest-banner {
-  position: fixed; left: 50%; bottom: 90px;
+  position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   width: min(720px, 94%);
   background: rgba(250,248,244,0.94);
@@ -349,7 +360,7 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
 
 /* ── Bottom nav ── */
 .bottom {
-  position: fixed; left: 50%; bottom: 16px;
+  position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   background: rgba(250,248,244,0.92);
   backdrop-filter: blur(20px) saturate(160%);
@@ -825,6 +836,20 @@ textarea { min-height: 120px; resize: vertical }
   .filter-panel { max-height: 42dvh }
   .hero { margin: -16px -16px 0; padding: 44px 16px 28px }
   .home-hero { min-height: 300px }
+  .home-hero-compact {
+    min-height: auto;
+    padding-top: 32px;
+    padding-bottom: 22px;
+  }
+  .role-selected .home-hero h1 { font-size: 30px }
   .home-audience { margin-top: -36px }
+  .role-selected .quick {
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .role-selected .quick button {
+    padding: 16px;
+    font-size: 16px;
+  }
   .hero-actions button { flex: 1 }
 }
