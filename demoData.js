@@ -16,17 +16,19 @@ export const demoSession = {
   },
 }
 
+const img = id => `https://images.unsplash.com/${id}?w=800&q=70&auto=format&fit=crop`
+
 const jobTypes = [
-  ['Morning Barista', 'Harbour Coffee', 'Sydney CBD', '$30/hr', 'Basic English OK', 'Cafe / Coffee Shop,Barista'],
-  ['Sushi Roll Maker', 'Sakura Kitchen', 'CBD', '$29/hr', 'No English needed', 'Sushi Restaurant,Kitchen Hand'],
-  ['Floor Staff', 'Darling Bistro', 'Darlinghurst', '$28/hr', 'Basic English OK', 'Waiter / Waitress,Floor Staff'],
-  ['Kitchen Hand', 'Ramen Central', 'Sydney CBD', '$27/hr', 'No English needed', 'Kitchen Hand,Ramen / Noodle Shop'],
-  ['Weekend Bartender', 'George Street Bar', 'CBD', '$32/hr', 'Intermediate+', 'Bartender,Bar / Pub'],
-  ['Cafe All-rounder', 'Bondi Brunch', 'Bondi', '$29/hr', 'Basic English OK', 'Cafe / Coffee Shop,Floor Staff'],
-  ['Line Cook', 'Izakaya North', 'Chatswood', '$31/hr', 'Intermediate+', 'Line Cook,Izakaya / Japanese Restaurant'],
-  ['Dinner Waiter', 'Korean BBQ House', 'Sydney', '$28/hr', 'Basic English OK', 'Waiter / Waitress,BBQ / Korean BBQ'],
-  ['Prep Cook', 'Pasta Lane', 'Sydney CBD', '$30/hr', 'No English needed', 'Prep Cook,Pizza / Italian'],
-  ['Host / Hostess', 'Opera View Dining', 'Circular Quay', '$31/hr', 'Intermediate+', 'Host / Hostess,Fine Dining'],
+  ['Morning Barista', 'Harbour Coffee', 'Sydney CBD', '$30/hr', 'Basic English OK', 'Cafe / Coffee Shop,Barista', img('photo-1495474472287-4d71bcdd2085')],
+  ['Sushi Roll Maker', 'Sakura Kitchen', 'CBD', '$29/hr', 'No English needed', 'Sushi Restaurant,Kitchen Hand', img('photo-1579584425555-c3ce17fd4351')],
+  ['Floor Staff', 'Darling Bistro', 'Darlinghurst', '$28/hr', 'Basic English OK', 'Waiter / Waitress,Floor Staff', img('photo-1517248135467-4c7edcad34c4')],
+  ['Kitchen Hand', 'Ramen Central', 'Sydney CBD', '$27/hr', 'No English needed', 'Kitchen Hand,Ramen / Noodle Shop', img('photo-1569718212165-3a8278d5f624')],
+  ['Weekend Bartender', 'George Street Bar', 'CBD', '$32/hr', 'Intermediate+', 'Bartender,Bar / Pub', img('photo-1514362545857-3bc16c4c7d1b')],
+  ['Cafe All-rounder', 'Bondi Brunch', 'Bondi', '$29/hr', 'Basic English OK', 'Cafe / Coffee Shop,Floor Staff', img('photo-1525610553991-2bede1a236e2')],
+  ['Line Cook', 'Izakaya North', 'Chatswood', '$31/hr', 'Intermediate+', 'Line Cook,Izakaya / Japanese Restaurant', img('photo-1554118811-1e0d58224f24')],
+  ['Dinner Waiter', 'Korean BBQ House', 'Sydney', '$28/hr', 'Basic English OK', 'Waiter / Waitress,BBQ / Korean BBQ', img('photo-1590301157890-4810ed352733')],
+  ['Prep Cook', 'Pasta Lane', 'Sydney CBD', '$30/hr', 'No English needed', 'Prep Cook,Pizza / Italian', img('photo-1473093295043-cdd812d0e601')],
+  ['Host / Hostess', 'Opera View Dining', 'Circular Quay', '$31/hr', 'Intermediate+', 'Host / Hostess,Fine Dining', img('photo-1559339352-11d035aa65de')],
 ]
 
 export const demoJobs = Array.from({ length: 36 }, (_, i) => {
@@ -41,7 +43,7 @@ export const demoJobs = Array.from({ length: 36 }, (_, i) => {
     english_level: base[4],
     categories: base[5],
     description: `Demo listing for recording. ${base[1]} is hiring ${base[0].toLowerCase()} staff in ${base[2]}. Trial shifts available this week, with flexible rosters for working holiday makers and international students.`,
-    image_url: '',
+    image_url: base[6],
     posted_by: i % 5 === 0 ? 'demo-employer' : `demo-business-${i}`,
     is_active: true,
     applications: [],
