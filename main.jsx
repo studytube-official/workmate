@@ -360,6 +360,9 @@ const sameCat = (a, b) => {
   const bk = catKey(b)
   return a === b || (ak && bk && (ak === bk || ak.includes(bk) || bk.includes(ak)))
 }
+// 複数選択カテゴリ（配列）用ヘルパー
+const hasCat    = (list, c) => Array.isArray(list) && list.some(x => sameCat(x, c))
+const toggleCat = (list, c) => hasCat(list, c) ? list.filter(x => !sameCat(x, c)) : [...list, c]
 const catSearchTerms = c => [c, catEnglish(c), CAT_JA[catEnglish(c)] || ''].filter(Boolean)
 const uniqueCatOptions = cats => {
   const seen = new Set()
@@ -506,9 +509,9 @@ function App() {
   const [search, setSearch]           = useState('')
   const [area, setArea]               = useState('')
   const [english, setEnglish]         = useState('')
-  const [jobCategory, setJobCategory] = useState('')
+  const [jobCategory, setJobCategory] = useState([])
   const [staffSearch, setStaffSearch] = useState('')
-  const [staffCategory, setStaffCategory] = useState('')
+  const [staffCategory, setStaffCategory] = useState([])
   const [staffEnglish, setStaffEnglish] = useState('')
   const [conversations, setConversations] = useState([])
   const [activeConvId, setActiveConvId]   = useState(null)
@@ -539,7 +542,7 @@ function App() {
       [2300, () => setEnglish(T.en.eng_basic)],
       [3700, () => { setSearch('kitchen'); setEnglish('') }],
       [5200, () => { setSelectedJob(demoJobs[1]); setPage('job') }],
-      [7200, () => { setPage('staff'); setStaffSearch('barista'); setStaffCategory('Barista'); setStaffEnglish('Basic English OK') }],
+      [7200, () => { setPage('staff'); setStaffSearch('barista'); setStaffCategory(['Barista']); setStaffEnglish('Basic English OK') }],
       [9800, () => { setActiveConvId('demo-conv-1'); setPage('chat') }],
       [12500, () => setPage('profile')],
     ].map(([ms, fn]) => setTimeout(fn, ms))
@@ -668,7 +671,7 @@ function App() {
     return (!search || tx.includes(search.toLowerCase()))
         && (!area    || j.location      === area)
         && (!english || sameEng(j.english_level, english))
-        && (!jobCategory || parseCats(j.categories).some(c => sameCat(c, jobCategory)))
+        && (!jobCategory.length || parseCats(j.categories).some(c => jobCategory.some(sel => sameCat(c, sel))))
   }), [jobs, search, area, english, jobCategory])
 
   // ── アクション ─────────────────────────────
@@ -1112,11 +1115,11 @@ function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, englis
   const { t, lang } = useT()
   const categories = ALL_CATEGORY_OPTIONS
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const activeFilters = [area, english, jobCategory].filter(Boolean).length
+  const activeFilters = (area ? 1 : 0) + (english ? 1 : 0) + jobCategory.length
   const clearFilters = () => {
     setArea('')
     setEnglish('')
-    setJobCategory('')
+    setJobCategory([])
   }
   return (
     <main>
@@ -1145,13 +1148,13 @@ function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, englis
                 <option>{t.eng_inter}</option>
               </select>
             </div>
-            <select value={jobCategory} onChange={e => setJobCategory(e.target.value)}>
-              <option value="">All job types</option>
-              {categories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
+            <select value="" onChange={e => { if (e.target.value) setJobCategory(toggleCat(jobCategory, e.target.value)) }}>
+              <option value="">{lang === 'ja' ? '職種を追加…' : 'Add job type…'}</option>
+              {categories.filter(c => !hasCat(jobCategory, c)).map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
             </select>
             <div className="filter-chips all-tags">
               {categories.map(c => (
-                <button key={c} className={sameCat(jobCategory, c) ? 'active' : ''} onClick={() => setJobCategory(sameCat(jobCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
+                <button key={c} className={hasCat(jobCategory, c) ? 'active' : ''} onClick={() => setJobCategory(toggleCat(jobCategory, c))}>{catLabel(c, lang)}</button>
               ))}
             </div>
           </div>
@@ -1514,9 +1517,9 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
   const [loading,   setLoading]   = useState(true)
   const staffCategories = ALL_CATEGORY_OPTIONS
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const activeFilters = [staffCategory, staffEnglish].filter(Boolean).length
+  const activeFilters = staffCategory.length + (staffEnglish ? 1 : 0)
   const clearFilters = () => {
-    setStaffCategory('')
+    setStaffCategory([])
     setStaffEnglish('')
   }
   const filteredStaff = useMemo(() => staffList.filter(s => {
@@ -1529,7 +1532,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
     ].join(' ').toLowerCase()
     const terms = staffSearch.toLowerCase().split(/\s+/).filter(Boolean)
     return (!terms.length || terms.every(term => tx.includes(term)))
-        && (!staffCategory || parseCats(s.job_categories).some(c => sameCat(c, staffCategory)))
+        && (!staffCategory.length || parseCats(s.job_categories).some(c => staffCategory.some(sel => sameCat(c, sel))))
         && (!staffEnglish || sameEng(s.english_level, staffEnglish))
   }), [staffList, staffSearch, staffCategory, staffEnglish])
 
@@ -1580,9 +1583,9 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
         {filtersOpen && (
           <div className="filter-panel">
             <div className="filters">
-              <select value={staffCategory} onChange={e => setStaffCategory(e.target.value)}>
-                <option value="">All preferred roles</option>
-                {staffCategories.map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
+              <select value="" onChange={e => { if (e.target.value) setStaffCategory(toggleCat(staffCategory, e.target.value)) }}>
+                <option value="">{lang === 'ja' ? '希望職種を追加…' : 'Add preferred role…'}</option>
+                {staffCategories.filter(c => !hasCat(staffCategory, c)).map(c => <option key={c} value={c}>{catLabel(c, lang)}</option>)}
               </select>
               <select value={staffEnglish} onChange={e => setStaffEnglish(e.target.value)}>
                 <option value="">Any English level</option>
@@ -1593,7 +1596,7 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
             </div>
             <div className="filter-chips all-tags">
               {staffCategories.map(c => (
-                <button key={c} className={sameCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(sameCat(staffCategory, c) ? '' : c)}>{catLabel(c, lang)}</button>
+                <button key={c} className={hasCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(toggleCat(staffCategory, c))}>{catLabel(c, lang)}</button>
               ))}
             </div>
           </div>
