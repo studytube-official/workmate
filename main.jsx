@@ -1272,6 +1272,17 @@ function JobDetail({ job, setPage, isSaved, toggleSave, startDM, applyToJob, has
 // ═════════════════════════════════════════════
 const emptyJob = { title:'', company:'', location:'', salary:'', english_level:'英語初級OK', description:'', image_url:'', categories:'' }
 
+function FoundingPromo({ slotsLeft, lang }) {
+  if (!(slotsLeft > 0)) return null
+  return (
+    <div className="founding-promo">
+      {lang === 'ja'
+        ? `🎖 今だけ先着20店舗は求人投稿が永久無料！（残り ${slotsLeft} 枠）`
+        : `🎖 First 20 businesses post jobs free forever — ${slotsLeft} spot${slotsLeft === 1 ? '' : 's'} left!`}
+    </div>
+  )
+}
+
 function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
   const { t, lang } = useT()
   const [job,  setJob]  = useState(emptyJob)
@@ -1287,6 +1298,8 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
 
   if (!session) return (
     <main style={{ textAlign:'center', paddingTop:60 }}>
+      <h1>{t.post_title}</h1>
+      <FoundingPromo slotsLeft={slotsLeft} lang={lang} />
       <p style={{ fontSize:48 }}>🔒</p>
       <h2>{t.post_login_title}</h2>
       <p className="muted" style={{ marginBottom:20 }}>{t.post_login_desc}</p>
@@ -1328,13 +1341,7 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
   return (
     <main>
       <h1>{t.post_title}</h1>
-      {slotsLeft > 0 && (
-        <div className="founding-promo">
-          {lang === 'ja'
-            ? `🎖 今だけ先着20店舗は求人投稿が永久無料！（残り ${slotsLeft} 枠）`
-            : `🎖 First 20 businesses post jobs free forever — ${slotsLeft} spot${slotsLeft === 1 ? '' : 's'} left!`}
-        </div>
-      )}
+      <FoundingPromo slotsLeft={slotsLeft} lang={lang} />
       <section className="card form">
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Harbour View Cafe" /></label>
