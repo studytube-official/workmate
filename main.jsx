@@ -108,6 +108,18 @@ const T = {
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
     founding_badge:'🎖 Founding Member（求人投稿 永久無料）',
     founding_toast:'🎉 先着20店舗限定！あなたは Founding Member です。求人投稿が永久無料になりました 🎊',
+    home_badge:'プレローンチ中',
+    home_title_guest:'Sydney hospitality hiring, simpler.',
+    home_sub_guest:'ワーホリ・留学生とシドニーの飲食店をつなぐ求人プラットフォームです。',
+    home_seekers_title:'仕事を探す方へ',
+    home_seekers_desc:'プロフィールを先に作っておくと、求人掲載後すぐ応募できます。',
+    home_employers_title:'店舗の方へ',
+    home_employers_desc:'求人投稿後、スタッフ候補を検索して直接DMできます。',
+    home_empty_jobs_title:'求人掲載に向けて準備中です',
+    home_empty_jobs_desc:'登録後は求人掲載まで今しばらくお待ちください。プロフィールだけ先に準備できます。',
+    home_empty_jobs_btn:'プロフィールを作成',
+    home_empty_saved_title:'保存した求人はここに表示されます',
+    home_empty_saved_desc:'気になる求人が出たら保存して、後からすぐ確認できます。',
   },
   en: {
     nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
@@ -198,6 +210,18 @@ const T = {
     not_set:'Not set', parts:'', edit_title:'Edit Job',
     founding_badge:'🎖 Founding Member · Free Forever',
     founding_toast:'🎉 You are a Founding Member! Job posting is free forever 🎊',
+    home_badge:'Pre-launch',
+    home_title_guest:'Sydney hospitality hiring, simpler.',
+    home_sub_guest:'WorkMate connects Working Holiday makers and international students with Sydney hospitality businesses.',
+    home_seekers_title:'For job seekers',
+    home_seekers_desc:'Create your profile now so you are ready when jobs go live.',
+    home_employers_title:'For businesses',
+    home_employers_desc:'Post a job, browse staff candidates, and message directly.',
+    home_empty_jobs_title:'Job listings are being prepared',
+    home_empty_jobs_desc:'Register now and stay ready while businesses start posting jobs.',
+    home_empty_jobs_btn:'Create profile',
+    home_empty_saved_title:'Saved jobs will appear here',
+    home_empty_saved_desc:'When listings go live, save roles you like and come back anytime.',
   }
 }
 
@@ -874,6 +898,7 @@ function RoleSelect({ chooseRole }) {
     <div className="role-overlay">
       <div className="role-card">
         <div className="role-logo">WM</div>
+        <p className="role-kicker">{t.home_badge}</p>
         <h2>{t.role_q_title}</h2>
         <p className="muted">{t.role_q_sub}</p>
         <button className="role-option" onClick={() => chooseRole('seeker')}>
@@ -994,17 +1019,24 @@ function Login({ setPage, notify }) {
 // ═════════════════════════════════════════════
 function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter }) {
   const { t } = useT()
+  const openJobs = jobs.filter(j => j.is_active !== false)
   const savedJobsList = jobs.filter(j => isSaved(j.id))
   const displayName   = profile?.display_name || session?.user?.email?.split('@')[0] || 'Guest'
   const fields = [profile?.display_name, profile?.bio, profile?.availability, profile?.visa_expiry, profile?.avatar_url]
   const pct    = Math.round((fields.filter(Boolean).length / fields.length) * 100)
   return (
     <main>
-      <section className="hero">
-        <div>
-          <p className="muted">Good day 👋</p>
-          <h1>Hi, {displayName.split(' ')[0]}</h1>
-          <p className="muted">{t.tagline}</p>
+      <section className="hero home-hero">
+        <div className="hero-copy">
+          <p className="eyebrow">{t.home_badge}</p>
+          <h1>{session ? `Hi, ${displayName.split(' ')[0]}` : t.home_title_guest}</h1>
+          <p className="muted">{session ? t.tagline : t.home_sub_guest}</p>
+          {!session && (
+            <div className="hero-actions">
+              <button className="primary" onClick={() => setPage('login')}>{t.signup_tab}</button>
+              <button onClick={() => setPage('post')}>{t.quick_post}</button>
+            </div>
+          )}
         </div>
         <button className="avatar avatarBtn" onClick={() => setPage('profile')} aria-label="profile">
           {profile?.avatar_url
@@ -1012,6 +1044,18 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
             : avatarLetter}
         </button>
       </section>
+      {!session && (
+        <section className="home-audience">
+          <button onClick={() => setPage('login')}>
+            <b>🔎 {t.home_seekers_title}</b>
+            <span>{t.home_seekers_desc}</span>
+          </button>
+          <button onClick={() => setPage('post')}>
+            <b>🏪 {t.home_employers_title}</b>
+            <span>{t.home_employers_desc}</span>
+          </button>
+        </section>
+      )}
       <section className="quick">
         <button onClick={() => setPage('jobs')}>💼 {t.quick_jobs}<span>{t.quick_jobs_sub}</span></button>
         <button onClick={() => setPage('post')}>🏪 {t.quick_post}<span>{t.quick_post_sub}</span></button>
@@ -1033,12 +1077,26 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
         </section>
       )}
       <Section title={t.section_nearby}>
-        <JobGrid jobs={jobs.filter(j => j.is_active !== false).slice(0, 4)} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
+        {openJobs.length
+          ? <JobGrid jobs={openJobs.slice(0, 4)} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
+          : (
+            <div className="empty empty-rich">
+              <div className="empty-icon">☕</div>
+              <h2>{t.home_empty_jobs_title}</h2>
+              <p>{t.home_empty_jobs_desc}</p>
+              <button className="primary" onClick={() => setPage(session ? 'profile' : 'login')}>{t.home_empty_jobs_btn}</button>
+            </div>
+          )}
       </Section>
       <Section title={t.section_saved}>
         {savedJobsList.length
           ? <JobGrid jobs={savedJobsList} openJob={openJob} isSaved={isSaved} toggleSave={toggleSave} />
-          : <div className="empty">{t.no_saved_jobs}</div>}
+          : (
+            <div className="empty empty-soft">
+              <b>{t.home_empty_saved_title}</b>
+              <p>{t.home_empty_saved_desc}</p>
+            </div>
+          )}
       </Section>
     </main>
   )

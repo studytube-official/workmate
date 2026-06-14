@@ -60,6 +60,65 @@ main { max-width: 1100px; margin: auto; padding: 24px }
     radial-gradient(ellipse 45% 35% at 85% 10%, rgba(155,79,26,0.07), transparent);
   pointer-events: none;
 }
+.home-hero {
+  min-height: 260px;
+  align-items: flex-start;
+}
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+}
+.eyebrow,
+.role-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(155,79,26,0.1);
+  border: 1px solid rgba(155,79,26,0.18);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.home-audience {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: -28px 0 20px;
+  position: relative;
+  z-index: 2;
+}
+.home-audience button {
+  text-align: left;
+  background: rgba(250,248,244,0.92);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(160,125,85,0.12);
+}
+.home-audience b {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.home-audience span {
+  display: block;
+  color: var(--muted2);
+  font-size: 13px;
+  line-height: 1.5;
+}
 
 /* ── Typography ── */
 h1 {
@@ -239,8 +298,8 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
 /* ── Role selection overlay ── */
 .role-overlay {
   position: fixed; inset: 0; z-index: 10000;
-  background: rgba(20,16,12,0.55);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(30,19,10,0.34);
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
 }
@@ -251,7 +310,7 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
   border-radius: 22px;
   padding: 28px 22px;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  box-shadow: 0 22px 70px rgba(30,19,10,0.28);
 }
 .role-logo {
   width: 52px; height: 52px; margin: 0 auto 14px;
@@ -260,6 +319,7 @@ button.fav:hover { background: rgba(184,48,48,0.15) }
   font-weight: 900; font-size: 18px; color: #fff;
   background: linear-gradient(135deg, #7c3f12, #c2692a);
 }
+.role-kicker { margin: 0 auto 10px; }
 .role-card h2 { margin: 0 0 4px; font-size: 20px; }
 .role-card .muted { margin: 0 0 18px; }
 .role-option {
@@ -531,6 +591,34 @@ textarea { min-height: 120px; resize: vertical }
   color: var(--muted2);
   line-height: 1.8;
 }
+.empty-rich {
+  padding: 36px 24px;
+}
+.empty-rich h2 {
+  margin: 4px 0 8px;
+  font-size: 22px;
+}
+.empty-rich p,
+.empty-soft p {
+  max-width: 520px;
+  margin: 0 auto 18px;
+}
+.empty-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+.empty-soft {
+  padding: 28px 22px;
+}
+.empty-soft b {
+  display: block;
+  color: var(--text);
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.empty-soft p {
+  margin-bottom: 0;
+}
 
 /* ── Detail rows ── */
 .detail { margin-top: 16px }
@@ -728,7 +816,7 @@ textarea { min-height: 120px; resize: vertical }
 
 /* ── Responsive ── */
 @media(max-width:800px) {
-  .grid, .quick, .filters { grid-template-columns: 1fr }
+  .grid, .quick, .filters, .home-audience { grid-template-columns: 1fr }
   h1 { font-size: 34px }
   .photo.big { height: 210px }
   .modal { padding: 20px; border-radius: 22px }
@@ -736,4 +824,7 @@ textarea { min-height: 120px; resize: vertical }
   .sticky { margin: -16px -16px 16px; padding: 16px }
   .filter-panel { max-height: 42dvh }
   .hero { margin: -16px -16px 0; padding: 44px 16px 28px }
+  .home-hero { min-height: 300px }
+  .home-audience { margin-top: -36px }
+  .hero-actions button { flex: 1 }
 }
