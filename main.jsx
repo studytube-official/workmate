@@ -106,6 +106,8 @@ const T = {
     toast_closed:'この求人は募集終了です',
     eng_basic:'英語初級OK', eng_none:'英語ほぼ不要', eng_inter:'Intermediate以上',
     not_set:'未設定', parts:'件', edit_title:'求人を編集する',
+    founding_badge:'🎖 Founding Member（求人投稿 永久無料）',
+    founding_toast:'🎉 先着20店舗限定！あなたは Founding Member です。求人投稿が永久無料になりました 🎊',
   },
   en: {
     nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
@@ -194,6 +196,8 @@ const T = {
     toast_closed:'This job is no longer accepting applications',
     eng_basic:'Basic English OK', eng_none:'No English needed', eng_inter:'Intermediate+',
     not_set:'Not set', parts:'', edit_title:'Edit Job',
+    founding_badge:'🎖 Founding Member · Free Forever',
+    founding_toast:'🎉 You are a Founding Member! Job posting is free forever 🎊',
   }
 }
 
@@ -1212,6 +1216,13 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
   const [job,  setJob]  = useState(emptyJob)
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [slotsLeft, setSlotsLeft] = useState(null)
+
+  useEffect(() => {
+    supabase.rpc('founding_slots_remaining').then(({ data }) => {
+      if (typeof data === 'number') setSlotsLeft(data)
+    })
+  }, [])
 
   if (!session) return (
     <main style={{ textAlign:'center', paddingTop:60 }}>
@@ -1242,9 +1253,12 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
       const image_url = await uploadImage()
       const { error } = await supabase.from('jobs').insert([{ ...job, image_url, posted_by:session.user.id, is_active:true }])
       if (error) throw error
+      // 先着20店舗の永久無料（Founding Member）を確定
+      const { data: founding } = await supabase.rpc('claim_founding_member')
       notify(t.job_saved); setJob(emptyJob); setFile(null)
       await loadJobs()
       await loadUserData?.()
+      if (founding === 'granted') notify(t.founding_toast)
       setPage('staff')
     } catch(e) { notify(e.message) }
     finally { setBusy(false) }
@@ -1253,6 +1267,13 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
   return (
     <main>
       <h1>{t.post_title}</h1>
+      {slotsLeft > 0 && (
+        <div className="founding-promo">
+          {lang === 'ja'
+            ? `🎖 今だけ先着20店舗は求人投稿が永久無料！（残り ${slotsLeft} 枠）`
+            : `🎖 First 20 businesses post jobs free forever — ${slotsLeft} spot${slotsLeft === 1 ? '' : 's'} left!`}
+        </div>
+      )}
       <section className="card form">
         <label>{t.f_title}<input value={job.title} onChange={e => update('title', e.target.value)} placeholder="Kitchen staff wanted" /></label>
         <label>{t.f_company}<input value={job.company} onChange={e => update('company', e.target.value)} placeholder="Harbour View Cafe" /></label>
@@ -1753,6 +1774,9 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
           <div><h1>{form.display_name || t.tab_profile}</h1><p className="muted">{session.user.email}</p></div>
           <button onClick={signOut} style={{ background:'rgba(184,48,48,0.1)', color:'#b83030', border:'1px solid rgba(184,48,48,0.2)', padding:'10px 16px' }}>{t.logout}</button>
         </div>
+        {profile?.founding_member && (
+          <span className="founding-badge">{t.founding_badge}</span>
+        )}
       </section>
 
       <div style={{ display:'flex', gap:4, margin:'16px 0 0', borderBottom:'1px solid var(--border)', overflowX:'auto' }}>
