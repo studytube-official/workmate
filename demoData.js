@@ -50,16 +50,19 @@ export const demoJobs = Array.from({ length: 36 }, (_, i) => {
   }
 })
 
+const womanImg = n => `https://randomuser.me/api/portraits/women/${n}.jpg`
+const faceImg  = id => `https://images.unsplash.com/${id}?w=400&h=400&q=70&auto=format&fit=crop&crop=faces`
+
 export const demoStaff = [
-  ['demo-staff-1', 'Mika Tanaka', 'Basic English OK', 'Mon-Fri 07:00-15:00', '2027-02-20', 'WHV holder. Two years cafe experience in Japan. Looking for barista or floor shifts.', 'Barista,Cafe / Coffee Shop,Floor Staff'],
-  ['demo-staff-2', 'Jiho Park', 'Intermediate+', 'Tue-Sun 16:00-23:00', '2026-12-15', 'International student. Available for dinner shifts and weekend kitchen hand work.', 'Kitchen Hand,Line Cook,Korean BBQ'],
-  ['demo-staff-3', 'Yui Sato', 'Basic English OK', 'Mon-Wed 10:00-18:00', '2027-05-01', 'Japanese restaurant experience. Comfortable with sushi prep and customer service.', 'Sushi Restaurant,Waiter / Waitress,Kitchen Hand'],
-  ['demo-staff-4', 'Alex Kim', 'Intermediate+', 'Fri-Sun 12:00-23:00', '2026-11-30', 'WHV holder. Bar and floor experience. Can start immediately.', 'Bartender,Floor Staff,Bar / Pub'],
-  ['demo-staff-5', 'Nana Lee', 'No English needed', 'Mon-Fri 17:00-23:00', '2027-01-10', 'Looking for kitchen hand or prep cook shifts around CBD.', 'Kitchen Hand,Prep Cook,Ramen / Noodle Shop'],
-  ['demo-staff-6', 'Riku Mori', 'Intermediate+', 'Sat-Sun 08:00-18:00', '2026-10-05', 'Cafe all-rounder with latte art practice and POS experience.', 'Barista,Cashier,Cafe / Coffee Shop'],
-  ['demo-staff-7', 'Hana Choi', 'Basic English OK', 'Tue-Thu 09:00-16:00', '2027-06-25', 'Friendly floor staff candidate. Available around Chatswood and CBD.', 'Floor Staff,Waiter / Waitress,Host / Hostess'],
-  ['demo-staff-8', 'Leo Nakamura', 'Intermediate+', 'Any day 15:00-23:00', '2027-04-18', 'Line cook and dishwasher experience. Open to trial shifts this week.', 'Line Cook,Dishwasher,Kitchen Hand'],
-].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories]) => ({
+  ['demo-staff-1', 'Mika Tanaka', 'Basic English OK', 'Mon-Fri 07:00-15:00', '2027-02-20', 'WHV holder. Two years cafe experience in Japan. Looking for barista or floor shifts.', 'Barista,Cafe / Coffee Shop,Floor Staff', womanImg(44)],
+  ['demo-staff-2', 'Seoyeon Park', 'Intermediate+', 'Tue-Sun 16:00-23:00', '2026-12-15', 'International student. Available for dinner shifts and weekend kitchen hand work.', 'Kitchen Hand,Line Cook,Korean BBQ', womanImg(8)],
+  ['demo-staff-3', 'Yui Sato', 'Basic English OK', 'Mon-Wed 10:00-18:00', '2027-05-01', 'Japanese restaurant experience. Comfortable with sushi prep and customer service.', 'Sushi Restaurant,Waiter / Waitress,Kitchen Hand', womanImg(85)],
+  ['demo-staff-4', 'Alex Kim', 'Intermediate+', 'Fri-Sun 12:00-23:00', '2026-11-30', 'WHV holder. Bar and floor experience. Can start immediately.', 'Bartender,Floor Staff,Bar / Pub', faceImg('photo-1507591064344-4c6ce005b128')],
+  ['demo-staff-5', 'Nana Lee', 'No English needed', 'Mon-Fri 17:00-23:00', '2027-01-10', 'Looking for kitchen hand or prep cook shifts around CBD.', 'Kitchen Hand,Prep Cook,Ramen / Noodle Shop', womanImg(12)],
+  ['demo-staff-6', 'Riku Mori', 'Intermediate+', 'Sat-Sun 08:00-18:00', '2026-10-05', 'Cafe all-rounder with latte art practice and POS experience.', 'Barista,Cashier,Cafe / Coffee Shop', faceImg('photo-1492562080023-ab3db95bfbce')],
+  ['demo-staff-7', 'Hana Choi', 'Basic English OK', 'Tue-Thu 09:00-16:00', '2027-06-25', 'Friendly floor staff candidate. Available around Chatswood and CBD.', 'Floor Staff,Waiter / Waitress,Host / Hostess', womanImg(90)],
+  ['demo-staff-8', 'Emi Nakamura', 'Intermediate+', 'Any day 15:00-23:00', '2027-04-18', 'Line cook and dishwasher experience. Open to trial shifts this week.', 'Line Cook,Dishwasher,Kitchen Hand', womanImg(50)],
+].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories, avatar_url]) => ({
   id,
   display_name,
   english_level,
@@ -67,7 +70,7 @@ export const demoStaff = [
   visa_expiry,
   bio,
   job_categories,
-  avatar_url: '',
+  avatar_url,
 }))
 
 export const demoConversations = [

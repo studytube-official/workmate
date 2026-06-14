@@ -1539,8 +1539,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
       <div className="grid">
         {filteredStaff.map(s => (
           <article className="job" key={s.id} style={{ cursor:'default' }}>
-            <div className="photo">
-              {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:54 }}>👤</span>}
+            <div className="staff-avatar">
+              {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:44 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
             {s.english_level && <p className="muted">🗣 {engLabel(s.english_level, lang)}</p>}
