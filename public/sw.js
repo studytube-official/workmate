@@ -1,4 +1,4 @@
-const CACHE_NAME = 'workmate-shell-v1'
+const CACHE_NAME = 'workmate-shell-v2'
 const CORE_ASSETS = ['/']
 
 self.addEventListener('install', event => {
