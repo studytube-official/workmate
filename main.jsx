@@ -1287,7 +1287,6 @@ function App() {
       <LangSelector lang={safeLang} onChange={changeLang} />
 
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
-      {isDemo && <DemoRecordingBar isTour={isDemoTour} />}
 
       {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} installPrompt={{
         canInstall:Boolean(installPrompt),
@@ -1337,15 +1336,6 @@ function App() {
 // ═════════════════════════════════════════════
 //  Guest Banner
 // ═════════════════════════════════════════════
-function DemoRecordingBar({ isTour }) {
-  return (
-    <div className="demo-rec-bar">
-      <b>Recording demo mode</b>
-      <span>{isTour ? 'Auto tour: search, results, staff, DM, dashboard.' : 'Add &tour=1 to run the automatic walkthrough.'}</span>
-    </div>
-  )
-}
-
 function RoleSelect({ chooseRole }) {
   const { t } = useT()
   return (
