@@ -11,6 +11,10 @@ import {
   demoPostedJobs,
   demoProfile,
   demoSavedJobIds,
+  demoSeekerConversations,
+  demoSeekerMessages,
+  demoSeekerProfile,
+  demoSeekerSession,
   demoSession,
   demoStaff,
 } from './demoData'
@@ -871,6 +875,7 @@ function App() {
     localStorage.setItem('wm_lang', next)
   }
   const isDemo = useMemo(() => new URLSearchParams(window.location.search).get('demo') === '1', [])
+  const isDemoSeeker = useMemo(() => isDemo && new URLSearchParams(window.location.search).get('as') === 'seeker', [isDemo])
   const isDemoTour = useMemo(() => new URLSearchParams(window.location.search).get('tour') === '1', [])
 
   const [page, setPage]               = useState('home')
@@ -955,16 +960,26 @@ function App() {
 
   useEffect(() => {
     if (!isDemo) return
-    setSession(demoSession)
-    setProfile(demoProfile)
     setJobs(demoJobs)
     setSavedJobIds(demoSavedJobIds)
     setApplications(demoApplications)
-    setPostedJobs(demoPostedJobs)
-    setConversations(demoConversations)
-    setUnreadCount(3)
+    if (isDemoSeeker) {
+      setSession(demoSeekerSession)
+      setProfile(demoSeekerProfile)
+      setRole('seeker')
+      setPostedJobs([])
+      setConversations(demoSeekerConversations)
+      setUnreadCount(2)
+    } else {
+      setSession(demoSession)
+      setProfile(demoProfile)
+      setRole('employer')
+      setPostedJobs(demoPostedJobs)
+      setConversations(demoConversations)
+      setUnreadCount(3)
+    }
     setPage('home')
-  }, [isDemo])
+  }, [isDemo, isDemoSeeker])
 
   useEffect(() => {
     if (!isDemo || !isDemoTour) return
@@ -1287,7 +1302,7 @@ function App() {
       {page === 'job' && selectedJob && <JobDetail job={selectedJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} startDM={startDM} applyToJob={applyToJob} hasApplied={hasApplied} openMap={openMap} session={session} />}
       {page === 'staff'   && <Staff setPage={setPage} session={session} startStaffDM={startStaffDM} isEmployer={session && postedJobs.length > 0} demoStaff={isDemo ? demoStaff : null} staffSearch={staffSearch} setStaffSearch={setStaffSearch} staffCategory={staffCategory} setStaffCategory={setStaffCategory} staffEnglish={staffEnglish} setStaffEnglish={setStaffEnglish} />}
       {page === 'dm'      && <DM conversations={conversations} setActiveConvId={setActiveConvId} setPage={setPage} session={session} />}
-      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={safeLang} demoMessages={isDemo ? demoMessages : null} />}
+      {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={safeLang} demoMessages={isDemo ? (isDemoSeeker ? demoSeekerMessages : demoMessages) : null} />}
       {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} role={role} />}
       {page === 'login'   && <Login setPage={setPage} notify={notify} />}
 

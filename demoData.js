@@ -143,3 +143,78 @@ export const demoSavedJobIds = ['demo-job-1', 'demo-job-3', 'demo-job-6']
 export const demoApplications = [
   { id: 'demo-user-app-1', user_id: 'demo-employer', job_id: 'demo-job-1', status: 'pending' },
 ]
+
+// ─── 学生（求職者）目線のデモ（?demo=1&as=seeker）───
+export const demoSeekerSession = {
+  user: { id: 'demo-seeker', email: 'mika.demo@workmate.au' },
+}
+
+export const demoSeekerProfile = {
+  id: 'demo-seeker',
+  display_name: 'Mika Tanaka',
+  email: 'mika.demo@workmate.au',
+  english_level: 'Basic English OK',
+  availability: 'Mon-Fri 07:00-15:00',
+  visa_expiry: '2027-02-20',
+  bio: 'WHV holder. Two years cafe experience in Japan. Looking for barista or floor shifts.',
+  job_categories: 'Barista,Cafe / Coffee Shop,Floor Staff',
+  avatar_url: 'https://randomuser.me/api/portraits/women/44.jpg',
+}
+
+// 学生 ↔ 店。company_name は店名、avatar_url は店（求人）の写真
+export const demoSeekerConversations = [
+  {
+    id: 'demo-sconv-1',
+    job_id: 'demo-job-1',
+    participant_a: 'demo-seeker',
+    participant_b: 'demo-shop-1',
+    company_name: 'Harbour Coffee',
+    job_title: 'Morning Barista',
+    avatar_url: img('photo-1495474472287-4d71bcdd2085'),
+    last_message: 'Sure, see you Thursday at 9am! 😊',
+    last_message_at: '2026-06-12T02:15:00.000Z',
+  },
+  {
+    id: 'demo-sconv-2',
+    job_id: 'demo-job-6',
+    participant_a: 'demo-seeker',
+    participant_b: 'demo-shop-2',
+    company_name: 'Bondi Brunch',
+    job_title: 'Cafe All-rounder',
+    avatar_url: img('photo-1525610553991-2bede1a236e2'),
+    last_message: 'Thanks! I will send my availability now.',
+    last_message_at: '2026-06-11T23:40:00.000Z',
+  },
+  {
+    id: 'demo-sconv-3',
+    job_id: 'demo-job-4',
+    participant_a: 'demo-seeker',
+    participant_b: 'demo-shop-3',
+    company_name: 'Ramen Central',
+    job_title: 'Kitchen Hand',
+    avatar_url: img('photo-1569718212165-3a8278d5f624'),
+    last_message: 'Got it, I can start next week.',
+    last_message_at: '2026-06-10T09:05:00.000Z',
+  },
+]
+
+export const demoSeekerMessages = {
+  'demo-sconv-1': [
+    { id: 'sm1', sender_id: 'demo-seeker', text: 'Hi! I saw your Morning Barista listing. I have 2 years of cafe experience in Japan — are you still hiring?', created_at: '2026-06-12T01:50:00.000Z' },
+    { id: 'sm2', sender_id: 'demo-shop-1', text: 'Hi Mika! Yes, we are. Could you come in for a trial shift this week?', created_at: '2026-06-12T02:02:00.000Z' },
+    { id: 'sm3', sender_id: 'demo-seeker', text: 'Yes, I would love to! I am free Thursday or Friday morning.', created_at: '2026-06-12T02:08:00.000Z' },
+    { id: 'sm4', sender_id: 'demo-shop-1', text: 'Great — let us do Thursday 9am at our CBD shop. See you then!', created_at: '2026-06-12T02:12:00.000Z' },
+    { id: 'sm5', sender_id: 'demo-seeker', text: 'Sure, see you Thursday at 9am! 😊', created_at: '2026-06-12T02:15:00.000Z' },
+  ],
+  'demo-sconv-2': [
+    { id: 'sm6', sender_id: 'demo-shop-2', text: 'Hi Mika, thanks for applying! Are you available on weekends?', created_at: '2026-06-11T23:20:00.000Z' },
+    { id: 'sm7', sender_id: 'demo-seeker', text: 'Yes, weekends work great for me. What hours do you need?', created_at: '2026-06-11T23:30:00.000Z' },
+    { id: 'sm8', sender_id: 'demo-shop-2', text: 'Saturday and Sunday, 8am–2pm. Can you send your full availability?', created_at: '2026-06-11T23:36:00.000Z' },
+    { id: 'sm9', sender_id: 'demo-seeker', text: 'Thanks! I will send my availability now.', created_at: '2026-06-11T23:40:00.000Z' },
+  ],
+  'demo-sconv-3': [
+    { id: 'sm10', sender_id: 'demo-seeker', text: 'Hello! Is the Kitchen Hand position still open? I can work evenings.', created_at: '2026-06-10T08:40:00.000Z' },
+    { id: 'sm11', sender_id: 'demo-shop-3', text: 'Hi! Yes it is. We need someone from next week, evenings 5–11pm.', created_at: '2026-06-10T08:55:00.000Z' },
+    { id: 'sm12', sender_id: 'demo-seeker', text: 'Got it, I can start next week.', created_at: '2026-06-10T09:05:00.000Z' },
+  ],
+}
