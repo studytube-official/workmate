@@ -2108,7 +2108,7 @@ function DM({ conversations, setActiveConvId, setPage, session }) {
       )}
       {conversations.map(c => (
         <div className="dm" key={c.id} onClick={() => { setActiveConvId(c.id); setPage('chat') }}>
-          <div className="avatar">{c.job_title==='Staff'?'👤':'🏪'}</div>
+          <div className="avatar">{c.avatar_url ? <img src={c.avatar_url} alt={c.company_name} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} /> : (c.job_title==='Staff'?'👤':'🏪')}</div>
           <div style={{ flex:1, minWidth:0 }}>
             <b>{c.company_name || 'Unknown'}</b>
             <p className="muted" style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
@@ -2190,7 +2190,7 @@ function Chat({ convId, setPage, session, conversations, setConversations, notif
       <button onClick={() => setPage('dm')}>{t.back_dm}</button>
       <section className="chat card">
         <div className="chatHead">
-          <div className="avatar">{conv.job_title==='Staff'?'👤':'🏪'}</div>
+          <div className="avatar">{conv.avatar_url ? <img src={conv.avatar_url} alt={conv.company_name} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} /> : (conv.job_title==='Staff'?'👤':'🏪')}</div>
           <div><b>{conv.company_name}</b><p className="muted">{conv.job_title}</p></div>
         </div>
         <div className="bubbles">
