@@ -875,7 +875,7 @@ function App() {
     localStorage.setItem('wm_lang', next)
   }
   const isDemo = useMemo(() => new URLSearchParams(window.location.search).get('demo') === '1', [])
-  const isDemoSeeker = useMemo(() => isDemo && new URLSearchParams(window.location.search).get('as') === 'seeker', [isDemo])
+  const isDemoSeeker = useMemo(() => isDemo && new URLSearchParams(window.location.search).get('as') !== 'employer', [isDemo])
   const isDemoTour = useMemo(() => new URLSearchParams(window.location.search).get('tour') === '1', [])
 
   const [page, setPage]               = useState('home')
