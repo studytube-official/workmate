@@ -1288,7 +1288,7 @@ function App() {
 
       {toast && <div className="toast">{toast}<button onClick={() => setToast('')}>×</button></div>}
 
-      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} installPrompt={{
+      {page === 'home'    && <Home jobs={jobs} openJob={openJob} setPage={setPage} isSaved={isSaved} toggleSave={toggleSave} session={session} profile={profile} avatarLetter={avatarLetter} role={role} isDemo={isDemo} installPrompt={{
         canInstall:Boolean(installPrompt),
         isIos,
         isStandalone,
@@ -1483,7 +1483,7 @@ function AddToHomeCard({ installPrompt }) {
   )
 }
 
-function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter, role, installPrompt }) {
+function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, avatarLetter, role, isDemo, installPrompt }) {
   const { t } = useT()
   const openJobs = jobs.filter(j => j.is_active !== false)
   const savedJobsList = jobs.filter(j => isSaved(j.id))
@@ -1496,7 +1496,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
     <main className={hasSelectedRole ? 'home-main role-selected' : 'home-main'}>
       <section className={hasSelectedRole ? 'hero home-hero home-hero-compact' : 'hero home-hero'}>
         <div className="hero-copy">
-          <p className="eyebrow">{t.home_badge}</p>
+          {!isDemo && <p className="eyebrow">{t.home_badge}</p>}
           <h1>{session ? `Hi, ${displayName.split(' ')[0]}` : t.home_title_guest}</h1>
           <p className="muted">{session ? t.tagline : t.home_sub_guest}</p>
           {!session && !hasSelectedRole && (
