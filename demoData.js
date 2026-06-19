@@ -62,7 +62,7 @@ export const demoStaff = [
   ['demo-staff-6', 'Riku Mori', 'Intermediate+', 'Sat-Sun 08:00-18:00', '2026-10-05', 'Cafe all-rounder with latte art practice and POS experience.', 'Barista,Cashier,Cafe / Coffee Shop', faceImg('photo-1492562080023-ab3db95bfbce')],
   ['demo-staff-7', 'Hana Choi', 'Basic English OK', 'Tue-Thu 09:00-16:00', '2027-06-25', 'Friendly floor staff candidate. Available around Chatswood and CBD.', 'Floor Staff,Waiter / Waitress,Host / Hostess', womanImg(90)],
   ['demo-staff-8', 'Emi Nakamura', 'Intermediate+', 'Any day 15:00-23:00', '2027-04-18', 'Line cook and dishwasher experience. Open to trial shifts this week.', 'Line Cook,Dishwasher,Kitchen Hand', womanImg(50)],
-].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories, avatar_url]) => ({
+].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories, avatar_url], i) => ({
   id,
   display_name,
   english_level,
@@ -71,6 +71,9 @@ export const demoStaff = [
   bio,
   job_categories,
   avatar_url,
+  // 早いほど先に登録（先着）、updated_at は最近ほどアクティブ
+  created_at: `2026-05-${String(10 + i).padStart(2, '0')}T09:00:00.000Z`,
+  updated_at: `2026-06-${String(18 - i).padStart(2, '0')}T09:00:00.000Z`,
 }))
 
 export const demoConversations = [
@@ -159,6 +162,8 @@ export const demoSeekerProfile = {
   bio: 'WHV holder. Two years cafe experience in Japan. Looking for barista or floor shifts.',
   job_categories: 'Barista,Cafe / Coffee Shop,Floor Staff',
   avatar_url: 'https://randomuser.me/api/portraits/women/44.jpg',
+  created_at: '2026-05-11T09:00:00.000Z',
+  updated_at: '2026-06-18T09:00:00.000Z',
 }
 
 // 学生 ↔ 店。company_name は店名、avatar_url は店（求人）の写真

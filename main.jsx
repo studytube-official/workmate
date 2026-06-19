@@ -113,6 +113,7 @@ const T = {
     founding_badge:'🎖 Founding Member（求人投稿 永久無料）',
     founding_toast:'🎉 先着20店舗限定！あなたは Founding Member です。求人投稿が永久無料になりました 🎊',
     home_badge:'プレローンチ中',
+    early_member:'早期メンバー', early_member_boost:'早期メンバー — 店舗のおすすめ上位に表示',
     home_title_guest:'Sydney hospitality hiring, simpler.',
     home_sub_guest:'ワーホリ・留学生とシドニーの飲食店をつなぐ求人プラットフォームです。',
     home_seekers_title:'仕事を探す方へ',
@@ -238,6 +239,7 @@ const T = {
     founding_badge:'🎖 Founding Member · Free Forever',
     founding_toast:'🎉 You are a Founding Member! Job posting is free forever 🎊',
     home_badge:'Pre-launch',
+    early_member:'Early Member', early_member_boost:'Early Member — boosted to employers',
     home_title_guest:'Sydney hospitality hiring, simpler.',
     home_sub_guest:'WorkMate connects Working Holiday makers and international students with Sydney hospitality businesses.',
     home_seekers_title:'For job seekers',
@@ -718,6 +720,37 @@ const ALL_CATEGORY_OPTIONS = uniqueCatOptions(JOB_CATEGORIES.flatMap(g => g.item
 // エリアは主要都市単位。location テキストへの部分一致で絞り込む（将来の都市拡大に対応）
 const AREA_OPTIONS = ['Sydney', 'Melbourne', 'Brisbane', 'Gold Coast', 'Perth', 'Adelaide', 'Cairns']
 const matchArea = (location, area) => !area || (location || '').toLowerCase().includes(area.toLowerCase())
+
+// ── Early Member Boost（プレローンチ中の早期メンバー優遇）─────────────
+// 先着100名・プロフィール完成・アクティブな求職者を店舗側のおすすめ上位に。
+// ローンチ後は PRE_LAUNCH=false にすればブーストはオフ（取得順のまま）。
+const PRE_LAUNCH = true
+const EARLY_MEMBER_CAP = 100
+const profileFields = p => [p.display_name, p.avatar_url, p.bio, p.availability, p.visa_expiry, p.job_categories]
+const completenessOf = p => { const f = profileFields(p || {}); return f.filter(Boolean).length / f.length }
+const isEarlyMember = p => PRE_LAUNCH && completenessOf(p) >= 0.8
+
+// 候補を「早期登録(35%) + プロフィール完成(45%) + アクティブ(20%) + 軽いランダム」で
+// スコア付けして並べ替え、早期メンバーには _earlyMember フラグを付ける。
+// ランダム項で上位の露出が一人に偏らないようにする。
+function rankSeekers(list) {
+  const byJoin = [...list].sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0))
+  const joinRank = new Map(byJoin.map((p, i) => [p.id, i]))
+  const now = Date.now()
+  const decorated = list.map(p => {
+    const rank = joinRank.has(p.id) ? joinRank.get(p.id) : Infinity
+    const completeness = completenessOf(p)
+    return { ...p, _completeness: completeness, _joinRank: rank, _earlyMember: PRE_LAUNCH && rank < EARLY_MEMBER_CAP && completeness >= 0.8 }
+  })
+  if (!PRE_LAUNCH) return decorated
+  const scoreOf = p => {
+    const early  = p._joinRank < EARLY_MEMBER_CAP ? 1 - p._joinRank / EARLY_MEMBER_CAP : 0
+    const days   = (now - new Date(p.updated_at || p.created_at || 0)) / 86400000
+    const active = Math.max(0, 1 - days / 30)
+    return p._completeness * 0.45 + early * 0.35 + active * 0.20 + Math.random() * 0.15
+  }
+  return decorated.sort((a, b) => scoreOf(b) - scoreOf(a))
+}
 
 // 各行: [ja表示, en表示, ...旧データの別表記]
 const ENG_PAIRS = [['英語ほぼ不要','No English needed'], ['英語初級OK','Basic English OK','basic','Basic'], ['日常会話レベル','Conversational English','Intermediate以上','Intermediate+','Intermediate']]
@@ -1503,6 +1536,14 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
           {!isDemo && <p className="eyebrow">{t.home_badge}</p>}
           <h1>{session ? `Hi, ${displayName.split(' ')[0]}` : t.home_title_guest}</h1>
           <p className="muted">{session ? t.tagline : t.home_sub_guest}</p>
+          {session && role === 'seeker' && isEarlyMember(profile) && (
+            <p className="muted" style={{ marginTop:6 }}>
+              <span style={{ display:'inline-block', padding:'4px 12px', borderRadius:999, fontSize:12, fontWeight:700,
+                background:'linear-gradient(135deg,#7c3f12,#c2692a)', color:'#fdf9f5' }}>
+                ⭐ {t.early_member_boost || 'Early Member — boosted to employers'}
+              </span>
+            </p>
+          )}
           {!session && !hasSelectedRole && (
             <div className="hero-actions">
               <button className="primary" onClick={() => setPage('login')}>{t.signup_tab}</button>
@@ -2006,14 +2047,14 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
     }
     setLoading(true)
     if (demoStaff) {
-      setStaffList(demoStaff)
+      setStaffList(rankSeekers(demoStaff))
       setLoading(false)
       return
     }
     supabase.from('profiles').select('*')
       .not('display_name', 'is', null)
-      .order('updated_at', { ascending:false }).limit(40)
-      .then(({ data }) => { setStaffList(data || []); setLoading(false) })
+      .order('updated_at', { ascending:false }).limit(100)
+      .then(({ data }) => { setStaffList(rankSeekers(data || [])); setLoading(false) })
   }, [session, isEmployer, demoStaff])
 
   // 雇用主以外はアクセス不可
@@ -2070,6 +2111,12 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
               {s.avatar_url ? <img src={s.avatar_url} alt={s.display_name} /> : <span style={{ fontSize:44 }}>👤</span>}
             </div>
             <h2>{s.display_name || 'Anonymous'}</h2>
+            {s._earlyMember && (
+              <span style={{ display:'inline-block', marginBottom:6, padding:'3px 10px', borderRadius:999, fontSize:11, fontWeight:700,
+                background:'linear-gradient(135deg,#7c3f12,#c2692a)', color:'#fdf9f5' }}>
+                ⭐ {t.early_member || 'Early Member'}
+              </span>
+            )}
             {s.english_level && <p className="muted">🗣 {engLabel(s.english_level, lang)}</p>}
             {s.availability   && <p className="muted">📅 {availLabel(s.availability, lang)}</p>}
             {s.visa_expiry    && <p className="muted" style={{ fontSize:12 }}>{t.visa_lbl} {s.visa_expiry}</p>}
