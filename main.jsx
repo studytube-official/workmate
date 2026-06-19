@@ -114,7 +114,7 @@ const T = {
     founding_toast:'🎉 先着20店舗限定！あなたは Founding Member です。求人投稿が永久無料になりました 🎊',
     home_badge:'プレローンチ中',
     early_member:'早期メンバー', early_member_boost:'早期メンバー — 店舗のおすすめ上位に表示',
-    boost_modal_title:'店舗におすすめ表示されよう', boost_modal_body:'早期登録ありがとうございます！さらにプロフィールを詳しく設定すると、店舗のおすすめ候補で優先的に表示されます。', boost_modal_progress:'プロフィール完成度', boost_modal_cta:'プロフィールを設定する', boost_modal_later:'あとで',
+    boost_modal_title:'店舗におすすめ表示されよう', boost_modal_body:'早期登録ありがとうございます！プロフィールを詳しく設定すると、店舗のおすすめ候補でさらに優先的に表示されます。', boost_modal_progress:'プロフィール完成度', boost_modal_cta:'プロフィールを設定する', boost_modal_later:'あとで',
     home_title_guest:'Sydney hospitality hiring, simpler.',
     home_sub_guest:'ワーホリ・留学生とシドニーの飲食店をつなぐ求人プラットフォームです。',
     home_seekers_title:'仕事を探す方へ',
