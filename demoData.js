@@ -158,7 +158,7 @@ export const demoSeekerProfile = {
   email: 'mika.demo@workmate.au',
   english_level: 'Basic English OK',
   availability: 'Mon-Fri 07:00-15:00',
-  visa_expiry: '2027-02-20',
+  visa_expiry: '', // デモ: 未入力にしてプロフィール完成を促すポップを見せる
   bio: 'WHV holder. Two years cafe experience in Japan. Looking for barista or floor shifts.',
   job_categories: 'Barista,Cafe / Coffee Shop,Floor Staff',
   avatar_url: 'https://randomuser.me/api/portraits/women/44.jpg',

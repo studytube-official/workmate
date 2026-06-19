@@ -114,6 +114,7 @@ const T = {
     founding_toast:'🎉 先着20店舗限定！あなたは Founding Member です。求人投稿が永久無料になりました 🎊',
     home_badge:'プレローンチ中',
     early_member:'早期メンバー', early_member_boost:'早期メンバー — 店舗のおすすめ上位に表示',
+    boost_modal_title:'店舗におすすめ表示されよう', boost_modal_body:'早期登録ありがとうございます！さらにプロフィールを詳しく設定すると、店舗のおすすめ候補で優先的に表示されます。', boost_modal_progress:'プロフィール完成度', boost_modal_cta:'プロフィールを設定する', boost_modal_later:'あとで',
     home_title_guest:'Sydney hospitality hiring, simpler.',
     home_sub_guest:'ワーホリ・留学生とシドニーの飲食店をつなぐ求人プラットフォームです。',
     home_seekers_title:'仕事を探す方へ',
@@ -240,6 +241,7 @@ const T = {
     founding_toast:'🎉 You are a Founding Member! Job posting is free forever 🎊',
     home_badge:'Pre-launch',
     early_member:'Early Member', early_member_boost:'Early Member — boosted to employers',
+    boost_modal_title:'Stand out to employers', boost_modal_body:'You registered early — nice! Now complete your profile in detail to appear higher in employers’ recommended candidates.', boost_modal_progress:'Profile completeness', boost_modal_cta:'Complete my profile', boost_modal_later:'Maybe later',
     home_title_guest:'Sydney hospitality hiring, simpler.',
     home_sub_guest:'WorkMate connects Working Holiday makers and international students with Sydney hospitality businesses.',
     home_seekers_title:'For job seekers',
@@ -939,6 +941,7 @@ function App() {
   const [editingJob, setEditingJob]   = useState(null)
   const [installPrompt, setInstallPrompt] = useState(null)
   const [installDismissed, setInstallDismissed] = useState(() => localStorage.getItem('wm_install_dismissed') === '1')
+  const [boostDismissed, setBoostDismissed] = useState(() => localStorage.getItem('wm_boost_dismissed') === '1')
   const [isStandalone, setIsStandalone] = useState(() => isStandaloneApp())
   const [isIos] = useState(() => isIosDevice())
 
@@ -1353,6 +1356,14 @@ function App() {
         <RoleBanner icon="✨" text={t.seeker_banner} btn={t.seeker_banner_btn} onClick={() => setPage(session ? 'profile' : 'login')} />
       )}
 
+      {PRE_LAUNCH && role === 'seeker' && session && !boostDismissed && completenessOf(profile) < 1 && page !== 'profile' && page !== 'login' && (
+        <ProfileBoostModal
+          pct={Math.round(completenessOf(profile) * 100)}
+          onComplete={() => { localStorage.setItem('wm_boost_dismissed', '1'); setBoostDismissed(true); setPage('profile') }}
+          onClose={() => { localStorage.setItem('wm_boost_dismissed', '1'); setBoostDismissed(true) }}
+        />
+      )}
+
       <nav className="bottom">
         <button className={page==='home'?'active':''} onClick={() => setPage('home')}>🏠<br/><small>{t.nav_home}</small></button>
         <button className={['jobs','job','post'].includes(page)?'active':''} onClick={() => setPage('jobs')}>💼<br/><small>{t.nav_jobs}</small></button>
@@ -1400,6 +1411,31 @@ function RoleBanner({ icon, text, btn, onClick }) {
     <div className="guest-banner">
       <span>{icon} {text}</span>
       <button className="primary" onClick={onClick}>{btn}</button>
+    </div>
+  )
+}
+
+// 早期メンバーに「プロフィールを詳しく設定すると店舗のおすすめで優先表示」と促すポップ
+function ProfileBoostModal({ pct, onComplete, onClose }) {
+  const { t } = useT()
+  return (
+    <div className="role-overlay" onClick={onClose}>
+      <div className="role-card" onClick={e => e.stopPropagation()}>
+        <div style={{ fontSize:40, marginBottom:8 }}>⭐</div>
+        <p className="role-kicker">{t.early_member || 'Early Member'}</p>
+        <h2>{t.boost_modal_title || 'Stand out to employers'}</h2>
+        <p className="muted">{t.boost_modal_body || 'You registered early. Complete your profile in detail to appear higher in employers’ recommended candidates.'}</p>
+        <div style={{ margin:'14px 0' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', fontSize:13, fontWeight:700, marginBottom:6 }}>
+            <span>{t.boost_modal_progress || 'Profile completeness'}</span><span>{pct}%</span>
+          </div>
+          <div style={{ height:8, borderRadius:999, background:'var(--border2, #e5ded6)', overflow:'hidden' }}>
+            <div style={{ width:`${pct}%`, height:'100%', borderRadius:999, background:'linear-gradient(135deg,#7c3f12,#c2692a)' }} />
+          </div>
+        </div>
+        <button className="primary" style={{ width:'100%' }} onClick={onComplete}>{t.boost_modal_cta || 'Complete my profile'}</button>
+        <button style={{ marginTop:10, background:'transparent', border:'none', color:'var(--muted2)' }} onClick={onClose}>{t.boost_modal_later || 'Maybe later'}</button>
+      </div>
     </div>
   )
 }
