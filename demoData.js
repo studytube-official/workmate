@@ -77,6 +77,12 @@ export const demoStaff = [
   ['demo-staff-20', 'Nanami Yoshida', 'No English needed', '土・日 09:00〜17:00', '2027-03-03', 'Housekeeping and cleaning experience at a hotel. Detail-oriented.', 'Cleaning / Housekeeping,Hotel / Accommodation', womanImg(15)],
   ['demo-staff-21', 'Minju Kang', 'Intermediate+', '火・水・木・金 12:00〜20:00', '2026-12-20', 'Floor and waitstaff experience. Quick and reliable for lunch and dinner.', 'Floor Staff,Waiter / Waitress,Cashier', womanImg(48)],
   ['demo-staff-22', 'Yuto Nakamura', 'Basic English OK', '金・土・日 18:00〜24:00', '2027-04-10', 'Line cook with Western cuisine experience. Available weekend nights.', 'Line Cook,Chef,Western / Fine Dining', manImg(22)],
+  // バッジ無し（プロフィール未完成）の候補者。バッジ保持者の下に表示される。
+  ['demo-staff-23', 'Takeru Mori', 'No English needed', '', '', '', 'Kitchen Hand,Dishwasher', manImg(70)],
+  ['demo-staff-24', 'Saki Endo', 'Basic English OK', '', '', '', 'Floor Staff,Cashier', womanImg(20)],
+  ['demo-staff-25', 'Joon Park', 'Intermediate+', '', '', '', 'Bartender,Bar / Pub', manImg(77)],
+  ['demo-staff-26', 'Rina Ito', 'Basic English OK', '', '', '', 'Barista,Cafe / Coffee Shop', womanImg(63)],
+  ['demo-staff-27', 'Kai Watanabe', 'No English needed', '', '', '', 'Prep Cook,Kitchen Hand', manImg(85)],
 ].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories, avatar_url], i) => ({
   id,
   display_name,

@@ -756,16 +756,15 @@ function rankSeekers(list) {
   const decorated = list.map(p => {
     const rank = joinRank.has(p.id) ? joinRank.get(p.id) : Infinity
     const completeness = completenessOf(p)
-    return { ...p, _completeness: completeness, _joinRank: rank, _earlyMember: PRE_LAUNCH && rank < EARLY_MEMBER_CAP && completeness >= 0.8 }
-  })
-  if (!PRE_LAUNCH) return decorated
-  const scoreOf = p => {
-    const early  = p._joinRank < EARLY_MEMBER_CAP ? 1 - p._joinRank / EARLY_MEMBER_CAP : 0
+    const early  = rank < EARLY_MEMBER_CAP ? 1 - rank / EARLY_MEMBER_CAP : 0
     const days   = (now - new Date(p.updated_at || p.created_at || 0)) / 86400000
     const active = Math.max(0, 1 - days / 30)
-    return p._completeness * 0.45 + early * 0.35 + active * 0.20 + Math.random() * 0.15
-  }
-  return decorated.sort((a, b) => scoreOf(b) - scoreOf(a))
+    const score  = completeness * 0.45 + early * 0.35 + active * 0.20 + Math.random() * 0.15
+    return { ...p, _completeness: completeness, _joinRank: rank, _score: score, _earlyMember: PRE_LAUNCH && rank < EARLY_MEMBER_CAP && completeness >= 0.8 }
+  })
+  if (!PRE_LAUNCH) return decorated
+  // 早期メンバー（バッジ保持者）を常に上位表示し、その中はスコア順
+  return decorated.sort((a, b) => (Number(b._earlyMember) - Number(a._earlyMember)) || (b._score - a._score))
 }
 
 // 各行: [ja表示, en表示, ...旧データの別表記]
