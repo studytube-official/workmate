@@ -51,6 +51,7 @@ export const demoJobs = Array.from({ length: 36 }, (_, i) => {
 })
 
 const womanImg = n => `https://randomuser.me/api/portraits/women/${n}.jpg`
+const manImg   = n => `https://randomuser.me/api/portraits/men/${n}.jpg`
 const faceImg  = id => `https://images.unsplash.com/${id}?w=400&h=400&q=70&auto=format&fit=crop&crop=faces`
 
 export const demoStaff = [
@@ -62,6 +63,20 @@ export const demoStaff = [
   ['demo-staff-6', 'Riku Mori', 'Intermediate+', '土・日 08:00〜18:00', '2026-10-05', 'Cafe all-rounder with latte art practice and POS experience.', 'Barista,Cashier,Cafe / Coffee Shop', faceImg('photo-1492562080023-ab3db95bfbce')],
   ['demo-staff-7', 'Hana Choi', 'Basic English OK', '火・水・木 09:00〜16:00', '2027-06-25', 'Friendly floor staff candidate. Available around Chatswood and CBD.', 'Floor Staff,Waiter / Waitress,Host / Hostess', womanImg(90)],
   ['demo-staff-8', 'Emi Nakamura', 'Intermediate+', '月・火・水・木・金・土・日 15:00〜23:00', '2027-04-18', 'Line cook and dishwasher experience. Open to trial shifts this week.', 'Line Cook,Dishwasher,Kitchen Hand', womanImg(50)],
+  ['demo-staff-9', 'Kenji Yamamoto', 'Intermediate+', '月・火・水・木・金 09:00〜17:00', '2027-03-15', 'Hotel front-desk experience. Strong customer service, looking for floor or host roles.', 'Host / Hostess,Floor Staff,Receptionist / Front desk', manImg(32)],
+  ['demo-staff-10', 'Sora Kim', 'Basic English OK', '土・日 10:00〜20:00', '2026-09-30', 'Weekend availability. Barista and cashier experience at a busy cafe.', 'Barista,Cafe / Coffee Shop,Cashier', womanImg(33)],
+  ['demo-staff-11', 'Aoi Suzuki', 'No English needed', '月・火・水・木・金 06:00〜14:00', '2027-07-10', 'Early-morning bakery and prep experience. Reliable and punctual.', 'Bakery,Prep Cook,Kitchen Hand', womanImg(56)],
+  ['demo-staff-12', 'Daniel Lee', 'Intermediate+', '水・木・金・土・日 17:00〜24:00', '2026-12-01', 'Cocktail and bar experience. Available for late-night shifts.', 'Bartender,Bar / Pub,Nightclub / Lounge', manImg(45)],
+  ['demo-staff-13', 'Mei Lin', 'Basic English OK', '火・水・木 11:00〜19:00', '2027-04-22', 'Sushi restaurant floor and prep experience. Friendly and quick learner.', 'Sushi Restaurant,Waiter / Waitress,Kitchen Hand', womanImg(67)],
+  ['demo-staff-14', 'Haruto Ito', 'No English needed', '月・火・水・木・金・土 15:00〜23:00', '2027-01-28', 'Ramen shop kitchen hand. Comfortable with dishwashing and prep.', 'Kitchen Hand,Dishwasher,Ramen / Noodle Shop', manImg(11)],
+  ['demo-staff-15', 'Yuna Park', 'Intermediate+', '土・日 08:00〜16:00', '2026-10-20', 'Hotel and reception experience. Polished, weekend daytime availability.', 'Host / Hostess,Floor Staff,Receptionist / Front desk', womanImg(72)],
+  ['demo-staff-16', 'Ren Takahashi', 'Basic English OK', '月・水・金 10:00〜18:00', '2027-05-30', 'Latte art and POS experience. Looking for cafe shifts a few days a week.', 'Barista,Cafe / Coffee Shop,Cashier', manImg(51)],
+  ['demo-staff-17', 'Hina Kobayashi', 'No English needed', '月・火・水・木・金 07:00〜15:00', '2027-02-14', 'Prep and line cook experience. Available weekday daytime.', 'Prep Cook,Line Cook,Kitchen Hand', womanImg(25)],
+  ['demo-staff-18', 'Jisoo Choi', 'Intermediate+', '木・金・土・日 16:00〜23:00', '2026-11-15', 'Cocktail bar background. Energetic for evening and weekend service.', 'Bartender,Cocktail Bar,Bar / Pub', womanImg(40)],
+  ['demo-staff-19', 'Takumi Sato', 'Basic English OK', '月・火・水・木・金 09:00〜18:00', '2027-06-05', 'Retail and sales experience. Friendly and good with customers.', 'Sales,Apparel / Fashion,Cashier', manImg(60)],
+  ['demo-staff-20', 'Nanami Yoshida', 'No English needed', '土・日 09:00〜17:00', '2027-03-03', 'Housekeeping and cleaning experience at a hotel. Detail-oriented.', 'Cleaning / Housekeeping,Hotel / Accommodation', womanImg(15)],
+  ['demo-staff-21', 'Minju Kang', 'Intermediate+', '火・水・木・金 12:00〜20:00', '2026-12-20', 'Floor and waitstaff experience. Quick and reliable for lunch and dinner.', 'Floor Staff,Waiter / Waitress,Cashier', womanImg(48)],
+  ['demo-staff-22', 'Yuto Nakamura', 'Basic English OK', '金・土・日 18:00〜24:00', '2027-04-10', 'Line cook with Western cuisine experience. Available weekend nights.', 'Line Cook,Chef,Western / Fine Dining', manImg(22)],
 ].map(([id, display_name, english_level, availability, visa_expiry, bio, job_categories, avatar_url], i) => ({
   id,
   display_name,
@@ -72,8 +87,8 @@ export const demoStaff = [
   job_categories,
   avatar_url,
   // 早いほど先に登録（先着）、updated_at は最近ほどアクティブ
-  created_at: `2026-05-${String(10 + i).padStart(2, '0')}T09:00:00.000Z`,
-  updated_at: `2026-06-${String(18 - i).padStart(2, '0')}T09:00:00.000Z`,
+  created_at: `2026-05-${String(5 + (i % 25)).padStart(2, '0')}T09:00:00.000Z`,
+  updated_at: `2026-06-${String(1 + (i % 18)).padStart(2, '0')}T09:00:00.000Z`,
 }))
 
 export const demoConversations = [
