@@ -572,6 +572,12 @@ select option { background: var(--bg3); color: var(--text) }
 }
 .filter-summary .muted { margin: 0; font-size: 13px }
 .filter-summary .primary { padding: 8px 14px; font-size: 12px; white-space: nowrap }
+.filter-label {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted2);
+}
 .filter-chips {
   display: flex;
   gap: 8px;

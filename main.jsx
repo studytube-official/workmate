@@ -2003,6 +2003,21 @@ function formatAvailability({ days, start, end }) {
   return `${days.join('・')} ${start}〜${end}`
 }
 
+// 勤務可能日（曜日）・時間帯でのフィルター判定。候補者の availability を解析して照合する。
+const TIME_BANDS = { morning:[6,12], day:[12,17], evening:[17,24] }
+function availMatch(availStr, selDays, timeBand) {
+  if (!selDays.length && !timeBand) return true
+  const { days, start, end } = parseAvailability(availStr)
+  if (!days.length) return false
+  if (selDays.length && !selDays.every(d => days.includes(d))) return false
+  if (timeBand && TIME_BANDS[timeBand]) {
+    const sh = parseInt(start, 10), eh = parseInt(end, 10)
+    const [bs, be] = TIME_BANDS[timeBand]
+    if (!(sh < be && eh > bs)) return false
+  }
+  return true
+}
+
 function AvailabilityPicker({ value, onChange }) {
   const { lang } = useT()
   const parsed = useMemo(() => parseAvailability(value), [value])
@@ -2070,10 +2085,15 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
   const [loading,   setLoading]   = useState(true)
   const staffCategories = ALL_CATEGORY_OPTIONS
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const activeFilters = staffCategory.length + (staffEnglish ? 1 : 0)
+  const [staffDays, setStaffDays] = useState([])
+  const [staffTime, setStaffTime] = useState('')
+  const toggleStaffDay = d => setStaffDays(p => DAYS_JA.filter(x => (p.includes(d) ? p.filter(y => y !== d) : [...p, d]).includes(x)))
+  const activeFilters = staffCategory.length + (staffEnglish ? 1 : 0) + (staffDays.length ? 1 : 0) + (staffTime ? 1 : 0)
   const clearFilters = () => {
     setStaffCategory([])
     setStaffEnglish('')
+    setStaffDays([])
+    setStaffTime('')
   }
   const filteredStaff = useMemo(() => staffList.filter(s => {
     const categoryTerms = parseCats(s.job_categories).flatMap(catSearchTerms)
@@ -2087,7 +2107,8 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
     return (!terms.length || terms.every(term => tx.includes(term)))
         && (!staffCategory.length || parseCats(s.job_categories).some(c => staffCategory.some(sel => sameCat(c, sel))))
         && (!staffEnglish || sameEng(s.english_level, staffEnglish))
-  }), [staffList, staffSearch, staffCategory, staffEnglish])
+        && availMatch(s.availability, staffDays, staffTime)
+  }), [staffList, staffSearch, staffCategory, staffEnglish, staffDays, staffTime])
 
   useEffect(() => {
     if (!session || !isEmployer) {
@@ -2141,6 +2162,19 @@ function Staff({ setPage, session, startStaffDM, isEmployer, demoStaff, staffSea
                 <option>{t.eng_inter}</option>
               </select>
             </div>
+            <p className="filter-label">{lang === 'ja' ? '勤務可能な曜日' : 'Available days'}</p>
+            <div className="filter-chips">
+              {DAYS_JA.map((d, i) => (
+                <button key={d} className={staffDays.includes(d) ? 'active' : ''} onClick={() => toggleStaffDay(d)}>{lang === 'ja' ? d : DAYS_EN[i]}</button>
+              ))}
+            </div>
+            <p className="filter-label">{lang === 'ja' ? '時間帯' : 'Time of day'}</p>
+            <div className="filter-chips">
+              {[['morning', lang === 'ja' ? '朝' : 'Morning'], ['day', lang === 'ja' ? '昼' : 'Daytime'], ['evening', lang === 'ja' ? '夜' : 'Evening']].map(([k, label]) => (
+                <button key={k} className={staffTime === k ? 'active' : ''} onClick={() => setStaffTime(staffTime === k ? '' : k)}>{label}</button>
+              ))}
+            </div>
+            <p className="filter-label">{lang === 'ja' ? '希望職種' : 'Job type'}</p>
             <div className="filter-chips all-tags">
               {staffCategories.map(c => (
                 <button key={c} className={hasCat(staffCategory, c) ? 'active' : ''} onClick={() => setStaffCategory(toggleCat(staffCategory, c))}>{catLabel(c, lang)}</button>
