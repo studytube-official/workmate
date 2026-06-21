@@ -26,7 +26,7 @@ import './style.css'
 const T = {
   ja: {
     nav_home:'ホーム', nav_jobs:'求人', nav_staff:'スタッフ', nav_dm:'DM', nav_profile:'プロフィール',
-    tagline:'シドニーで今日もいい仕事を見つけよう',
+    tagline:'シドニーで今日もいい仕事を見つけよう', tagline_employer:'今日もお店にぴったりのスタッフを見つけよう',
     section_nearby:'近くの求人', section_saved:'保存した求人',
     guest_banner:'ログインしてスカウトを待とう',
     guest_banner_btn:'ログイン / 登録',
@@ -152,7 +152,7 @@ const T = {
   },
   en: {
     nav_home:'Home', nav_jobs:'Jobs', nav_staff:'Staff', nav_dm:'DM', nav_profile:'Profile',
-    tagline:'Find your perfect job in Sydney today',
+    tagline:'Find your perfect job in Sydney today', tagline_employer:'Find great staff for your shop today',
     section_nearby:'Jobs Near You', section_saved:'Saved Jobs',
     guest_banner:'Log in and get scouted',
     guest_banner_btn:'Log In / Sign Up',
@@ -1585,7 +1585,7 @@ function Home({ jobs, openJob, setPage, isSaved, toggleSave, session, profile, a
         <div className="hero-copy">
           {!isDemo && <p className="eyebrow">{t.home_badge}</p>}
           <h1>{session ? `Hi, ${displayName.split(' ')[0]}` : t.home_title_guest}</h1>
-          <p className="muted">{session ? t.tagline : t.home_sub_guest}</p>
+          <p className="muted">{session ? (isEmployer ? (t.tagline_employer || t.tagline) : t.tagline) : t.home_sub_guest}</p>
           {session && role === 'seeker' && isEarlyMember(profile) && (
             <p className="muted" style={{ marginTop:6 }}>
               <span style={{ display:'inline-block', padding:'4px 12px', borderRadius:999, fontSize:12, fontWeight:700,
