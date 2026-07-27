@@ -32,6 +32,16 @@ Supabase Dashboard > Storage > New bucket で **2つ** 作成：
 | `job-images` | ON | 求人の写真 |
 | `avatars` | ON | プロフィール写真 |
 
+各バケットは **最大5MB**、許可MIMEタイプは
+`image/jpeg`, `image/png`, `image/webp` に制限してください。
+書き込みポリシーでは、ファイルパスの先頭がログイン中ユーザーの
+`auth.uid()` と一致する場合だけ INSERT / UPDATE / DELETE を許可します。
+
+既存環境を再開する場合は、先に `sql/security_hardening.sql` を実行して
+プロフィール・DM・応募データの権限を更新してください。旧機能で
+`resumes` / `dm-files` バケットが存在する場合、このSQLはデータを残した
+まま Private に切り替え、本人・求人投稿者・会話参加者だけに限定します。
+
 ---
 
 ## ③ Google OAuth 設定
@@ -121,3 +131,18 @@ npm run build
 - [ ] 多言語対応（英語/日本語切替）
 - [ ] 求人の編集・削除機能
 - [ ] 未読メッセージバッジ
+
+---
+
+## 再開前の確認
+
+```bash
+npm ci
+npm audit
+npm run build
+```
+
+- Supabase プロジェクトが稼働中であること
+- `sql/security_hardening.sql` を実行済みであること
+- Storage のサイズ・MIMEタイプ・ユーザー別パス制限が有効であること
+- Vercel の本番URLで新規登録、求人投稿、応募、DMを2アカウントで確認すること
