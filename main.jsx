@@ -49,7 +49,7 @@ const T = {
     complete_profile:'プロフィールを完成させる',
     quick_jobs:'今日のおすすめ求人', quick_jobs_sub:'求人一覧を見る',
     quick_post:'求人を投稿する', quick_post_sub:'店側が求人を追加',
-    search_jobs:'求人を探す', keyword_ph:'キーワード検索',
+    search_jobs:'求人を探す', jobs_desc:'店名、職種、エリア、英語レベルで絞り込めます。', keyword_ph:'店名・職種・キーワードで検索',
     all_areas:'場所すべて', eng_cond:'英語条件', post_btn:'＋ 求人投稿',
     no_jobs:'求人がありません。',
     view_detail:'詳細を見る', save:'♡ 保存', saved_btn:'♥ 保存済み',
@@ -100,6 +100,16 @@ const T = {
     err_password_short:'パスワードは6文字以上にしてください',
     signup_ok:'アカウントを作成しました！',
     check_email:'確認メールを送信しました。メールのリンクをクリックしてください。',
+    forgot_password:'パスワードを忘れた方',
+    reset_email_required:'先にメールアドレスを入力してください。',
+    reset_sent:'パスワード再設定メールを送信しました。',
+    set_password_title:'新しいパスワードを設定',
+    set_password_desc:'今後ログインに使用するパスワードを入力してください。',
+    new_password:'新しいパスワード',
+    confirm_password:'パスワード（確認）',
+    password_mismatch:'パスワードが一致しません。',
+    set_password_btn:'パスワードを更新',
+    password_updated:'パスワードを更新しました。',
     toast_login:'ログインが必要です', toast_applied_already:'すでに応募済みです',
     toast_applied_ok:'応募しました！', toast_logout:'ログアウトしました',
     toast_profile:'プロフィールを保存しました！',
@@ -134,6 +144,8 @@ const T = {
     install_not_now:'今はしない',
     file_choose:'写真を選択',
     file_none:'ファイル未選択',
+    image_type_error:'JPEG・PNG・WebP形式の画像を選択してください。',
+    image_size_error:'画像は5MB以下にしてください。',
     cat_selected_suffix:'件選択中',
     cat_joiner:'・',
     category_add_job:'職種を追加…',
@@ -175,7 +187,7 @@ const T = {
     complete_profile:'Complete Your Profile',
     quick_jobs:"Today's Jobs", quick_jobs_sub:'Browse all listings',
     quick_post:'Post a Job', quick_post_sub:'For employers',
-    search_jobs:'Find Jobs', keyword_ph:'Search keywords',
+    search_jobs:'Find Shops Hiring', jobs_desc:'Filter by shop name, role, area, and English level.', keyword_ph:'Search shop, role, or keyword',
     all_areas:'All areas', eng_cond:'English level', post_btn:'＋ Post Job',
     no_jobs:'No jobs found.',
     view_detail:'View Details', save:'♡ Save', saved_btn:'♥ Saved',
@@ -227,6 +239,16 @@ const T = {
     err_password_short:'Password must be at least 6 characters',
     signup_ok:'Account created!',
     check_email:'Check your email and click the confirmation link.',
+    forgot_password:'Forgot password?',
+    reset_email_required:'Enter your email address first.',
+    reset_sent:'Password reset email sent.',
+    set_password_title:'Set a new password',
+    set_password_desc:'Choose the password you will use to sign in.',
+    new_password:'New password',
+    confirm_password:'Confirm password',
+    password_mismatch:'Passwords do not match.',
+    set_password_btn:'Update password',
+    password_updated:'Password updated.',
     toast_login:'Login required', toast_applied_already:'Already applied',
     toast_applied_ok:'Application sent!', toast_logout:'Logged out',
     toast_profile:'Profile saved!',
@@ -261,6 +283,8 @@ const T = {
     install_not_now:'Not now',
     file_choose:'Choose Photo',
     file_none:'No file selected',
+    image_type_error:'Choose a JPEG, PNG, or WebP image.',
+    image_size_error:'Images must be 5 MB or smaller.',
     cat_selected_suffix:'selected',
     cat_joiner:', ',
     category_add_job:'Add job type…',
@@ -862,7 +886,7 @@ function ImageFilePicker({ file, onChange }) {
         id={inputId}
         className="file-picker-input"
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp"
         onChange={e => onChange(e.target.files?.[0] || null)}
       />
       <label className="file-picker-button" htmlFor={inputId}>{t.file_choose}</label>
@@ -870,6 +894,21 @@ function ImageFilePicker({ file, onChange }) {
     </div>
   )
 }
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+const IMAGE_EXTENSIONS = {
+  'image/jpeg':'jpg',
+  'image/png':'png',
+  'image/webp':'webp',
+}
+
+function validateImage(file, t) {
+  if (!file) return
+  if (!IMAGE_EXTENSIONS[file.type]) throw new Error(t.image_type_error)
+  if (file.size > MAX_IMAGE_BYTES) throw new Error(t.image_size_error)
+}
+
+const imageExtension = file => IMAGE_EXTENSIONS[file.type]
 
 const fmt = (d, lang='en') =>
   new Date(d).toLocaleString(LANG_LOCALES[lang] || 'en-AU',
@@ -1054,6 +1093,7 @@ function App() {
     // PKCE: URLに ?code= がある場合は明示的にコード交換してセッションを取得
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
+    const isRecovery = urlParams.get('recovery') === '1'
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
         if (error) {
@@ -1062,7 +1102,7 @@ function App() {
           setSession(data.session)
           const prof = await loadUserData(data.session.user.id)
           // 初回ログイン（名前未設定）はプロフィール設定へ、それ以外はホームへ
-          setPage(!prof?.display_name ? 'profile' : 'home')
+          setPage(isRecovery ? 'set_password' : !prof?.display_name ? 'profile' : 'home')
         }
         window.history.replaceState({}, document.title, window.location.pathname)
       })
@@ -1077,7 +1117,9 @@ function App() {
       setSession(s)
       if (s) {
         const prof = await loadUserData(s.user.id)
-        if (event === 'SIGNED_IN') {
+        if (event === 'PASSWORD_RECOVERY') {
+          setPage('set_password')
+        } else if (event === 'SIGNED_IN') {
           // 初回ログインはプロフィール設定へ、復帰ユーザーはホームへ
           setPage(!prof?.display_name ? 'profile' : 'home')
         }
@@ -1357,10 +1399,11 @@ function App() {
       {page === 'chat'    && <Chat convId={activeConvId} setPage={setPage} session={session} conversations={conversations} setConversations={setConversations} notify={notify} markConvRead={markConvRead} lang={safeLang} demoMessages={isDemo ? (isDemoSeeker ? demoSeekerMessages : demoMessages) : null} />}
       {page === 'profile' && <Profile setPage={setPage} session={session} profile={profile} setProfile={setProfile} notify={notify} signOut={signOut} applications={applications} jobs={jobs} isSaved={isSaved} openJob={openJob} savedJobIds={savedJobIds} postedJobs={postedJobs} updateAppStatus={updateAppStatus} toggleJobStatus={toggleJobStatus} deleteJob={deleteJob} setEditingJob={setEditingJob} role={role} />}
       {page === 'login'   && <Login setPage={setPage} notify={notify} />}
+      {page === 'set_password' && <SetPassword setPage={setPage} notify={notify} />}
 
       {editingJob && <EditJobModal job={editingJob} onClose={() => setEditingJob(null)} notify={notify} session={session} loadJobs={loadJobs} loadUserData={() => session && loadUserData(session.user.id)} />}
 
-      {!role && !isDemo && <RoleSelect chooseRole={chooseRole} />}
+      {!role && !isDemo && page !== 'set_password' && <RoleSelect chooseRole={chooseRole} />}
 
       {role === 'employer' && postedJobs.length === 0 && page !== 'post' && page !== 'login' && (
         <RoleBanner icon="📋" text={t.emp_banner} btn={t.emp_banner_btn} onClick={() => setPage('post')} />
@@ -1464,6 +1507,7 @@ function Login({ setPage, notify }) {
   const [password, setPassword] = useState('')
   const [busy,     setBusy]     = useState(false)
   const [done,     setDone]     = useState(false)
+  const [resetSent, setResetSent] = useState(false)
 
   async function handleSignup() {
     if (!name.trim() || !email.trim() || !password) { notify(t.err_required); return }
@@ -1485,6 +1529,17 @@ function Login({ setPage, notify }) {
     setBusy(false)
     if (error) { notify(error.message) }
     // 成功時は onAuthStateChange が page を切り替える
+  }
+
+  async function handleForgotPassword() {
+    if (!email.trim()) { notify(t.reset_email_required); return }
+    setBusy(true)
+    const redirectTo = `${window.location.origin}${window.location.pathname}?recovery=1`
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo })
+    setBusy(false)
+    if (error) { notify(error.message); return }
+    setResetSent(true)
+    notify(t.reset_sent)
   }
 
   if (done) return (
@@ -1530,6 +1585,12 @@ function Login({ setPage, notify }) {
           <label>{t.f_password}
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder={t.password_ph} />
           </label>
+          {tab === 'login' && (
+            <button type="button" onClick={handleForgotPassword} disabled={busy}
+              style={{ alignSelf:'flex-end', background:'transparent', border:'none', padding:'0 0 4px', color:'var(--accent)', fontSize:13 }}>
+              {resetSent ? `✓ ${t.reset_sent}` : t.forgot_password}
+            </button>
+          )}
           <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16, marginTop:4 }}
             onClick={tab==='signup' ? handleSignup : handleLogin} disabled={busy}>
             {busy ? '...' : tab==='signup' ? t.signup_btn : t.login_btn}
@@ -1539,6 +1600,53 @@ function Login({ setPage, notify }) {
         <button onClick={() => setPage('home')} style={{ width:'100%', marginTop:12, background:'transparent', border:'none', color:'var(--muted2)', fontSize:14 }}>
           {t.guest}
         </button>
+      </div>
+    </main>
+  )
+}
+
+// ═════════════════════════════════════════════
+//  SetPassword
+// ═════════════════════════════════════════════
+function SetPassword({ setPage, notify }) {
+  const { t } = useT()
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  async function handleSetPassword() {
+    if (password.length < 6) { notify(t.err_password_short); return }
+    if (password !== confirm) { notify(t.password_mismatch); return }
+    setBusy(true)
+    const { error } = await supabase.auth.updateUser({ password })
+    setBusy(false)
+    if (error) { notify(error.message); return }
+    notify(t.password_updated)
+    setPage('home')
+  }
+
+  return (
+    <main style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'80vh', padding:'0 24px' }}>
+      <div style={{ width:'100%', maxWidth:380 }}>
+        <div style={{ textAlign:'center', marginBottom:28 }}>
+          <div style={{ fontSize:48, marginBottom:8 }}>🔑</div>
+          <h1 style={{ margin:'0 0 6px' }}>{t.set_password_title}</h1>
+          <p className="muted" style={{ margin:0 }}>{t.set_password_desc}</p>
+        </div>
+        <div className="form">
+          <label>{t.new_password}
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+              placeholder={t.password_ph} autoComplete="new-password" />
+          </label>
+          <label>{t.confirm_password}
+            <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)}
+              placeholder={t.password_ph} autoComplete="new-password" />
+          </label>
+          <button className="primary" style={{ width:'100%', padding:'14px', fontSize:16 }}
+            onClick={handleSetPassword} disabled={busy}>
+            {busy ? t.saving : t.set_password_btn}
+          </button>
+        </div>
       </div>
     </main>
   )
@@ -1682,9 +1790,9 @@ function Jobs({ jobs, allJobs, openJob, search, setSearch, area, setArea, englis
   return (
     <main>
       <header className="sticky">
-        <h1>Find Shops Hiring</h1>
-        <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>Filter by shop name, role, area, and English level.</p>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search shop, role, barista, kitchen..." />
+        <h1>{t.search_jobs}</h1>
+        <p className="muted" style={{ marginTop:-4, marginBottom:12 }}>{t.jobs_desc}</p>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t.keyword_ph} />
         <div className="filter-toolbar">
           <button className="filter-toggle" onClick={() => setFiltersOpen(v => !v)} aria-expanded={filtersOpen}>
             {filtersOpen ? t.filters_hide : t.filters_show}{activeFilters ? ` (${activeFilters})` : ''}
@@ -1868,8 +1976,9 @@ function PostJob({ setPage, loadJobs, loadUserData, notify, session }) {
 
   async function uploadImage() {
     if (!file) return job.image_url
-    const ext  = file.name.split('.').pop()
-    const path = `jobs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    validateImage(file, t)
+    const ext  = imageExtension(file)
+    const path = `${session.user.id}/jobs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from('job-images').upload(path, file)
     if (error) throw error
     return supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
@@ -1935,8 +2044,9 @@ function EditJobModal({ job, onClose, notify, session, loadJobs, loadUserData })
     try {
       let image_url = job.image_url
       if (file) {
-        const ext  = file.name.split('.').pop()
-        const path = `jobs/${Date.now()}.${ext}`
+        validateImage(file, t)
+        const ext  = imageExtension(file)
+        const path = `${session.user.id}/jobs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
         const { error:upErr } = await supabase.storage.from('job-images').upload(path, file)
         if (upErr) throw upErr
         image_url = supabase.storage.from('job-images').getPublicUrl(path).data.publicUrl
@@ -2375,7 +2485,8 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
 
   async function uploadAvatar() {
     if (!avatarFile || !session) return profile?.avatar_url || null
-    const ext  = avatarFile.name.split('.').pop()
+    validateImage(avatarFile, t)
+    const ext  = imageExtension(avatarFile)
     const path = `${session.user.id}/avatar.${ext}`
     const { error } = await supabase.storage.from('avatars').upload(path, avatarFile, { upsert:true })
     if (error) throw error
@@ -2441,7 +2552,6 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
           <button key={key} onClick={() => setTab(key)} style={{
             background:'transparent', border:'none', borderRadius:0, whiteSpace:'nowrap',
             borderBottom: tab===key ? '2px solid var(--accent)' : '2px solid transparent',
-            color: tab===key ? 'var(--text)' : 'var(--muted2)',
             color: tab===key ? '#2563eb' : '#64748b', fontWeight:900, padding:'12px 14px'
           }}>{label}</button>
         ))}
@@ -2457,7 +2567,7 @@ function Profile({ setPage, session, profile, setProfile, notify, signOut,
                 ? <img src={currentAvatar} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} alt="avatar" />
                 : (form.display_name?.[0]?.toUpperCase() || 'U')}
             </div>
-            <input id="avatarInput" type="file" accept="image/*" style={{ display:'none' }} onChange={handleAvatarChange} />
+            <input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" style={{ display:'none' }} onChange={handleAvatarChange} />
             <button style={{ fontSize:13, padding:'8px 16px' }} onClick={() => document.getElementById('avatarInput').click()}>{t.change_photo}</button>
             {avatarPreview && <p className="muted" style={{ fontSize:12 }}>{t.photo_pending}</p>}
             {role !== 'employer' && (
